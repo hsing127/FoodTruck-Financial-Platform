@@ -19,3 +19,12 @@ The **Food Truck Financial Analysis Platform** is designed to help food truck op
 ## Motivation
 
 Food truck operators often struggle with managing their finances due to the fast-paced nature of their business and the wide range of expenses they incur. The Food Truck Financial Analysis Platform simplifies this process by automating expense tracking and analysis, enabling food truck owners to make data-driven financial decisions and optimize their operations.
+
+## Deliverables
+
+- **Web Application**: A fully functional web-based platform.
+- **Mobile App**: iOS and Android mobile apps for on-the-go receipt scanning and data entry.
+- **API Documentation**: For potential future integrations.
+- **User Manual**: Comprehensive user manual and administration guide.
+- **Source Code**: Properly documented source code.
+- **Final Presentation & Report**: A final presentation and project report.
