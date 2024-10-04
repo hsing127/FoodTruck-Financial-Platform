@@ -131,6 +131,8 @@ h2 {
     align-items: center;
     margin: auto;
     max-width: 500px;
+    min-width: 410px;
+    min-height: 580px;
     padding: 40px;
     width: 100%;
 }
