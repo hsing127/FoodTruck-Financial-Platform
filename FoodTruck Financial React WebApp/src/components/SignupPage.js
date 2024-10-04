@@ -16,7 +16,7 @@ const SignupPage = () => {
                         <label htmlFor="password">Password</label>
                     </div>
                     <div className="input-field2">
-                        <input type="password2" id="password2" name="password2" required />
+                        <input type="password" id="password2" name="password2" required />
                         <label htmlFor="password2">Re-Enter Your Password</label>
                     </div>
 
