@@ -1,0 +1,71 @@
+/* Container for the settings page */
+.settings-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: brown;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Setting Header styles */
+  .settings-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: black;
+  }
+  
+  /* Info section for the items */
+  .info-section {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Individual info item styles */
+  .info-item {
+    background-color: lightseagreen;
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Info text styles */
+  .info-text {
+    flex-grow: 1;
+    color: black;
+  }
+
+   /* Info text styles */
+   .info-text h2 {
+    text-align: left;
+    color: black;
+  }
+  
+  /* Description styles */
+  .info-description {
+    color: black;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
+  /* Button styles */
+  .info-button {
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  /* Button hover effect */
+  .info-button:hover {
+    background-color: red;
+  }
+  
