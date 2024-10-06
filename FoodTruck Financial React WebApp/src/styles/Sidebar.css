@@ -1,5 +1,5 @@
 /* Sidebar container */
-.sidebar {
+  .sidebar {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
