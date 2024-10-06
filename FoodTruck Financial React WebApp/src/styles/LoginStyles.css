@@ -30,6 +30,20 @@ h2 {
     text-align: center;
 }
 
+.code {
+    color: white;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.forgot {
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+    margin-top: -20px;
+}
+
 .forgot-password {
     margin-left: 50px; 
 }
@@ -41,6 +55,26 @@ h2 {
 
 .forgot-password a:hover {
     text-decoration: underline;
+}
+
+.forgotPassWord-container {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    max-width: 500px;
+    min-width: 410px;
+    min-height: 520px;
+    padding: 40px;
+    width: 100%;
+}
+
+.forgotPassWord-box {
+    width: 100%;
 }
 
 .input-field {
