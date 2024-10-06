@@ -16,8 +16,6 @@ const ForgotPasswordPage = () => {
                         <input type="text" id="Email" name="email" required />
                         <label htmlFor="email">Email address</label>
                     </div>
-
-                    
                     <button type="submit" className="login-btn" href="/forgot-password/code">Submit</button>
                     <p className="signup-link">
                         <a href="/login">Back to Login</a>
