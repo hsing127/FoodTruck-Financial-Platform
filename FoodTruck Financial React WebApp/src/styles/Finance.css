@@ -1,3 +1,4 @@
+/* Links styling */
 a {
     color: #44aa8b;
     text-decoration: none;
@@ -8,6 +9,7 @@ a {
     text-decoration: underline;
   }
   
+  /* Mock Bar Chart Styles */
   .bar {
     width: 30%;
     background-color: #44aa8b;
@@ -34,9 +36,10 @@ a {
     justify-content: space-between;
     align-items: flex-end;
     height: 100%;
-    background-color: #f1f1f1;
+    background-color: #f1f1f1; /* Mock chart background */
   }
   
+  /* Button styling */
   button {
     background-color: #f39c12;
     border: none;
@@ -52,12 +55,13 @@ a {
     background-color: #e67e22;
   }
   
+  /* Chart container styles */
   .chart-container {
     padding: 15px;
     background-color: #f5f5f5;
     border-radius: 8px;
     text-align: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
     transition: transform 0.2s ease-in-out;
     transform: scale(0.9);
   }
@@ -71,6 +75,7 @@ a {
     cursor: grabbing;
   }
   
+  /* Mock Chart Title Styling */
   .chart-container h2 {
     margin-bottom: 10px;
     font-size: 1.4em;
@@ -91,44 +96,35 @@ a {
     aspect-ratio: 1 / 1;
   }
   
+  /* Grid layout for charts - defines 2 columns, 2 rows */
   .charts-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: repeat(2, 1fr);
-    gap: 20px;
+    grid-template-columns: 2fr 1fr; /* 2:1 column ratio for layout */
+    grid-template-rows: repeat(2, 1fr); 
+    gap: 20px; /* Space between the grid items */
     padding: 20px;
-    height: calc(95vh - 60px);
+    height: calc(95vh - 60px); /* Dynamic height adjustment */
   }
   
   .dashboard-layout {
     display: grid;
-    grid-template-columns: 250px 1fr;
+    grid-template-columns: 250px 1fr; /* Fixed-width sidebar and flexible main content */
     height: 100vh;
     overflow: hidden;
   }
   
-  header {
-    color: rgb(0, 0, 0);
-    padding: 20px;
-    text-align: left;
-    margin-bottom: 20px;
-  }
-  
-  header h1 {
-    margin: 0;
-    font-size: 2.5em;
-  }
-  
+  /* Mock Line Chart Styles */
   .line-chart {
     width: 100%; 
     height: 70%; 
-    background-color: #f1f1f1;
+    background-color: #f1f1f1; 
   }
   
   .main-content {
     padding: 20px;
   }
   
+  /* Mock Pie Chart Styles */
   .pie-chart {
     width: 30%; 
     height: 60%; 
@@ -138,10 +134,11 @@ a {
       #44aa8b 40% 65%,
       #f1c40f 65% 85%,
       #254441 85% 100%
-    );
-    margin: 0 auto;
+    ); 
+    margin: 0 auto; /* Center the chart */
   }
   
+  /* Placeholder for future chart - mock */
   .placeholder-chart {
     width: 90%;
     height: 112px;
@@ -149,127 +146,6 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #34495e;
-  }
-  
-  .search-bar {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .search-bar input {
-    width: 50%;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px 0 0 5px;
-    font-size: 0.9em;
-  }
-  
-  .search-bar .search-btn {
-    padding: 5px 10px;
-    background-color: #44aa8b;
-    color: white;
-    border: none;
-    border-radius: 0 5px 5px 0;
-    cursor: pointer;
-    font-size: 0.9em;
-  }
-  
-  .search-bar .search-btn:hover {
-    background-color: #3d9578;
-  }
-  
-  .settings-link a {
-    font-size: 1.1em;
-    color: #254441;
-    text-decoration: none;
-  }
-  
-  .settings-link a:hover {
-    color: #f39c12;
-  }
-  
-  .sidebar {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background: linear-gradient(to bottom right, #44aa8b, #254441, #44aa8b);
-    padding: 10px;
-    height: 100vh;
-    color: white;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar-bottom {
-    margin-top: auto;
-    padding-bottom: 20px;
-  }
-  
-  .sidebar-bottom li {
-    margin-bottom: 10px;
-    padding: 5px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  .sidebar-bottom li a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    font-size: 1.2em;
-    font-weight: normal;
-  }
-  
-  .sidebar-bottom li:hover {
-    background-color: #f39c12;
-    color: white;
-  }
-  
-  .sidebar-menu li {
-    margin-bottom: 30px;
-    padding: 10px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  .sidebar-menu li a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    font-size: 1.5em;
-    font-weight: bold;
-    width: 100%;
-    height: 100%;
-  }
-  
-  .sidebar-menu li.active {
-    background-color: #f39c12;
-    color: white;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-  }
-  
-  .sidebar-menu li:hover {
-    background-color: #f39c12;
-    color: white;
-  }
-  
-  .top-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 10px;
-    background-color: #f5f5f5;
-    margin-bottom: 10px;
-  }
-  
-  .welcome-user {
-    font-size: 1.1em;
-    color: #254441;
+    color: #34495e; 
   }
   
