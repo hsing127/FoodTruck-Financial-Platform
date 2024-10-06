@@ -10,12 +10,10 @@ body {
       rgba(0, 0, 0, 0.7), 
       rgba(0, 0, 0, 0.7)
     ), 
-    linear-gradient(
-      to bottom right, 
-      #44aa8b,
-      #254441,
-      #44aa8b
-    );
+    url('../assets/websiteBackground.jpg');
+    background-size: cover;  
+    background-attachment: fixed; 
+    background-position: center;  
     display: flex;
     font-family: 'Open Sans', sans-serif;
     height: 100vh;
