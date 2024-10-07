@@ -116,9 +116,9 @@ const DashboardInventoryPage = () => {
                 onChange={(e) => setNewItem({ ...newItem, weight: e.target.value })}
               />
             </label>
-            <div className="modal-buttons">
-              <button onClick={handleSubmit}>Submit</button>
-              <button onClick={() => setModalOpen(false)}>Cancel</button>
+            <div className="modal-buttons-container">
+              <button className="modal-button" onClick={handleSubmit}>Submit</button>
+              <button className="modal-button" onClick={() => setModalOpen(false)}>Cancel</button>
             </div>
           </div>
         </div>

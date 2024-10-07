@@ -1,5 +1,5 @@
 .dashboard-container {
-  font-family: Arial, sans-serif;
+  font-family: 'Open Sans', sans-serif;
   padding: 20px;
   height: 80vh;
   width: 100vh;
@@ -31,6 +31,59 @@
   font-weight: bold;
 }
 
+/* Button Styles */
+.add-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.add-button:hover {
+  background-color: #218838;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.edit-button, .add-button, .modal-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-family: 'Open Sans', sans-serif;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button {
+  background-color: #ffc107;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #e0a800;
+}
+
+.modal-button {
+  background-color: #f0f0f0;
+  color: black;
+}
+
+.modal-title {
+  margin-top: 50px;
+  color:black;
+}
+
+.modal-overlay {
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
 @media (max-width: 600px) {
   .inventory-table, thead, tbody, th, td, tr {
     display: block;
@@ -59,52 +112,3 @@
     font-weight: bold;
   }
 }
-
-/* Button Styles */
-.button-container {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  font-family: 'Open Sans', sans-serif;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.edit-button {
-  background-color: #ffc107;
-  color: white;
-}
-
-.edit-button:hover {
-  background-color: #e0a800;
-}
-
-.add-button {
-  background-color: #28a745;
-  color: white;
-}
-
-.add-button:hover {
-  background-color: #218838;
-}
-
-.modal-title {
-  margin-top: 50px;
-  color:black;
-}
-
-.modal-overlay {
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  padding: 10px;
-  margin-top: 10px;
-}
-
