@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/Logo.png';
-import teamImage from '../assets/teamImage.jpg';
+import teamImage from '../assets/teamImage.png';
 import '../styles/LandingPage.css';
 
 const LandingPage = () => {
