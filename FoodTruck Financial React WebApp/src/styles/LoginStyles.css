@@ -4,21 +4,22 @@
     padding: 0;
 }
 
-body {
+.LoginBody {
     align-items: center;
-    background: linear-gradient(
-      rgba(0, 0, 0, 0.7), 
-      rgba(0, 0, 0, 0.7)
-    ), 
-    url('../assets/websiteBackground.jpg');
-    background-size: cover;  
-    background-attachment: fixed; 
-    background-position: center;  
+    background: linear-gradient(rgba(0, 0, 0, 0.7),
+            rgba(0, 0, 0, 0.7)),
+        url('../assets/websiteBackground.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
     display: flex;
     font-family: 'Open Sans', sans-serif;
-    height: 100vh;
     justify-content: center;
     background-blend-mode: overlay;
+    height: 100vh;
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;
 }
 
 h2 {
@@ -43,7 +44,7 @@ h2 {
 }
 
 .forgot-password {
-    margin-left: 50px; 
+    margin-left: 50px;
 }
 
 .forgot-password a {
@@ -107,8 +108,8 @@ h2 {
     transition: 0.3s ease-in-out;
 }
 
-.input-field input:focus + label,
-.input-field input:not(:placeholder-shown) + label {
+.input-field input:focus+label,
+.input-field input:not(:placeholder-shown)+label {
     color: #ff6f59;
     font-size: 0.85rem;
     top: -10px;
@@ -146,8 +147,8 @@ h2 {
     transition: 0.3s ease-in-out;
 }
 
-.input-field2 input:focus + label,
-.input-field2 input:not(:placeholder-shown) + label {
+.input-field2 input:focus+label,
+.input-field2 input:not(:placeholder-shown)+label {
     color: #ff6f59;
     font-size: 0.85rem;
     top: -2px;
@@ -162,8 +163,8 @@ h2 {
     justify-content: center;
     align-items: center;
     margin: auto;
-    max-width: 500px;
-    min-width: 410px;
+    max-width: 400px;
+    min-width: 400px;
     min-height: 580px;
     padding: 40px;
     width: 100%;

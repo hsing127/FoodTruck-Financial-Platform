@@ -23,7 +23,7 @@ const LandingPage = () => {
         });
       },
       {
-        threshold: 0.2,
+        threshold: 0.02,
       }
     );
 
@@ -80,7 +80,6 @@ const LandingPage = () => {
         </nav>
 
         <main className="intro-section">
-          <p className="padding"></p>
           <p className="intro-badge" aria-describedby="badge-description">
             Introducing FoodTrack
           </p>

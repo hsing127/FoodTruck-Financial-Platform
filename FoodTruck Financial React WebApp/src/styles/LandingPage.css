@@ -16,22 +16,28 @@
   --navbar-padding: 15px 40px;
 
   --animation-duration: 1s;
-  --transition-duration: 0.8s; 
+  --transition-duration: 0.8s;
   --transition: opacity var(--transition-duration) ease, transform var(--transition-duration) ease;
 }
 
+html,
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 .about-section {
+  padding-top: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #f9f9f9;
-  padding: 20px 20px;
   color: #333;
   min-height: 100vh;
   text-align: left;
   opacity: 0;
-  transform: translateY(30px);
   transition: var(--transition);
+  overflow-y: hidden;
 }
 
 .about-section.visible {
@@ -43,17 +49,19 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1400px;
-  width: 100%;
+  max-width: 100%;
+  width: 90vw;
+  flex-wrap: wrap;
 }
 
-.about-text, .about-image {
+.about-text,
+.about-image {
   opacity: 0;
   transform: translateY(30px);
   transition: var(--transition);
 }
 
-.about-section.visible .about-text, 
+.about-section.visible .about-text,
 .about-section.visible .about-image {
   opacity: 1;
   transform: translateY(0);
@@ -61,17 +69,18 @@
 
 .about-text {
   flex: 1;
-  padding-right: 40px;
+  padding-right: 4vw;
 }
 
 .about-text h2 {
-  font-size: 2.5rem;
+  padding-top: 20px;
+  font-size: 1.8vw;
   color: var(--primary-purple);
   margin-bottom: 20px;
 }
 
 .about-text p {
-  font-size: 1.2rem;
+  font-size: 1vw;
   line-height: 1.6;
   margin-bottom: 15px;
   color: #666;
@@ -80,26 +89,26 @@
 .about-text ul {
   list-style-type: disc;
   margin-left: 20px;
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
   padding-left: 20px;
 }
 
 .about-text ul li {
   margin-bottom: 10px;
+  font-size: 1vw;
 }
 
 .about-image {
-  flex: 1.4; 
+  flex: 1.2;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 100px;
+  margin-top: 20px;
 }
 
 .about-image img {
   width: 100%;
-  max-width: 1000px;
   border-radius: 8px;
   opacity: 0;
   transform: scale(0.9);
@@ -164,7 +173,9 @@
 
 .intro-section {
   max-width: 800px;
-  margin: auto;
+  margin: 20vh auto auto auto;
+  padding: 60px;
+  overflow-y: hidden;
 }
 
 .landing-container {
@@ -172,12 +183,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200vh;
+  height: 100vh;
   width: 100vw;
   text-align: center;
   color: #fff;
-  padding: 20px;
+  padding-top: 20px;
   font-family: 'Open Sans', sans-serif;
+  overflow-y: hidden;
+  overflow: hidden;
+  background: linear-gradient(rgba(0, 0, 0, 0.7),
+            rgba(0, 0, 0, 0.7)),
+        url('../assets/websiteBackground.jpg');
+        background-size: cover;
+  background-position: center; 
+  background-repeat: no-repeat;
+  min-height: 700px;
 }
 
 .logo-image {
@@ -211,7 +231,8 @@
   color: #fff;
 }
 
-.nav-left, .nav-right {
+.nav-left,
+.nav-right {
   display: flex;
   align-items: center;
 }
@@ -237,7 +258,8 @@
   color: var(--primary-green);
 }
 
-.nav-login, .nav-signup {
+.nav-login,
+.nav-signup {
   color: #fff;
   font-size: var(--font-small);
   text-decoration: none;
@@ -259,10 +281,6 @@
   background-color: var(--primary-purple-hover);
 }
 
-.padding {
-  padding-top: 100vh;
-}
-
 .title {
   font-size: var(--font-large);
   font-weight: 800;
@@ -277,6 +295,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -295,5 +314,49 @@
 
   .about-image {
     margin-top: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .about-content {
+    flex-direction: column;
+    text-align: center;
+    width: 100%;
+  }
+
+  .about-text {
+    padding-right: 0;
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
+
+  .about-image {
+    margin-top: 20px;
+  }
+
+  .about-text h2 {
+    font-size: 2rem;
+  }
+
+  .about-text p {
+    font-size: 1rem;
+  }
+
+  .about-image img {
+    max-width: 90vw;
+  }
+
+  .landing-container {
+    padding: 10px;
+    height: auto;
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .intro-description {
+    font-size: 1rem;
   }
 }
