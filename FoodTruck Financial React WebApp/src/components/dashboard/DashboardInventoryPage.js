@@ -56,7 +56,7 @@ const DashboardInventoryPage = () => {
 
   return (
     <div className="dashboard-container">
-      <h1>Inventory</h1>
+      <h1 ClassName="title">Inventory</h1>
 
       <table className="inventory-table">
         <thead>
@@ -73,16 +73,20 @@ const DashboardInventoryPage = () => {
               <td>{item.quantity}</td>
               <td>{item.weight}</td>
               <td>
-                <button className="edit-button" onClick={() => openModal(item)}>Edit</button>
+              {!modalOpen && ( // Hide edit button if modal is open
+                  <button className="edit-button" onClick={() => openModal(item)}>Edit</button>
+                )}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <div className="button-container">
-        <button type="button" className="add-button" onClick={() => openModal(null)}>Add</button>
-      </div>
+      {!modalOpen && (
+        <div className="button-container">
+          <button type="button" className="add-button" onClick={() => openModal(null)}>Add</button>
+        </div>
+      )}
 
       {modalOpen && (
         <div className="modal-overlay">
