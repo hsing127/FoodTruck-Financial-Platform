@@ -197,6 +197,7 @@ body {
         background-size: cover;
   background-position: center; 
   background-repeat: no-repeat;
+  min-height: 700px;
 }
 
 .logo-image {
