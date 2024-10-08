@@ -93,30 +93,30 @@ const DashboardInventoryPage = () => {
           <div className="modal">
             <h2 className="modal-title">{isEditMode ? 'Edit Item' : 'Add Item'}</h2>
             <label>
-              Name:
+              <span>Name:</span>
               <input
                 type="text"
                 value={newItem.name}
                 onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-              />
+              /><br></br>
             </label>
             <label>
-              Quantity:
+              <span>Quantity:</span>
               <input
                 type="number"
                 value={newItem.quantity}
                 onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
-              />
+              /><br></br>
             </label>
             <label>
-              Weight:
+              <span>Weight:</span>
               <input
                 type="number"
                 value={newItem.weight}
                 onChange={(e) => setNewItem({ ...newItem, weight: e.target.value })}
               />
             </label>
-            <div className="modal-buttons-container">
+            <div className="modal-button-container">
               <button className="modal-button" onClick={handleSubmit}>Submit</button>
               <button className="modal-button" onClick={() => setModalOpen(false)}>Cancel</button>
             </div>
