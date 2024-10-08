@@ -8,9 +8,9 @@ const DashboardInventoryPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const [rows, setRows] = useState([
-    {name: "Steak", weight: "10kgs", quantity: 1, category:"meat", status: "stocked"},
-    {name: "Chicken ", weight: "10kgs", quantity: 1, category:"meat", status: "limited"},
-    {name: "Pork ", weight: "10kgs", quantity: 1, category:"meat", status: "depleted"},
+    {name: "Steak", weight: "10", quantity: 1, category:"meat", status: "stocked"},
+    {name: "Chicken ", weight: "10", quantity: 1, category:"meat", status: "limited"},
+    {name: "Pork ", weight: "10", quantity: 1, category:"meat", status: "depleted"},
   ]);
 
   const [rowtoEdit, setRowToEdit] = useState(null);
