@@ -24,6 +24,7 @@ body{
   max-width: 80%;
   margin: 1rem auto;
   overflow-x: auto;
+  text-align: left;
 }
 
 
@@ -46,9 +47,7 @@ body{
   background-color: #eee;
 }
 
-.expand {
-  width: 100%;
-}
+
 
 .label {
   border-radius: 3px;
@@ -99,6 +98,21 @@ body{
   padding: 2rem;
   background-color: white;
   width: 25em;
+}
+
+.name-col {
+  width: 40%;  /* Name column takes 40% */
+}
+
+.weight-col,
+.quantity-col,
+.category-col,
+.status-col {
+  width: 15%;  /* These columns take 15% each */
+}
+
+.actions-col {
+  width: 10%;  /* Actions column takes 10% */
 }
 
 .btn { 

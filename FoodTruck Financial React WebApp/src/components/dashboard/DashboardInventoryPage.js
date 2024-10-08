@@ -8,9 +8,9 @@ const DashboardInventoryPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const [rows, setRows] = useState([
-    {name: "Steak", weight: "10kgs", status: "stocked"},
-    {name: "Chicken ", weight: "10kgs", status: "limited"},
-    {name: "Pork ", weight: "10kgs", status: "depleted"},
+    {name: "Steak", weight: "10kgs", quantity: 1, category:"meat", status: "stocked"},
+    {name: "Chicken ", weight: "10kgs", quantity: 1, category:"meat", status: "limited"},
+    {name: "Pork ", weight: "10kgs", quantity: 1, category:"meat", status: "depleted"},
   ]);
 
   const [rowtoEdit, setRowToEdit] = useState(null);
@@ -23,6 +23,8 @@ const DashboardInventoryPage = () => {
   const [formState, setFormState] = useState({
     name: "",
     weight: "",
+    quantity: "",
+    category: "misc",
     status: "stocked",
   });
 
@@ -66,6 +68,8 @@ const DashboardInventoryPage = () => {
     setFormState({
       name: "",
       weight: "",
+      quantity: "",
+      category: "misc",
       status: "stocked",
     });
   };
@@ -84,10 +88,20 @@ const DashboardInventoryPage = () => {
   return (
     <div className='table-container'>
       <table className='table'>
+      <colgroup>
+        <col className="name-col" /> 
+        <col className="weight-col" />
+        <col className="quantity-col" />
+        <col className="category-col" />
+        <col className="status-col" />
+        <col className="actions-col" />
+      </colgroup>
         <thead>
           <tr>
             <th>Name</th>
-            <th className='expand'>Weight</th>
+            <th>Weight</th>
+            <th>Qty</th>
+            <th>Category</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
@@ -96,20 +110,22 @@ const DashboardInventoryPage = () => {
           {
             rows.map((row,idx) => {
               const statusText = row.status.charAt(0).toUpperCase() + row.status.slice(1);
-
+              const categoryText = row.category.charAt(0).toUpperCase() + row.category.slice(1);
 
               return <tr key={idx}>
                 <td>{row.name}</td>
-                <td className='expand'>{row.weight}</td>
+                <td>{row.weight}</td>
+                <td>{row.quantity}</td>
+                <td>{categoryText}</td>
                 <td>
                   <span className={`label label-${row.status}`}>{statusText}</span>
-              </td>
-              <td>
-                <span className='actions'>
-                  <BsFillTrashFill className='delete-btn' onClick={() => handleDeleteRow(idx)}/>
-                  <BsFillPencilFill onClick={() => handleEditRow(idx)}/>
-                </span>
-              </td>
+                </td>
+                <td>
+                  <span className='actions'>
+                    <BsFillTrashFill className='delete-btn' onClick={() => handleDeleteRow(idx)}/>
+                    <BsFillPencilFill onClick={() => handleEditRow(idx)}/>
+                  </span>
+                </td>
               </tr>
             })
           }
@@ -121,6 +137,8 @@ const DashboardInventoryPage = () => {
         setFormState({
           name: "",
           weight: "",
+          quantity: "",
+          category: "misc",
           status: "stocked",
         });
         setModalOpen(true)
@@ -143,10 +161,32 @@ const DashboardInventoryPage = () => {
             </div>
             <div className='form-group'>
               <label htmlFor='weight'>Weight</label>
-              <textarea 
+              <input 
+              type='number'
               name='weight' 
               value={formState.weight} 
               onChange={handleChange}/>
+            </div>
+            <div className='form-group'>
+              <label htmlFor='quantity'>Quantity</label>
+              <input 
+              type='number'
+              name='quantity'
+              value={formState.quantity} 
+              onChange={handleChange}/>
+            </div>
+            <div className='form-group'>
+              <label htmlFor='category'>Category</label>
+              <select 
+              name='category' 
+              value={formState.category} 
+              onChange={handleChange}>
+                <option value='meat'>Meat</option>
+                <option value='fruit'>Fruit</option>
+                <option value='dairy'>Dairy</option>
+                <option value='vegetable'>Vegetable</option>
+                <option value='misc'>Misc</option>
+              </select>
             </div>
             <div className='form-group'>
               <label htmlFor='status'>Status</label>
