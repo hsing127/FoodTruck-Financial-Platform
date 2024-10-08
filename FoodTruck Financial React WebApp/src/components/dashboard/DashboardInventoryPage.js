@@ -1,128 +1,171 @@
 import React, { useState } from 'react';
+
+import {BsFillTrashFill, BsFillPencilFill} from "react-icons/bs"
+
 import '../../styles/DashInventory.css'; 
 
 const DashboardInventoryPage = () => {
-  const [foodItems, setFoodItems] = useState([
-    { name: 'Chicken', quantity: 5, weight: 200 },
-    { name: 'Steak', quantity: 8, weight: 120 },
-    { name: 'Rice', quantity: 12, weight: 150 },
-  ]);
-
-  //State for sorting direction
-  const [sortDirection, setSortDirection] = useState('asc');
-
-  //State to control if the modal is open or not
   const [modalOpen, setModalOpen] = useState(false);
 
-  //State to track the current item being edited or added
-  const [currentItem, setCurrentItem] = useState(null);
+  const [rows, setRows] = useState([
+    {name: "Steak", weight: "10kgs", status: "stocked"},
+    {name: "Chicken ", weight: "10kgs", status: "limited"},
+    {name: "Pork ", weight: "10kgs", status: "depleted"},
+  ]);
 
-  //State to know if we're editing or adding a new item
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [rowtoEdit, setRowToEdit] = useState(null);
 
-  //State for item form
-  const [newItem, setNewItem] = useState({ name: '', quantity: '', weight: '' });
+  const handleDeleteRow = (targetIndex) => {
+    setRows(rows.filter((_, idx) => idx !== targetIndex));
+  };
 
-  function sortItems(key) {
-    let sorted = [...foodItems];
-    sorted.sort((a, b) => (sortDirection === 'asc' ? a[key] > b[key] : a[key] < b[key]) ? 1 : -1);
-    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    setFoodItems(sorted);
-  }
 
-  //Open Edit/Add Panel
-  const openModal = (item = null) => {
-    setModalOpen(true);
-    setCurrentItem(item);
-    setIsEditMode(item !== null); //Check if item already exists
-    if (item) {
-      setNewItem(item);
+  const [formState, setFormState] = useState({
+    name: "",
+    weight: "",
+    status: "stocked",
+  });
+
+  const handleChange = (e) => {
+    setFormState({
+      ...formState,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const [errors, setErrors] = useState("");
+
+  const validateForm = () => {
+    if(formState.name && formState.weight && formState.status) {
+      setErrors("");
+      return true;
     } else {
-      setNewItem({ name: '', quantity: '', weight: '' });
+      let errorFields = [];
+      for(const [key, value] of Object.entries(formState)) {
+        if(!value) {
+          errorFields.push(key);
+        }
+      }
+      setErrors(errorFields.join(", "));
+      return false;
     }
   };
 
-  //Form submission
-  const handleSubmit = () => {
-    if (isEditMode) {
-      //Update existing item
-      setFoodItems(foodItems.map(i => (i.name === currentItem.name ? newItem : i)));
-    } else {
-      //Add a new item
-      setFoodItems([...foodItems, newItem]);
-    }
+  const handleEditRow = (idx) => {
+    setRowToEdit(idx);
+    setFormState(rows[idx]);
+    setModalOpen(true);
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if(!validateForm()) return;
+    onSubmit(formState);
     setModalOpen(false);
+
+    setFormState({
+      name: "",
+      weight: "",
+      status: "stocked",
+    });
+  };
+
+  const onSubmit = (newRow) => {
+    rowtoEdit === null ?
+    setRows([...rows, newRow]) :
+    setRows(rows.map((currRow, idx) => {
+      if(idx !== rowtoEdit) return currRow
+
+      return newRow;
+    })
+  );
   };
 
   return (
-    <div className="dashboard-container">
-      <h1 ClassName="title">Inventory</h1>
-
-      <table className="inventory-table">
+    <div className='table-container'>
+      <table className='table'>
         <thead>
           <tr>
-            <th onClick={() => sortItems('name')}>Name</th>
-            <th onClick={() => sortItems('quantity')}>Quantity</th>
-            <th onClick={() => sortItems('weight')}>Weight (g)</th>
+            <th>Name</th>
+            <th className='expand'>Weight</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {foodItems.map((item, index) => (
-            <tr key={index}>
-              <td>{item.name}</td>
-              <td>{item.quantity}</td>
-              <td>{item.weight}</td>
-              <td>
-              {!modalOpen && ( // Hide edit button if modal is open
-                  <button className="edit-button" onClick={() => openModal(item)}>Edit</button>
-                )}
+          {
+            rows.map((row,idx) => {
+              const statusText = row.status.charAt(0).toUpperCase() + row.status.slice(1);
+
+
+              return <tr key={idx}>
+                <td>{row.name}</td>
+                <td className='expand'>{row.weight}</td>
+                <td>
+                  <span className={`label label-${row.status}`}>{statusText}</span>
               </td>
-            </tr>
-          ))}
+              <td>
+                <span className='actions'>
+                  <BsFillTrashFill className='delete-btn' onClick={() => handleDeleteRow(idx)}/>
+                  <BsFillPencilFill onClick={() => handleEditRow(idx)}/>
+                </span>
+              </td>
+              </tr>
+            })
+          }
         </tbody>
       </table>
 
-      {!modalOpen && (
-        <div className="button-container">
-          <button type="button" className="add-button" onClick={() => openModal(null)}>Add</button>
-        </div>
-      )}
+      <button className='btn add-btn' onClick={() =>{
+        setRowToEdit(null);
+        setFormState({
+          name: "",
+          weight: "",
+          status: "stocked",
+        });
+        setModalOpen(true)
+        }}>
+          Add
+          </button>
 
-      {modalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2 className="modal-title">{isEditMode ? 'Edit Item' : 'Add Item'}</h2>
-            <label>
-              <span>Name:</span>
-              <input
-                type="text"
-                value={newItem.name}
-                onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-              /><br></br>
-            </label>
-            <label>
-              <span>Quantity:</span>
-              <input
-                type="number"
-                value={newItem.quantity}
-                onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
-              /><br></br>
-            </label>
-            <label>
-              <span>Weight:</span>
-              <input
-                type="number"
-                value={newItem.weight}
-                onChange={(e) => setNewItem({ ...newItem, weight: e.target.value })}
-              />
-            </label>
-            <div className="modal-button-container">
-              <button className="modal-button" onClick={handleSubmit}>Submit</button>
-              <button className="modal-button" onClick={() => setModalOpen(false)}>Cancel</button>
+      {modalOpen && <div className='modal-container' onClick={(e) => {
+        if(e.target.className === 'modal-container') setModalOpen(false)
+        }}
+        >
+        <div className='modal'>
+        <form>
+            <div className='form-group'>
+              <label htmlFor='name'>Name</label>
+              <input 
+              name='name' 
+              value={formState.name} 
+              onChange={handleChange}/>
             </div>
-          </div>
+            <div className='form-group'>
+              <label htmlFor='weight'>Weight</label>
+              <textarea 
+              name='weight' 
+              value={formState.weight} 
+              onChange={handleChange}/>
+            </div>
+            <div className='form-group'>
+              <label htmlFor='status'>Status</label>
+              <select 
+              name='status' 
+              value={formState.status} 
+              onChange={handleChange}>
+                <option value='stocked'>Stocked</option>
+                <option value='limited'>Limited</option>
+                <option value='depleted'>Depleted</option>
+              </select>
+            </div>
+            {errors && <div className='error'>{`Please include: ${errors}`}</div>}
+            <button type='submit' className='btn' onClick={handleSubmit}>
+              Submit
+              </button>
+        </form>
         </div>
-      )}
+      </div>}
     </div>
   );
 };
