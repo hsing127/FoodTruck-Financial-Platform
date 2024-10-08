@@ -21,25 +21,27 @@ const ForgotPasswordCodePage = () => {
     };
 
     return (
-        <div className="forgotPassWord-container">
-            <div className="login-box">
-                <h2 className="forgot">Account Verification</h2>
-                <div className="code">
-                    <p className="code">
-                        A verification code has been sent to your Email. Please provide the verification code to verify.
-                    </p>
-                </div>
-                <form>
-                    <div className="input-field2">
-                        <input type="text" required value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)}/>
-                        <label htmlFor="email">Verification Code</label>
+        <div className="LoginBody">
+            <div className="forgotPassWord-container">
+                <div className="login-box">
+                    <h2 className="forgot">Account Verification</h2>
+                    <div className="code">
+                        <p className="code">
+                            A verification code has been sent to your Email. Please provide the verification code to verify.
+                        </p>
                     </div>
-                    <button type="submit" className="login-btn" onClick={handleSubmit}>Submit</button>
-                    <p className="signup-link">
-                        Didn't receive a code?{' '}
-                        <a onClick={resendCode} style={{ cursor: 'pointer' }}>Resend</a>
-                    </p>
-                </form>
+                    <form>
+                        <div className="input-field2">
+                            <input type="text" required value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} />
+                            <label htmlFor="email">Verification Code</label>
+                        </div>
+                        <button type="submit" className="login-btn" onClick={handleSubmit}>Submit</button>
+                        <p className="signup-link">
+                            Didn't receive a code?{' '}
+                            <a onClick={resendCode} style={{ cursor: 'pointer' }}>Resend</a>
+                        </p>
+                    </form>
+                </div>
             </div>
         </div>
     );//<p className="signup-link"> section is written by Chat GPT
