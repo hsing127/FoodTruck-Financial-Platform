@@ -1,18 +1,22 @@
-"use client"; // Add this directive to make the component a Client Component
-
 import React, { useState } from 'react';
-import Link from 'next/link'; // Import Next.js Link component
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 import '../../styles/LoginStyles.css';
 
 const SignupPage: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [password2, setPassword2] = useState<string>('');
+    const router = useRouter();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Add logic for form submission, such as form validation or sending data to the backend.
-        console.log({ email, password, password2 });
+
+        if (email.trim() && password.trim() && password2.trim() && password === password2) {
+            router.push('/dashboard/finance');
+        } else {
+            alert('Please fill in both email and password fields. Make sure Passwords Match');
+        }
     };
 
     return (
@@ -26,38 +30,39 @@ const SignupPage: React.FC = () => {
                                 type="text"
                                 id="Email"
                                 name="email"
+                                required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                required
                             />
                             <label htmlFor="email">Email</label>
                         </div>
+
                         <div className="input-field2">
                             <input
                                 type="password"
                                 id="password"
                                 name="password"
+                                required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                required
                             />
                             <label htmlFor="password">Password</label>
                         </div>
+
                         <div className="input-field2">
                             <input
                                 type="password"
                                 id="password2"
                                 name="password2"
+                                required
                                 value={password2}
                                 onChange={(e) => setPassword2(e.target.value)}
-                                required
                             />
                             <label htmlFor="password2">Re-Enter Your Password</label>
                         </div>
-
                         <button type="submit" className="signup-btn">Sign Up</button>
                         <p className="signup-link">
-                            Already have an account? <Link href="/login">Login</Link> {/* Use Link here */}
+                            Already have an account? <Link href="/login">Login</Link>
                         </p>
                     </form>
                 </div>
