@@ -88,6 +88,32 @@ const DashboardInventoryPage = () => {
   return (
     <div className='table-container'>
 
+      <div className='cards-container'>
+        <div className='card'>
+          <div className='card-content'>
+            <p>Summary</p>
+            <h2>Food</h2>
+            <p>Sample</p>
+          </div>
+        </div>
+        <div className='card'>
+          <div className='card-content'>
+            <p>Status</p>
+            <h2>Good</h2>
+            <p></p>
+          </div>
+        </div>
+        <div className='card'>
+          <div className='card-content'>
+            <p>Empty Products</p>
+            <h2>None</h2>
+            <p>Chicken low</p>
+          </div>
+        </div>
+
+      </div>
+
+
       <div className='products-header'>
         <p>Product list</p>
         <div className='search-filter'>
