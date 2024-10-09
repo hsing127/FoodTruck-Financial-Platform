@@ -19,6 +19,7 @@
   width: 50em;
   max-width: 80%;
   margin: 1rem auto;
+  margin-top: 0rem;
   overflow-x: auto;
   text-align: left;
 }
@@ -50,11 +51,11 @@
 }
 
 .label-limited {
-  background-color: #42a942;
+  background-color: darkorange;
 }
 
 .label-stocked {
-  background-color: #777;
+  background-color: #42a942;
 }
 
 .label-depleted {
@@ -149,4 +150,65 @@
 
 .form-group label {
   margin-bottom: 0.2rem;
+}
+
+.products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 50em;
+  max-width: 80%;
+  margin: 0 auto;
+  padding: 0.5rem;
+  border-radius: 8px;
+  
+}
+
+.products-header p {
+  color:white;
+  font-size: 2rem;
+}
+
+.search-filter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  padding: 0.5rem 0.5rem 0.5rem 2rem;
+  border: none;
+  border-radius: 8px;
+  margin-right: 0.5rem;
+  background-color: #2b3a4b;
+  color: white;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.5rem;
+  color: #8a97af;
+  font-size: 1rem;
+}
+
+.filter-icon-btn {
+  border: none;
+  background-color: #2b3a4b;
+  color: #8a97af;
+  padding: 0.3rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  
+}
+
+.filter-icon {
+  margin-right: 0.5rem;
+  margin-bottom: -0.1rem;
 }

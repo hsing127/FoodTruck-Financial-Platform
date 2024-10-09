@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import {BsFillTrashFill, BsFillPencilFill} from "react-icons/bs"
+import {BsFillTrashFill, BsFillPencilFill, BsFilterCircle, BsSearch } from "react-icons/bs"
 
 import '../../styles/DashInventory.css'; 
 
@@ -87,6 +87,20 @@ const DashboardInventoryPage = () => {
 
   return (
     <div className='table-container'>
+
+      <div className='products-header'>
+        <p>Product list</p>
+        <div className='search-filter'>
+          <div className='search-container'>
+            <BsSearch className='search-icon' />
+            <input type='text' className='search-input' placeholder='Search...' />
+          </div>
+          <button className='filter-icon-btn'>
+            <BsFilterCircle className='filter-icon'/>Filter
+          </button>
+        </div>
+      </div>
+
       <table className='table'>
       <colgroup>
         <col className="name-col" /> 
