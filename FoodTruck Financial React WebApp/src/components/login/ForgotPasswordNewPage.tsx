@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/LoginStyles.css';
+import { useRouter } from 'next/router';
+import '../../styles/LoginStyles.css';
 
 const ForgotPasswordNewPage: React.FC = () => {
     const [password, setPassword] = useState<string>('');
     const [password2, setPassword2] = useState<string>('');
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (password.trim() && password2.trim() && password === password2) {
-            navigate('/dashboard/finance');
+            // Navigate to the dashboard page
+            router.push('/dashboard/finance');
         } else {
             alert('Please fill in both password fields and make sure they are the same.');
         }

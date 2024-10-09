@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import '../styles/LoginStyles.css';
+import '../../styles/LoginStyles.css';
 
 const ForgotPasswordPage: React.FC = () => {
     const [email, setEmail] = useState<string>('');
