@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import {BsFillTrashFill, BsFillPencilFill, BsFilterCircle, BsSearch } from "react-icons/bs"
+import {BsFillTrashFill, BsFillPencilFill, BsFilterCircle, BsSearch, BsPlusLg} from "react-icons/bs"
 
 import '../../styles/DashInventory.css'; 
 
@@ -110,9 +110,7 @@ const DashboardInventoryPage = () => {
             <p>Chicken low</p>
           </div>
         </div>
-
       </div>
-
 
       <div className='products-header'>
         <p>Product list</p>
@@ -172,19 +170,23 @@ const DashboardInventoryPage = () => {
         </tbody>
       </table>
 
-      <button className='btn add-btn' onClick={() =>{
-        setRowToEdit(null);
-        setFormState({
-          name: "",
-          weight: "",
-          quantity: "",
-          category: "misc",
-          status: "stocked",
-        });
-        setModalOpen(true)
-        }}>
-          Add
-          </button>
+      <div class='add-btn-container'>
+        <button className='btn add-btn' onClick={() =>{
+          setRowToEdit(null);
+          setFormState({
+            name: "",
+            weight: "",
+            quantity: "",
+            category: "misc",
+            status: "stocked",
+          });
+          setModalOpen(true)
+          }}>
+            <BsPlusLg className='add-icon' />
+            Add Product
+        </button>
+      </div>
+      
 
       {modalOpen && <div className='modal-container' onClick={(e) => {
         if(e.target.className === 'modal-container') setModalOpen(false)
