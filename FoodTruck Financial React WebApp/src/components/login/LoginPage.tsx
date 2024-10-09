@@ -54,7 +54,7 @@ const LoginPage: React.FC = () => {
                                 <label htmlFor="remember-me">Remember Me</label>
                             </div>
                             <div className="forgot-password">
-                                <Link href="/forgot-password">Forgot Password?</Link>
+                                <Link href="/forgotpassword">Forgot Password?</Link>
                             </div>
                         </div>
 
