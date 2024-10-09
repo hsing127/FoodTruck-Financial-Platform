@@ -1,0 +1,151 @@
+/* Links styling */
+  a {
+    color: #44aa8b;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: #f39c12;
+    text-decoration: underline;
+  }
+  
+  /* Mock Bar Chart Styles */
+  .bar {
+    width: 30%;
+    background-color: #44aa8b;
+    text-align: center;
+    color: white;
+    padding: 5px 0;
+    transition: height 0.2s ease-in-out;
+  }
+  
+  .bar:first-child {
+    height: 50%;
+  }
+  
+  .bar:nth-child(2) {
+    height: 25%;
+  }
+  
+  .bar:nth-child(3) {
+    height: 37.5%;
+  }
+  
+  .bar-chart {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 100%;
+    background-color: #f1f1f1; /* Mock chart background */
+  }
+  
+  /* Button styling */
+  button {
+    background-color: #f39c12;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #e67e22;
+  }
+  
+  /* Chart container styles */
+  .chart-container {
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    transition: transform 0.2s ease-in-out;
+    transform: scale(0.9);
+  }
+  
+  .chart-container:hover {
+    transform: scale(1);
+    cursor: grab;
+  }
+  
+  .chart-container:active {
+    cursor: grabbing;
+  }
+  
+  /* Mock Chart Title Styling */
+  .chart-container h2 {
+    margin-bottom: 10px;
+    font-size: 1.4em;
+    color: #254441;
+  }
+  
+  .chart-container[data-position="1"],
+  .chart-container[data-position="2"] {
+    grid-column: 1 / 2;
+    height: 90%;
+    aspect-ratio: 2 / 1;
+  }
+  
+  .chart-container[data-position="3"],
+  .chart-container[data-position="4"] {
+    grid-column: 2 / 3;
+    height: 90%;
+    aspect-ratio: 1 / 1;
+  }
+  
+  /* Grid layout for charts - defines 2 columns, 2 rows */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2:1 column ratio for layout */
+    grid-template-rows: repeat(2, 1fr); 
+    gap: 20px; /* Space between the grid items */
+    padding: 20px;
+    height: calc(95vh - 60px); /* Dynamic height adjustment */
+  }
+  
+  .dashboard-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr; /* Fixed-width sidebar and flexible main content */
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  /* Mock Line Chart Styles */
+  .line-chart {
+    width: 100%; 
+    height: 70%; 
+    background-color: #f1f1f1; 
+  }
+  
+  .main-content {
+    padding: 20px;
+  }
+  
+  /* Mock Pie Chart Styles */
+  .pie-chart {
+    width: 30%; 
+    height: 60%; 
+    border-radius: 50%;
+    background: conic-gradient(
+      #e74c3c 0% 40%,
+      #44aa8b 40% 65%,
+      #f1c40f 65% 85%,
+      #254441 85% 100%
+    ); 
+    margin: 0 auto; /* Center the chart */
+  }
+  
+  /* Placeholder for future chart - mock */
+  .placeholder-chart {
+    width: 90%;
+    height: 112px;
+    background-color: #bdc3c7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #34495e; 
+  }
+  
