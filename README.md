@@ -28,3 +28,9 @@ Food truck operators often struggle with managing their finances due to the fast
 - **User Manual**: Comprehensive user manual and administration guide.
 - **Source Code**: Properly documented source code.
 - **Final Presentation & Report**: A final presentation and project report.
+
+
+## Website Design
+
+Credit to Frontend Tribe
+https://www.youtube.com/@frontend-tribe
