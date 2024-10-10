@@ -5,6 +5,5 @@ export const Banner = () => {
         <a href="#" className="underline underline-offset-4 font-medium">Explore the demo</a>
       </div>
     </div>
-
   );
 };
