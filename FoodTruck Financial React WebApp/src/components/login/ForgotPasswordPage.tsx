@@ -10,7 +10,7 @@ const ForgotPasswordPage: React.FC = () => {
     const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (email.trim()) {
-            router.push('/forgot-password/code');
+            router.push('/forgotpasswordcode');
         } else {
             alert('Please enter the email before submitting.');
         }

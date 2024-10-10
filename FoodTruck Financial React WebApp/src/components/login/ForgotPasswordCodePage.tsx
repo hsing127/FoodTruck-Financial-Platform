@@ -13,7 +13,7 @@ const ForgotPasswordCodePage: React.FC = () => {
         // Check if the input field has a value
         if (verificationCode.trim()) {
             // Redirect to the new page if the verification code is not empty
-            window.location.href = '/forgot-password/new';
+            window.location.href = '/forgotpasswordnew';
         } else {
             // Show alert if the input is empty
             alert('Please enter the verification code before submitting.');
