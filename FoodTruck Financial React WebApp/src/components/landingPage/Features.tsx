@@ -24,13 +24,13 @@ export const Features = () => {
       <div className="container">
         <h2 className="text-center font-bold text-5xl sm:text-6xl tracking-tighter">Everything you need</h2>
         <div className="max-w-xl mx-auto">
-          <p className="text-center mt-5 text-xl text-white/70">Our platform equips you with the tools to streamline daily 
-          operations, optimize expenses, and drive profitability in a fast-paced industry.
+          <p className="text-center mt-5 text-xl text-white/70">Our platform equips you with the tools to streamline daily
+            operations, optimize expenses, and drive profitability in a fast-paced industry.
           </p>
         </div>
         <div className="mt-16 flex flex-col sm:flex-row gap-4 justify-center">
           {features.map(({ title, description }) => (
-            <div key={title} className="border border-white/30 px-5 py-10 text-center rounded-xl sm:flex-1 max-w-sm">
+            <div key={title} className="border border-white/30 px-5 py-10 text-center rounded-xl sm:flex-1 max-w-sm mx-auto">
               <div className="inline-flex h-14 w-14 bg-white text-black justify-center items-center rounded-lg">
                 <EcosystemIcon />
               </div>

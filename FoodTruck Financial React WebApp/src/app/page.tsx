@@ -6,7 +6,7 @@ import { LogoTicker } from '@/components/landingPage/LogoTicker';
 import { Features } from '@/components/landingPage/Features';
 import { ProductShowcase } from '@/components/landingPage/ProductShowcase';
 import { FAQs } from '@/components/landingPage/FAQs';
- import { ContactUs } from '@/components/landingPage/ContactUs';
+import { ContactUs } from '@/components/landingPage/ContactUs';
 
 const Home: React.FC = () => {
   return (
@@ -24,4 +24,3 @@ const Home: React.FC = () => {
 };
 
 export default Home;
-

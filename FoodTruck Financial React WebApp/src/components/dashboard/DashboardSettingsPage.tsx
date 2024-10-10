@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/DashSettings.css'; 
+import '../../styles/DashSettings.css';
 
 interface InfoItemProps {
   title: string;
@@ -15,17 +15,17 @@ const DashboardSettingsPage: React.FC = () => {
       <div className="info-section">
         <InfoItem title="Name" content="Joe" buttonLabel="Edit" />
         <InfoItem title="Email" content="joe@yahoo.com" buttonLabel="Edit" />
-        <InfoItem 
-          title="Primary mobile number" 
-          content="123-456-7890" 
-          description="Quickly sign-in, easily recover passwords, and receive security notifications with this mobile number." 
-          buttonLabel="Edit" 
+        <InfoItem
+          title="Primary mobile number"
+          content="123-456-7890"
+          description="Quickly sign-in, easily recover passwords, and receive security notifications with this mobile number."
+          buttonLabel="Edit"
         />
         <InfoItem title="Password" content="********" buttonLabel="Edit" />
-        <InfoItem 
-          title="2-step verification" 
-          content="Add a layer of security. Require a code in addition to your password." 
-          buttonLabel="Turn on" 
+        <InfoItem
+          title="2-step verification"
+          content="Add a layer of security. Require a code in addition to your password."
+          buttonLabel="Turn on"
         />
       </div>
     </div>

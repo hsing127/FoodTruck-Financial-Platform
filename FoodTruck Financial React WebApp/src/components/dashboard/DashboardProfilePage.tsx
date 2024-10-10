@@ -10,7 +10,7 @@ const DashboardProfilePage: React.FC = () => {
             {/* Left Section: Profile Image and Info */}
             <div className="profile-left">
                 {/* Using Next.js Image component for optimized image loading */}
-                <Image src={profilePic} className="profile-left" alt="Profile"/>
+                <Image src={profilePic} className="profile-left" alt="Profile" />
                 <h2>John Doe</h2>
                 <p>Food Truck Owner</p>
                 <p>San Francisco, CA</p>
