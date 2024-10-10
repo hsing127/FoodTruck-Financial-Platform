@@ -1,0 +1,104 @@
+/* Prevent white lines and remove scrolling */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Prevent scrolling */
+  }
+  
+  /* Main Layout */
+  .dashboard-container {
+    display: flex;
+    height: 100vh;
+    background: linear-gradient(to bottom, #1b0132, #4b2178); /* Matching gradient from dark to purple */
+    color: white;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 20px; /* Reduced padding to bring content up */
+    margin-left: 250px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px; /* Reduced margin below */
+    color: #f0f0f0; /* Lightened text color */
+  }
+  
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 20px; /* Reduced space below */
+    color: #e0e0e0; /* Softer light gray */
+  }
+  
+  /* Dashboard Sections */
+  .dashboard-section {
+    background-color: #292c39; /* Darker section background for contrast */
+    border-radius: 12px;
+    padding: 20px; /* Reduced padding to fit more content vertically */
+    margin-bottom: 20px; /* Reduced bottom margin */
+    color: #ececec;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); /* Slightly sharper shadow for depth */
+  }
+  
+  /* Financial Cards */
+  .financial-cards {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .card {
+    background-color: #383b52; /* Slightly lighter blue-gray to make cards pop */
+    padding: 15px;
+    border-radius: 8px;
+    color: white;
+    flex: 1;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Softer shadow */
+  }
+  
+  .card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    color: #f2f2f2; /* Lightened card header */
+  }
+  
+  .card p {
+    font-size: 1.1rem;
+    color: #e0e0e0; /* Softer text for card content */
+  }
+  
+  /* Menu Management Section */
+  .menu-cards {
+    display: flex;
+    gap: 15px;
+  }
+  
+  /* Button Styling */
+  .cta-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #e67e22; /* Bright accent color for buttons */
+    color: white;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cta-button:hover {
+    background-color: #d35400; /* Darker orange on hover */
+  }
+  
+  /* Responsive Sectioning */
+  @media (max-width: 768px) {
+    .financial-cards, .menu-cards {
+      flex-direction: column;
+    }
+  }
+  
