@@ -28,9 +28,9 @@ export const Features = () => {
             operations, optimize expenses, and drive profitability in a fast-paced industry.
           </p>
         </div>
-        <div className="mt-16 flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="mt-16 flex flex-col sm:flex-row gap-4 justify-center max-w-6xl mx-auto">
           {features.map(({ title, description }) => (
-            <div key={title} className="border border-white/30 px-5 py-10 text-center rounded-xl sm:flex-1 max-w-sm mx-auto">
+            <div key={title} className="border border-white/30 px-5 py-10 text-center rounded-xl sm:flex-1 max-w-sm mx-auto ">
               <div className="inline-flex h-14 w-14 bg-white text-black justify-center items-center rounded-lg">
                 <EcosystemIcon />
               </div>
