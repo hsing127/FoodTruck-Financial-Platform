@@ -1,10 +1,12 @@
-// pages/index.tsx
 import React from 'react';
 import { Banner } from '@/components/landingPage/Banner';
 import { Navbar } from '@/components/landingPage/Navbar';
 import { Hero } from '@/components/landingPage/Hero';
 import { LogoTicker } from '@/components/landingPage/LogoTicker';
 import { Features } from '@/components/landingPage/Features';
+import { ProductShowcase } from '@/components/landingPage/ProductShowcase';
+import { FAQs } from '@/components/landingPage/FAQs';
+ import { ContactUs } from '@/components/landingPage/ContactUs';
 
 const Home: React.FC = () => {
   return (
@@ -14,6 +16,9 @@ const Home: React.FC = () => {
       <Hero />
       <LogoTicker />
       <Features />
+      <ProductShowcase />
+      <FAQs />
+      <ContactUs />
     </>
   );
 };
