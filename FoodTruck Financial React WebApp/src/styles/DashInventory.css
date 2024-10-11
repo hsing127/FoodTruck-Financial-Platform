@@ -1,13 +1,18 @@
+body {
+  margin: 0;
+}
+
 .table-container {
+  
   display: flex;
   flex-direction: column;
   align-items:  center;
   justify-content:  center;
   height: 100vh;
   background-color: #161d26;
-  width:100%;
+  width: 100%;
+  
 }
-
 .table {
   display: block;
   overflow: hidden;
@@ -19,7 +24,7 @@
   width: 55em;
   max-width: 80%;
   margin: 1rem auto;
-  margin-top: 0rem;
+  margin-top: -2rem;
   overflow-x: auto;
   text-align: left;
 }
@@ -118,10 +123,10 @@
 }
 
 .add-icon {
-  margin-right: 0.5rem;
+  margin-right: 0.4rem;
   color: white;
-  font-size: 1.3rem;
-  margin-bottom: -0.2rem;
+  font-size: 1.2rem;
+  margin-bottom: -0.3rem;
 }
 
 .add-btn {
@@ -182,7 +187,7 @@
   margin-top: 3rem;
   padding: 0.5rem;
   border-radius: 8px;
-  
+  box-sizing: border-box;
 }
 
 .products-header p {
@@ -223,10 +228,9 @@
   border: none;
   background-color: #2b3a4b;
   color: #8a97af;
-  padding: 0.3rem 1rem;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
-  
 }
 
 .filter-icon {
@@ -238,7 +242,6 @@
   display: flex;
   justify-content: center;
   width: 80%;
-  width: 60rem;
   margin: 1rem auto;
   gap: 5rem;
 }
