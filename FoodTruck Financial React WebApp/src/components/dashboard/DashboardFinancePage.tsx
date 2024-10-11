@@ -125,9 +125,12 @@ const DashboardFinancePage: React.FC = () => {
                     <li className={pathname === "/dashboard/inventory" ? "active" : ""} style={{ position: 'relative' }}>
                         <Link href="/dashboard/inventory">Inventory</Link>
                     </li>
+                    <li className={pathname === "/dashboard/menu" ? "active" : ""} style={{ position: 'relative' }}>
+                        <Link href="/dashboard/menu">Menu</Link>
+                    </li>
                     <li style={{ position: 'relative' }}>
                         <div onClick={toggleOptions} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                            AddData
+                            Add Data
                             <span className={`arrow ${showOptions ? 'open' : ''}`}></span>
                         </div>
                         <ul className={`dropdown ${showOptions ? 'show' : ''}`}> {/* Add show class */}
