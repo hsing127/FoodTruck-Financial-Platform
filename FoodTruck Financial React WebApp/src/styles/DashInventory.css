@@ -3,7 +3,6 @@ body {
 }
 
 .table-container {
-  
   display: flex;
   flex-direction: column;
   align-items:  center;
@@ -13,6 +12,7 @@ body {
   width: 100%;
   
 }
+
 .table {
   display: block;
   overflow: hidden;

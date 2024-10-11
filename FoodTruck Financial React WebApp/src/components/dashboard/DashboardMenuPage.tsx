@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../../styles/DashMenu.css'; 
 import {
   BsFillTrashFill,
   BsFillPencilFill,
@@ -8,22 +9,26 @@ import {
 } from 'react-icons/bs';
 
 interface RowData {
+  image: string;
   name: string;
   price: number;
+  category: string;
 }
 
 const DashboardMenuPage: React.FC = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [rows, setRows] = useState<RowData[]>([
-    { name: 'Steak', price: 10 },
-    { name: 'Chicken', price: 8 },
-    { name: 'Pork', price: 9 },
+    { image: 'burger.jpg', name: 'Burger', price: 10, category: 'Meat' },
+    { image: 'fries.jpg', name: 'Fries', price: 8, category: 'Meat' },
+    { image: 'chips.jpg', name: 'Chips', price: 9, category: 'Meat' },
   ]);
-
+  
   const [rowToEdit, setRowToEdit] = useState<number | null>(null);
   const [formState, setFormState] = useState<RowData>({
+    image: '',
     name: '',
     price: 0,
+    category: 'misc',
   });
   const [errors, setErrors] = useState<string>('');
 
@@ -31,7 +36,7 @@ const DashboardMenuPage: React.FC = () => {
     setRows(rows.filter((_, idx) => idx !== targetIndex));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
     setFormState({
@@ -47,7 +52,7 @@ const DashboardMenuPage: React.FC = () => {
     } else {
       let errorFields = [];
       for (const [key, value] of Object.entries(formState)) {
-        if (!value && key !== 'price') {
+        if (!value) {
           errorFields.push(key);
         }
       }
@@ -69,8 +74,10 @@ const DashboardMenuPage: React.FC = () => {
     setModalOpen(false);
 
     setFormState({
+      image: '',
       name: '',
       price: 0,
+      category: 'misc',
     });
   };
 
@@ -88,106 +95,129 @@ const DashboardMenuPage: React.FC = () => {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center h-screen bg-gray-800'>
-      <div className='flex justify-between items-center w-full max-w-4xl my-8 p-4 bg-gray-700 rounded-lg'>
-        <p className='text-white text-2xl'>Menu</p>
-        <div className='flex items-center space-x-4'>
-          <div className='relative'>
-            <BsSearch className='absolute left-2 text-gray-400' />
-            <input
-              type='text'
-              className='pl-8 pr-4 py-2 bg-gray-600 text-white rounded-lg'
-              placeholder='Search...'
-            />
+    <div className='table-container'>
+     <div className='products-header'>
+        <p>Menu</p>
+        <div className='search-filter'>
+          <div className='search-container'>
+            <BsSearch className='search-icon' />
+            <input type='text' className='search-input' placeholder='Search...' />
           </div>
-          <button className='flex items-center px-4 py-2 bg-gray-600 rounded-lg text-gray-400'>
-            <BsFilterCircle className='mr-2' /> Filter
+          <button className='filter-icon-btn'>
+            <BsFilterCircle className='filter-icon' />Filter
           </button>
         </div>
       </div>
 
-      <table className='min-w-full overflow-hidden table-auto border-collapse rounded-lg shadow-lg'>
-        <thead className='bg-gray-900 text-gray-400'>
+      <table className='table'>
+        <colgroup>
+          <col className="image-col" />  {/* New image column */}
+          <col className="name-col" />
+          <col className="price-col" />
+          <col className="category-col" />
+          <col className="actions-col" />
+        </colgroup>
+        <thead>
           <tr>
-            <th className='px-4 py-2'>Name</th>
-            <th className='px-4 py-2'>Price</th>
-            <th className='px-4 py-2'>Actions</th>
+            <th>Image</th> {/* Image column header */}
+            <th>Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Actions</th>
           </tr>
         </thead>
-        <tbody className='bg-gray-800 text-white'>
-          {rows.map((row, idx) => (
-            <tr key={idx}>
-              <td className='px-4 py-2'>{row.name}</td>
-              <td className='px-4 py-2'>{row.price}</td>
-              <td className='px-4 py-2'>
-                <span className='flex justify-around'>
-                  <BsFillTrashFill className='text-red-500 cursor-pointer' onClick={() => handleDeleteRow(idx)} />
-                  <BsFillPencilFill className='text-blue-500 cursor-pointer' onClick={() => handleEditRow(idx)} />
-                </span>
-              </td>
-            </tr>
-          ))}
+        <tbody>
+          {rows.map((row, idx) => {
+            const categoryText = row.category.charAt(0).toUpperCase() + row.category.slice(1);
+
+            return (
+              <tr key={idx}>
+                <td><img src={row.image} alt={row.name} className='menu-image' /></td>  {/* Image cell */}
+                <td>{row.name}</td>
+                <td>{row.price}</td>
+                <td>{categoryText}</td>
+                <td>
+                  <span className='actions'>
+                    <BsFillTrashFill className='delete-btn' onClick={() => handleDeleteRow(idx)} />
+                    <BsFillPencilFill onClick={() => handleEditRow(idx)} />
+                  </span>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
-      <div className='flex justify-end w-full max-w-4xl mt-4'>
-        <button
-          className='flex items-center px-4 py-2 bg-orange-500 rounded-lg text-white'
-          onClick={() => {
-            setRowToEdit(null);
-            setFormState({
-              name: '',
-              price: 0,
-            });
-            setModalOpen(true);
-          }}
-        >
-          <BsPlusLg className='mr-2' />
-          Add Product
+      <div className='add-btn-container'>
+        <button className='btn add-btn' onClick={() => {
+          setRowToEdit(null);
+          setFormState({
+            image: '',
+            name: '',
+            price: 0,
+            category: 'misc',
+          });
+          setModalOpen(true);
+        }}>
+          <BsPlusLg className='add-icon' />
+          Add Item
         </button>
       </div>
 
       {modalOpen && (
-        <div
-          className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'
-          onClick={(e) => {
-            if ((e.target as HTMLElement).className === 'modal-container') setModalOpen(false);
-          }}
-        >
-          <div className='bg-white rounded-lg p-8 w-96'>
+        <div className='modal-container' onClick={(e) => {
+          if ((e.target as HTMLElement).className === 'modal-container') setModalOpen(false);
+        }}>
+          <div className='modal'>
             <form>
-              <div className='mb-4'>
-                <label className='block mb-1' htmlFor='name'>Name</label>
+              <div className='form-group'>
+                <label htmlFor='image'>Image URL</label>  {/* New image input */}
+                <input
+                  name='image'
+                  value={formState.image}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className='form-group'>
+                <label htmlFor='name'>Name</label>
                 <input
                   name='name'
                   value={formState.name}
                   onChange={handleChange}
-                  className='border rounded-md p-2 w-full'
                 />
               </div>
-              <div className='mb-4'>
-                <label className='block mb-1' htmlFor='price'>Price</label>
+              <div className='form-group'>
+                <label htmlFor='price'>Price</label>
                 <input
                   type='number'
                   name='price'
                   value={formState.price}
                   onChange={handleChange}
-                  className='border rounded-md p-2 w-full'
                 />
               </div>
-              {errors && <p className='text-red-500'>{errors}</p>}
-              <div className='flex justify-end'>
-                <button
-                  onClick={handleSubmit}
-                  className='bg-blue-500 text-white px-4 py-2 rounded'
+              <div className='form-group'>
+                <label htmlFor='category'>Category</label>
+                <select
+                  name='category'
+                  value={formState.category}
+                  onChange={handleChange}
                 >
-                  {rowToEdit === null ? 'Add' : 'Update'}
-                </button>
+                  <option value='meat'>Meat</option>
+                  <option value='fruit'>Fruit</option>
+                  <option value='dairy'>Dairy</option>
+                  <option value='vegetable'>Vegetable</option>
+                  <option value='misc'>Misc</option>
+                </select>
               </div>
+              {errors && <div className='error'>{`Please include: ${errors}`}</div>}
+              <button type='submit' className='btn' onClick={handleSubmit}>
+                Submit
+              </button>
             </form>
           </div>
         </div>
       )}
+
     </div>
   );
 };
