@@ -15,7 +15,7 @@ export const ProductShowcase = () => {
   const rotateY = useTransform(scrollYProgress, [0, 1], [.05, 1]);
 
   return (
-    <div className="bg-black text-white bg-gradient-to-b from-black to-[#5D2CA8] sm:py-24 py-[72px]">
+    <div className="bg-black overflow-hidden text-white bg-gradient-to-b from-black to-[#5D2CA8] sm:py-24 py-[72px]">
       <div className="container relative">
         <h2 className="text-center text-5xl sm:text-6xl font-bold tracking-tighter">Intuitive Interface</h2>
         <div className="max-w-xl mx-auto">
