@@ -30,7 +30,7 @@ export const ContactUs = () => {
         <form className="mt-10 flex flex-col gap-2.5 max-w-sm mx-auto sm:flex-row">
           <input className="h-12 bg-white/20 rounded-lg px-5 font-medium placeholder:text-[#9CA3AF] sm:flex-1"
             type="email" placeholder="your@email.com" />
-          <button className="bg-white text-black h-12 rounded-lg max-w-sm mx-auto sm:flex-row px-5">Get Access</button>
+          <button className="bg-white text-black h-12 rounded-lg max-w-sm mx-auto sm:flex-row px-5">Contact Us</button>
         </form>
       </div>
     </div>
