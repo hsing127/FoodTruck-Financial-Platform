@@ -7,6 +7,7 @@ import { Features } from '@/components/landingPage/Features';
 import { ProductShowcase } from '@/components/landingPage/ProductShowcase';
 import { FAQs } from '@/components/landingPage/FAQs';
 import { ContactUs } from '@/components/landingPage/ContactUs';
+import { Footer } from '@/components/landingPage/Footer';
 
 const Home: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const Home: React.FC = () => {
       <ProductShowcase />
       <FAQs />
       <ContactUs />
+      <Footer />
     </>
   );
 };
