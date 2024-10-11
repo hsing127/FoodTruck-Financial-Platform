@@ -1,6 +1,6 @@
 import React from 'react';
 import '../../styles/DashMain.css';
-import '../../styles/Sidebar.css';
+import '../../styles/Sidebar2.css';
 
 const DashboardMenuPage: React.FC = () => {
   return (

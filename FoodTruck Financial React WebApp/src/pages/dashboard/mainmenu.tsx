@@ -1,4 +1,4 @@
-import DashboardMenuPage from '../../components/dashboard/DashboardMenu';
+import DashboardMenuPage from '../../components/dashboard/DashboardMainMenu';
 
 const Page: React.FC = () => {
   return <DashboardMenuPage />;
