@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import {BsFillTrashFill, BsFillPencilFill, BsFilterCircle, BsSearch, BsPlusLg} from "react-icons/bs"
 import '../../styles/DashInventory.css';
-
 interface RowData {
   name: string;
   weight: string;
@@ -117,10 +117,11 @@ const DashboardInventoryPage: React.FC = () => {
         <div className='search-filter'>
           <div className='search-container'>
             <div className='search-icon' />
+            <BsSearch className='search-icon' />
             <input type='text' className='search-input' placeholder='Search...' />
           </div>
           <button className='filter-icon-btn'>
-            <div className='filter-icon' />Filter
+            <BsFilterCircle className='filter-icon' />Filter
           </button>
         </div>
       </div>
@@ -160,8 +161,8 @@ const DashboardInventoryPage: React.FC = () => {
                 </td>
                 <td>
                   <span className='actions'>
-                    <div className='delete-btn' onClick={() => handleDeleteRow(idx)} />
-                    <div onClick={() => handleEditRow(idx)} />
+                    <BsFillTrashFill className='delete-btn' onClick={() => handleDeleteRow(idx)} />
+                    <BsFillPencilFill onClick={() => handleEditRow(idx)} />
                   </span>
                 </td>
               </tr>
@@ -182,7 +183,7 @@ const DashboardInventoryPage: React.FC = () => {
           });
           setModalOpen(true);
         }}>
-          <div className='add-icon' />
+          <BsPlusLg className='add-icon' />
           Add Product
         </button>
       </div>
