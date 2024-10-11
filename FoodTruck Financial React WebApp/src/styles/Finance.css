@@ -101,9 +101,9 @@
     display: grid;
     grid-template-columns: 2fr 1fr; /* 2:1 column ratio for layout */
     grid-template-rows: repeat(2, 1fr); 
-    gap: 20px; /* Space between the grid items */
+    gap: 20px; 
     padding: 20px;
-    height: calc(95vh - 60px); /* Dynamic height adjustment */
+    height: calc(95vh - 60px); 
   }
   
   .dashboard-layout {
