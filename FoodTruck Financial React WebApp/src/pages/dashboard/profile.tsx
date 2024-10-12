@@ -1,4 +1,4 @@
-import DashboardProfilePage from '../../components/dashboard/DashboardProfilePage';
+import DashboardProfilePage from '../../app/dashboard/DashboardProfilePage';
 
 const Page: React.FC = () => {
   return <DashboardProfilePage />;

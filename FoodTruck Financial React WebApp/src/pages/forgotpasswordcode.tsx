@@ -1,4 +1,4 @@
-import ForgotPasswordCodePage from "@/components/login/ForgotPasswordCodePage";
+import ForgotPasswordCodePage from "@/app/login/ForgotPasswordCodePage";
 
 const Page: React.FC = () => {
   return <ForgotPasswordCodePage />;
