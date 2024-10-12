@@ -1,6 +1,6 @@
-import React from 'react';
-import '../../styles/DashMain.css';
-import '../../styles/Sidebar2.css';
+import React from "react";
+import "../../styles/DashMain.css";
+import "../../styles/Sidebar2.css";
 
 const DashboardMenuPage: React.FC = () => {
   return (
@@ -8,15 +8,27 @@ const DashboardMenuPage: React.FC = () => {
       {/* Sidebar */}
       <div className="sidebar">
         <ul className="menu-list">
-          <li className="menu-item"><a href="#">Main Menu</a></li>
-          <li className="menu-item"><a href="#">Finance</a></li>
-          <li className="menu-item"><a href="#">Inventory</a></li>
-          <li className="menu-item"><a href="#">Menu</a></li>
+          <li className="menu-item">
+            <a href="#">Main Menu</a>
+          </li>
+          <li className="menu-item">
+            <a href="#">Finance</a>
+          </li>
+          <li className="menu-item">
+            <a href="#">Inventory</a>
+          </li>
+          <li className="menu-item">
+            <a href="#">Menu</a>
+          </li>
         </ul>
         <div className="sidebar-bottom">
           <ul>
-            <li className="menu-item"><a href="#">Profile</a></li>
-            <li className="menu-item"><a href="#">Logout</a></li>
+            <li className="menu-item">
+              <a href="#">Profile</a>
+            </li>
+            <li className="menu-item">
+              <a href="#">Logout</a>
+            </li>
           </ul>
         </div>
       </div>

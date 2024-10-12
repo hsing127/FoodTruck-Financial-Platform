@@ -1,5 +1,5 @@
-import React from 'react';
-import '../../styles/DashSettings.css';
+import React from "react";
+import "../../styles/DashSettings.css";
 
 interface InfoItemProps {
   title: string;
@@ -32,7 +32,12 @@ const DashboardSettingsPage: React.FC = () => {
   );
 };
 
-const InfoItem: React.FC<InfoItemProps> = ({ title, content, description, buttonLabel }) => {
+const InfoItem: React.FC<InfoItemProps> = ({
+  title,
+  content,
+  description,
+  buttonLabel,
+}) => {
   return (
     <div className="info-item">
       <div className="info-text">

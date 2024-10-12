@@ -1,13 +1,16 @@
-import React from 'react';
-import Link from 'next/link';
-import '../../styles/FileUpload.css';
+import React from "react";
+import Link from "next/link";
+import "../../styles/FileUpload.css";
 
 const DashboardFileUploadPage: React.FC = () => {
   return (
     <div className="file-upload-page-body">
       <div className="file-upload-container">
         <h1>Upload anything, from anywhere, with OCR.</h1>
-        <p>OCR (Optical Character Recognition) allows you to extract text from images or scanned documents.</p>
+        <p>
+          OCR (Optical Character Recognition) allows you to extract text from
+          images or scanned documents.
+        </p>
 
         {/* File Upload Section */}
         <div className="file-upload-display">
