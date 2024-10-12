@@ -1,4 +1,4 @@
-import SignupPage from '@/app/login/SignupPage';
+import SignupPage from '@/components/login/SignupPage';
 
 const Page: React.FC = () => {
   return <SignupPage />;
