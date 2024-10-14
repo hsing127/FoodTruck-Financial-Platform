@@ -26,7 +26,7 @@ const DashboardWrapper = ({ children }: { children: React.ReactNode }) => {
     >
       <Sidebar />
       <main
-        className={`flex flex-col w-full h-full bg-gray-50 pl-16
+        className={`flex flex-col w-full h-full bg-gray-50 pl-16 transition-all duration-300
           ${isSideBarCollapsed ? "md:pl-18" : "md:pl-[256px]"}`}
       >
         <NavBar />
