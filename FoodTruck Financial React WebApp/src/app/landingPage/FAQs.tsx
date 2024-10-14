@@ -38,7 +38,7 @@ const AccordianItem = ({
   return (
     <div
       key={question}
-      className="py-7 border-b border-white/30"
+      className="py-7 border-b border-customWhite/30"
       onClick={() => setIsOpen(!isOpen)}
     >
       <div className="flex items-center">
@@ -74,7 +74,7 @@ const AccordianItem = ({
 
 export const FAQs = () => {
   return (
-    <div className="bg-black text-white bg-gradient-to-b from-[#5D2CA8] to-black py-[72px] sm:py-24">
+    <div className="bg-customBlack text-customWhite bg-gradient-to-b from-[#5D2CA8] to-customBlack py-[72px] sm:py-24">
       <div className="container">
         <h2 className="text-center text-5xl font-bold tracking-tighter sm:text-6xl sm:max-w-[648px] mx-auto">
           Frequency Asked Questions

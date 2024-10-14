@@ -1,4 +1,4 @@
-import DashboardInventoryPage from '../../app/dashboard/DashboardInventoryPage';
+import DashboardInventoryPage from '../../app/dashboard/dashOld/DashboardInventoryPage';
 
 const Page: React.FC = () => {
   return <DashboardInventoryPage />;

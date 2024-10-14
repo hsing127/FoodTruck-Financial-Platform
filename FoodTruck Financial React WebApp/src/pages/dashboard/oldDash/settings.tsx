@@ -1,4 +1,4 @@
-import DashboardSettingsPage from '../../app/dashboard/DashboardSettingsPage';
+import DashboardSettingsPage from '../../../app/dashboard/dashOld/DashboardSettingsPage';
 
 const Page: React.FC = () => {
   return <DashboardSettingsPage />;

@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image"; // Importing Image from next/image for optimized images
-import "../../styles/Profile.css"; // CSS styles for the profile page
-import profilePic from "../../assets/profilePic.png"; // profile picture asset
+import "../../../styles/Profile.css"; // CSS styles for the profile page
+import profilePic from "../../../assets/profilePic.png"; // profile picture asset
 
 // DashboardProfilePage component renders the user's profile information
 const DashboardProfilePage: React.FC = () => {

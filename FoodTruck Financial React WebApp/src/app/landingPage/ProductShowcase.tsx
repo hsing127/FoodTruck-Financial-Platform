@@ -15,13 +15,13 @@ export const ProductShowcase = () => {
   const rotateY = useTransform(scrollYProgress, [0, 1], [0.05, 1]);
 
   return (
-    <div className="bg-black overflow-hidden text-white bg-gradient-to-b from-black to-[#5D2CA8] sm:py-24 py-[72px]">
+    <div className="bg-customBlack overflow-hidden text-customWhite bg-gradient-to-b from-customBlack to-[#5D2CA8] sm:py-24 py-[72px]">
       <div className="container relative">
         <h2 className="text-center text-5xl sm:text-6xl font-bold tracking-tighter">
           Intuitive Interface
         </h2>
         <div className="max-w-xl mx-auto">
-          <p className="text-xl text-center text-white/70 mt-5">
+          <p className="text-xl text-center text-customWhite/70 mt-5">
             FoodTrack is a comprehensive platform designed to streamline
             financial management for food truck owners. From automating expense
             tracking to providing insightful analytics, FoodTrack helps you

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import clsx from "clsx";
 import "./globals.css";
-import Head from "next/head"; // Import the Head component
+import Head from "next/head";
+import ClientWrapper from "./ClientWrapper"; // Import the client component
 
 const dmSans = DM_Sans({ subsets: ["latin"] });
 
@@ -22,7 +23,9 @@ export default function RootLayout({
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <body className={clsx(dmSans.className, "antialiased")}>
-                {children}
+                <ClientWrapper>
+                    {children}
+                </ClientWrapper>
             </body>
         </html>
     );

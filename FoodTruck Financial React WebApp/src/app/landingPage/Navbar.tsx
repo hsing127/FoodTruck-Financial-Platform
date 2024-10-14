@@ -5,7 +5,7 @@ import Link from "next/link"; // Using Next.js Link instead of react-router-dom
 
 export const Navbar = () => {
   return (
-    <div className="bg-black">
+    <div className="bg-customBlack">
       <div className="px-4">
         <div className="py-4 flex items-center justify-between">
           <div className="relative">
@@ -16,42 +16,42 @@ export const Navbar = () => {
               className="h-12 w-12 relative"
             />
           </div>
-          <div className="border border-white border-opacity-30 h-10 w-10 inline-flex justify-center items-center rounded-lg sm:hidden">
-            <MenuIcon className="text-white" />
+          <div className="border border-customWhite border-opacity-30 h-10 w-10 inline-flex justify-center items-center rounded-lg sm:hidden">
+            <MenuIcon className="text-customWhite" />
           </div>
           <nav className="flex gap-6 items-center hidden sm:flex">
             <a
               href="#"
-              className="text-opacity-60 text-white hover:text-opacity-100 transition"
+              className="text-opacity-60 text-customWhite hover:text-opacity-100 transition"
             >
               About
             </a>
             <a
               href="#"
-              className="text-opacity-60 text-white hover:text-opacity-100 transition"
+              className="text-opacity-60 text-customWhite hover:text-opacity-100 transition"
             >
               Features
             </a>
             <a
               href="#"
-              className="text-opacity-60 text-white hover:text-opacity-100 transition"
+              className="text-opacity-60 text-customWhite hover:text-opacity-100 transition"
             >
               Updates
             </a>
             <a
               href="#"
-              className="text-opacity-60 text-white hover:text-opacity-100 transition"
+              className="text-opacity-60 text-customWhite hover:text-opacity-100 transition"
             >
               Help
             </a>
             <a
               href="#"
-              className="text-opacity-60 text-white hover:text-opacity-100 transition"
+              className="text-opacity-60 text-customWhite hover:text-opacity-100 transition"
             >
               Contact Us
             </a>
             <Link href="/signup">
-              <button className="bg-white py-2 px-4 rounded-lg">
+              <button className="bg-customWhite py-2 px-4 rounded-lg">
                 Create Account
               </button>
             </Link>

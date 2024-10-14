@@ -6,7 +6,7 @@ import {
   BsSearch,
   BsPlusLg,
 } from "react-icons/bs";
-import "../../styles/DashInventory.css";
+import "../../../styles/DashInventory.css";
 interface RowData {
   name: string;
   weight: string;
