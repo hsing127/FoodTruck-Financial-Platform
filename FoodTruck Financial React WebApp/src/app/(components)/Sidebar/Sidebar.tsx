@@ -82,9 +82,9 @@ const Sidebar = () => {
   };
 
   const sidebarClassNames = `fixed flex flex-col ${
-    isSidebarCollapsed ? "w-16" : "w-64"
-  } bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40`;
-
+    isSidebarCollapsed ? "w-[66px]" : "w-[258px]"
+  } bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40 border border-gray-300`;
+  
   const sidebarLinks = [
     { href: "/dashboard/home", icon: Layout, label: "Dashboard" },
     { href: "/dashboard/expenses", icon: CircleDollarSign, label: "Expenses" },
@@ -105,7 +105,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className={sidebarClassNames}>
+    <div className={sidebarClassNames} >
       <div
         className={`flex gap-3 justify-between md:justify-normal items-center pt-8 ${
           isSidebarCollapsed ? "pl-3" : "pl-3"

@@ -5,7 +5,7 @@ import DashboardLayout from "../dashboard/DashboardWrapper";
 export const DashboardHome: React.FC = () => {
   return (
     <DashboardLayout>
-      <div>DASH HOME PAGE</div>
+      <div className="px-4">DASH HOME PAGE</div>
     </DashboardLayout>
   );
 };
