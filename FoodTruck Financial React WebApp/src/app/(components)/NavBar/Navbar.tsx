@@ -5,37 +5,41 @@ import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsDarkMode } from "@/app/state";
 import { Bell, Moon, Search, Sun } from "lucide-react";
 import React, { useCallback } from "react";
+import { createSelector } from "reselect";
+
+const selectGlobalState = (state: any) => state.global;
+const selectDarkModeAndSidebar = createSelector(
+  [selectGlobalState],
+  (global) => ({
+    isDarkMode: global.isDarkMode,
+    isSidebarCollapsed: global.isSidebarCollapsed,
+  })
+);
 
 const NavBar = React.memo(() => {
   const dispatch = useAppDispatch();
-  const { isDarkMode, isSidebarCollapsed } = useAppSelector((state) => ({
-    isDarkMode: state.global.isDarkMode,
-    isSidebarCollapsed: state.global.isSidebarCollapsed,
-  }));
+  const { isDarkMode, isSidebarCollapsed } = useAppSelector(
+    selectDarkModeAndSidebar
+  );
+  const iconClassName = "cursor-pointer text-gray-500 hover:text-blue-300";
 
-  const handleSearchClick = useCallback(() => {}, []);
+  const handleSearchClick = () => {};
 
   const handleThemeToggle = useCallback(() => {
     dispatch(setIsDarkMode(!isDarkMode));
   }, [dispatch, isDarkMode]);
 
   return (
-    <div className="flex justify-between items-center w-full mb-7 bg-white h-[80px] px-3 border border-gray-300">
+    <div className="flex justify-between items-center w-full mb-7 bg-white h-20 px-3 border border-gray-300">
       <div className="flex items-center gap-5 ml-auto">
         <button onClick={handleSearchClick}>
           <Search className="cursor-pointer text-gray-500" size={24} />
         </button>
         <button onClick={handleThemeToggle}>
           {isDarkMode ? (
-            <Sun
-              className="cursor-pointer text-gray-500 hover:text-blue-300"
-              size={24}
-            />
+            <Sun className={iconClassName} size={24} />
           ) : (
-            <Moon
-              className="cursor-pointer text-gray-500 hover:text-blue-300"
-              size={24}
-            />
+            <Moon className={iconClassName} size={24} />
           )}
         </button>
         <div className="relative">

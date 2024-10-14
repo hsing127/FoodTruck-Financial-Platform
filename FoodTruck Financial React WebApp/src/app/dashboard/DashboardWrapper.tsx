@@ -22,13 +22,11 @@ const DashboardWrapper = React.memo(
       }
     }, [isDarkMode]);
 
-    const mainClassNames = useMemo(
-      () =>
-        `flex flex-col w-full h-full bg-gray-50 pl-16 transition-all duration-300 ${
-          isSideBarCollapsed ? "md:pl-18" : "md:pl-[256px]"
-        }`,
-      [isSideBarCollapsed]
-    );
+    const mainClassNames = useMemo(() => {
+      return `flex flex-col w-full h-full bg-gray-50 pl-16 transition-all duration-300 ${
+        isSideBarCollapsed ? "md:pl-18" : "md:pl-[256px]"
+      }`;
+    }, [isSideBarCollapsed]);
 
     return (
       <div
