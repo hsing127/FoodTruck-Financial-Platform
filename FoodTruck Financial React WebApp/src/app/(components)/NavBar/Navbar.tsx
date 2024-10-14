@@ -25,7 +25,6 @@ const NavBar = () => {
 
   return (
     <div className="flex justify-between items-center w-full mb-7">
-      {/* Left Side (Empty or Placeholder) */}
       <div className="flex-1"></div>
 
       {/* Right Side (Icons) */}
