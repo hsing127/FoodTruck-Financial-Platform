@@ -17,9 +17,10 @@ export const ContactUs = () => {
 
   return (
     <div
-      className="bg-black text-white py-[72px] sm:py-24 text-center"
+      className="bg-customBlack text-customWhite py-[72px] sm:py-24 text-center"
       ref={containRef}
     >
+      customWhite
       <div className="container max-w-xl relative">
         <motion.div style={{ translateY }}>
           <Image
@@ -39,16 +40,16 @@ export const ContactUs = () => {
         <h2 className="font-bold text-5xl tracking-tighter sm:text-6xl">
           Contact Us!
         </h2>
-        <p className="text-xl text-white/70 mt-5">
+        <p className="text-xl text-customWhite/70 mt-5">
           Feel free to contact us with any issues!
         </p>
         <form className="mt-10 flex flex-col gap-2.5 max-w-sm mx-auto sm:flex-row">
           <input
-            className="h-12 bg-white/20 rounded-lg px-5 font-medium placeholder:text-[#9CA3AF] sm:flex-1"
+            className="h-12 bg-customWhite/20 rounded-lg px-5 font-medium placeholder:text-[#9CA3AF] sm:flex-1"
             type="email"
             placeholder="your@email.com"
           />
-          <button className="bg-white text-black h-12 rounded-lg max-w-sm mx-auto sm:flex-row px-5">
+          <button className="bg-customWhite text-customBlack h-12 rounded-lg max-w-sm mx-auto sm:flex-row px-5">
             Contact Us
           </button>
         </form>

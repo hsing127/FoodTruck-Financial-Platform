@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/DashSettings.css";
+import "../../../styles/DashSettings.css";
 
 interface InfoItemProps {
   title: string;

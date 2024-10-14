@@ -22,12 +22,12 @@ export const LogoTicker = () => {
   }, []);
 
   return (
-    <div className="bg-black text-white py-[72px] sm:py-24">
+    <div className="bg-customBlack text-customWhite py-[72px] sm:py-24">
       <div className="container">
-        <h2 className="text-xl text-center text-white/70">
+        <h2 className="text-xl text-center text-customWhite/70">
           Sponsored by Food Truck Association Of Canada
         </h2>
-        <h2 className="text-lg text-center text-white/70">
+        <h2 className="text-lg text-center text-customWhite/70">
           How we support the industry:
         </h2>
         <div
