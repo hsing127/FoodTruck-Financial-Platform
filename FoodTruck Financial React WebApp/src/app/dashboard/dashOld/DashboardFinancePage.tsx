@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation"; // Use Next.js `usePathname` for current path
 import Link from "next/link"; // Use Next.js `Link` for internal routing
-import "../../styles/Finance.css";
-import "../../styles/Sidebar.css";
-import "../../styles/Topbar.css";
+import "../../../styles/Finance.css";
+import "../../../styles/Sidebar.css";
+import "../../../styles/Topbar.css";
 
 type LayoutType = {
   [key: number]: string;

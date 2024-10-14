@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import "../../styles/FileUpload.css";
+import "../../../styles/FileUpload.css";
 
 const DashboardFileUploadPage: React.FC = () => {
   return (
