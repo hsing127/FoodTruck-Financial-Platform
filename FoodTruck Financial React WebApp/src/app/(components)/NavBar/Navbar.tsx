@@ -2,7 +2,7 @@
 
 import "@/app/globals.css";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
-import { setIsDarkMode, setIsSidebarCollapsed } from "@/app/state";
+import { setIsDarkMode } from "@/app/state";
 import { Bell, Moon, Search, Sun } from "lucide-react";
 import React, { useCallback } from "react";
 

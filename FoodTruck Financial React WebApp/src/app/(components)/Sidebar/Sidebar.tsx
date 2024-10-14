@@ -69,13 +69,16 @@ const Sidebar = React.memo(() => {
 
   const sidebarClassNames = `fixed flex flex-col ${isSidebarCollapsed ? "w-[66px]" : "w-[258px]"} bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40 border border-gray-300`;
 
-  const links = useMemo(() => [
+  const mainLinks = useMemo(() => [
     { href: "/dashboard/home", icon: Layout, label: "Dashboard" },
     { href: "/dashboard/expenses", icon: CircleDollarSign, label: "Expenses" },
     { href: "/dashboard/reports", icon: ClipboardList, label: "Reports" },
     { href: "/dashboard/budget", icon: HandCoins, label: "Budget" },
     { href: "/dashboard/inventory2", icon: PackageSearch, label: "Inventory" },
-    { href: "/dashboard/upload", icon: Upload, label: "Upload Files" },
+    { href: "/dashboard/upload", icon: Upload, label: "Upload Files" }
+  ], []);
+
+  const bottomLinks = useMemo(() => [
     { href: "/dashboard/oldDash/profile", icon: User, label: "Account" },
     { href: "/dashboard/oldDash/settings", icon: SlidersHorizontal, label: "Settings" },
     { href: "/", icon: LogOut, label: "Logout" }
@@ -95,9 +98,8 @@ const Sidebar = React.memo(() => {
         </motion.button>
       </div>
 
-      {/* Main and Bottom Links */}
       <div className="flex-grow mt-8">
-        {links.map((link) => (
+        {mainLinks.map((link) => (
           <SidebarLink
             key={link.href}
             href={link.href}
@@ -108,7 +110,18 @@ const Sidebar = React.memo(() => {
         ))}
       </div>
 
-      {/* Footer */}
+      <div className="mb-8">
+        {bottomLinks.map((link) => (
+          <SidebarLink
+            key={link.href}
+            href={link.href}
+            icon={link.icon}
+            label={link.label}
+            isCollapsed={isSidebarCollapsed}
+          />
+        ))}
+      </div>
+
       {!isSidebarCollapsed && (
         <div className="mb-8">
           <p className="text-center text-xs text-gray-500">&copy; 2024 Foodtrack</p>
