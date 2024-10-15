@@ -59,12 +59,12 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: "class",
   theme: {
-    darkMode: "class",
     extend: {
       colors: {
-        customBlack: "#000000", // Define a true black color
-        customWhite: "#FFFFFF", // Define a true white color
+        customBlack: "#000000", // Define a true black
+        customWhite: "#FFFFFF", // Define a true white
       },
       container: {
         padding: "1rem",
