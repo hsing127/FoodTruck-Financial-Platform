@@ -52,4 +52,5 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+DashboardWrapper.displayName = "DashboardWrapper";
 export default DashboardLayout;
