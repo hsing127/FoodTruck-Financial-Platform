@@ -168,4 +168,7 @@ const Sidebar = React.memo(() => {
   );
 });
 
+Sidebar.displayName = "Sidebar";
+SidebarLink.displayName = "SidebarLink";
+
 export default Sidebar;
