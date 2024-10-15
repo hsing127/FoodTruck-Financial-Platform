@@ -4,14 +4,20 @@ import "@/app/globals.css";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsDarkMode } from "@/app/state";
 import { Bell, Moon, Search, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 import React from "react";
 
 const NavBar = () => {
   const dispatch = useAppDispatch();
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+  const { setTheme } = useTheme();
+
   const handleSearchClick = () => {};
+
   const handleThemeToggle = () => {
+    const newTheme = isDarkMode ? "light" : "dark";
     dispatch(setIsDarkMode(!isDarkMode));
+    setTheme(newTheme);
   };
 
   return (

@@ -3,6 +3,7 @@ import React, { useEffect, useMemo } from "react";
 import StoreProvider, { useAppSelector } from "../redux";
 import NavBar from "@/app/(components)/NavBar/Navbar";
 import Sidebar from "@/app/(components)/Sidebar/Sidebar";
+import { ThemeProvider } from "next-themes";
 
 const DashboardWrapper = React.memo(
   ({ children }: { children: React.ReactNode }) => {
@@ -47,7 +48,9 @@ const DashboardWrapper = React.memo(
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <StoreProvider>
-      <DashboardWrapper>{children}</DashboardWrapper>
+      <ThemeProvider>
+        <DashboardWrapper>{children}</DashboardWrapper>
+      </ThemeProvider>
     </StoreProvider>
   );
 };
