@@ -58,7 +58,7 @@ const VolumeOverview = () => {
   useEffect(() => {
     // Adjust chart height based on screen height
     const handleResize = () => {
-       if (window.innerHeight < 900) {
+      if (window.innerHeight < 900) {
         setChartHeight("10vh");
       } else {
         setChartHeight("15vh");

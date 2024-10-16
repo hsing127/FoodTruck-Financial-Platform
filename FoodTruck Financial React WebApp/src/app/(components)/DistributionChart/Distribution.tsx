@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from "recharts";
 import React from "react";
-import { useAppSelector } from "@/app/redux"; 
+import { useAppSelector } from "@/app/redux";
 
 const foodDistributionData = [
   { food: "Pizza", quantity: 120 },
