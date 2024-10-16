@@ -1,11 +1,11 @@
 import "@/app/globals.css";
 import React from "react";
 import DashboardLayout from "../dashboard/DashboardWrapper";
-import DashCardSmall from "../(components)/DashCardSmall/DashCardSmall";
-import DashCardLong from "../(components)/DashCardSmall/DashCardLong";
-import DistributionChart from "../(components)/DashAreaChart/AreaChart";
-import SalesOverview from "../(components)/SalesOverviewChart/SalesOverview";
-import DashBarChart from "../(components)/DashBarChart/DashBarChart";
+import DashCardSmall from "../(components)/DashboardHomeComponents/DashCardSmall";
+import DashCardLong from "../(components)/DashboardHomeComponents/DashCardLong";
+import DistributionChart from "../(components)/DashboardHomeComponents/AreaChart";
+import SalesOverview from "../(components)/DashboardHomeComponents/SalesOverview";
+import DashBarChart from "../(components)/DashboardHomeComponents/DashBarChart";
 
 import { motion } from "framer-motion";
 import { TrendingUp, ShoppingCart, Banknote, Landmark } from "lucide-react";
