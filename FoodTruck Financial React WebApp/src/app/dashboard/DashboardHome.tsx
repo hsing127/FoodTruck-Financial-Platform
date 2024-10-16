@@ -5,6 +5,7 @@ import DashCardSmall from "../(components)/DashCardSmall/DashCardSmall";
 import DashCardLong from "../(components)/DashCardSmall/DashCardLong";
 import DistributionChart from "../(components)/DashAreaChart/AreaChart";
 import SalesOverview from "../(components)/SalesOverviewChart/SalesOverview";
+import DashBarChart from "../(components)/DashBarChart/DashBarChart";
 
 import { motion } from "framer-motion";
 import { TrendingUp, ShoppingCart, Banknote, Landmark } from "lucide-react";
@@ -13,9 +14,9 @@ export const DashboardHome: React.FC = () => {
   return (
     <DashboardLayout>
       <div className="outline outline-white outline-8 flex-1 relative z-10 border-white rounded-3xl border-[16px] overflow-hidden">
-        <div className=" mx-auto py-2 px-4 lg:px-6">
+        <div className="mx-auto py-0 px-4 lg:px-6">
           <motion.div
-            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6 mt-4"
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4 mt-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
@@ -59,13 +60,22 @@ export const DashboardHome: React.FC = () => {
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-1 lg:grid-cols-[2.03fr_1fr] gap-4"
+            className="grid grid-cols-1 lg:grid-cols-[2.03fr_1fr] gap-4 mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
             <SalesOverview />
             <DistributionChart />
+          </motion.div>
+
+          <motion.div
+            className="hidden 2xl:block" 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
+            <DashBarChart />
           </motion.div>
         </div>
       </div>
