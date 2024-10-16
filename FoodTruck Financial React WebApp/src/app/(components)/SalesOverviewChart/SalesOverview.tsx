@@ -55,7 +55,7 @@ const SalesOverview = () => {
 
       <h2 className="text-lg font-medium mb-4 text-black">Sales Overview</h2>
 
-      <div className="w-full h-[40vh] min-h-[425px]">
+      <div className="w-full h-[40vh] min-h-[350px]">
         <ResponsiveContainer>
           <LineChart data={monthlySalesData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />

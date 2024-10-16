@@ -8,7 +8,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   MoreHorizontal,
   ChevronRight,
@@ -41,6 +41,7 @@ const foodItems = [
 ];
 
 const VolumeOverview = () => {
+  const [chartHeight, setChartHeight] = useState("25vh"); // Default height
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
   const tooltipContentStyle = isDarkMode
@@ -53,6 +54,22 @@ const VolumeOverview = () => {
 
   const itemName = "Pizza Sales";
   const topRightNumber = "$1899.00";
+
+  useEffect(() => {
+    // Adjust chart height based on screen height
+    const handleResize = () => {
+       if (window.innerHeight < 900) {
+        setChartHeight("5vh");
+      } else {
+        setChartHeight("15vh");
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Set initial height
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <motion.div
@@ -83,7 +100,12 @@ const VolumeOverview = () => {
           </h2>
         </div>
 
-        <div className="w-full h-[12.5vh] min-h-[10px] mt-8">
+        <div
+          className="w-full mt-8"
+          style={{
+            height: chartHeight,
+          }}
+        >
           <ResponsiveContainer>
             <AreaChart data={volumeData}>
               <defs>
