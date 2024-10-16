@@ -8,6 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useAppSelector } from "@/app/redux";
 
 const data = [
   { name: "Jan", revenue: 4000 },
@@ -25,6 +26,18 @@ const data = [
 ];
 
 const DashBarChart: React.FC = () => {
+  const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+  const tooltipContentStyle = isDarkMode
+    ? { backgroundColor: "rgba(17, 24, 39, 0.9)", borderColor: "#6B7280" }
+    : { backgroundColor: "#ffffff", borderColor: "#000000" };
+
+  const tooltipItemStyle = isDarkMode
+    ? { color: "#ffffff" }
+    : { color: "#000000" };
+  const axisLineColor = isDarkMode ? "#ffffff" : "#000000";
+
+  const gridStrokeColor = isDarkMode ? "#374151" : "#e5e7eb";
+  const barColor = "#8B5CF6";
   return (
     <div className="p-5 w-full bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-300">
       <h2 className="text-lg font-semibold text-gray-900">
@@ -35,17 +48,15 @@ const DashBarChart: React.FC = () => {
           data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
+          <CartesianGrid strokeDasharray="3 3" stroke={gridStrokeColor} />
+          <XAxis dataKey="name" stroke={axisLineColor} />
+          <YAxis stroke={axisLineColor} />
           <Tooltip
-            contentStyle={{
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
-              borderColor: "#ddd",
-            }}
+            contentStyle={tooltipContentStyle}
+            itemStyle={tooltipItemStyle}
             cursor={{ fill: "rgba(255, 255, 255, 0.1)" }}
           />
-          <Bar dataKey="revenue" fill="#8B5CF6" barSize={40} />
+          <Bar dataKey="revenue" fill={barColor} barSize={40} />
         </BarChart>
       </ResponsiveContainer>
     </div>
