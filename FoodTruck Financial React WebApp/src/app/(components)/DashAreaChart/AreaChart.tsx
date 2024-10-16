@@ -59,7 +59,7 @@ const VolumeOverview = () => {
     // Adjust chart height based on screen height
     const handleResize = () => {
        if (window.innerHeight < 900) {
-        setChartHeight("5vh");
+        setChartHeight("10vh");
       } else {
         setChartHeight("15vh");
       }
