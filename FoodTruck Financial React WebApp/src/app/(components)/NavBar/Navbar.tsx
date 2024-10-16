@@ -21,7 +21,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className="flex justify-between items-center w-full mb-7 bg-white h-[80px] px-3 border border-gray-300">
+    <div className="flex justify-between items-center w-full bg-white h-[80px] px-6 mb-[-16px]">
       {/* Right Side (Icons) */}
       <div className="flex items-center gap-5 ml-auto">
         <div>
