@@ -14,7 +14,7 @@ export const DashboardHome: React.FC = () => {
   return (
     <DashboardLayout>
       <div className="outline outline-white outline-8 flex-1 relative z-10 border-white rounded-3xl border-[16px] overflow-hidden">
-        <div className="mx-auto py-0 px-4 lg:px-6">
+        <div className="mx-auto py-1 px-4 lg:px-6">
           <motion.div
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4 mt-4"
             initial={{ opacity: 0, y: 20 }}
@@ -70,7 +70,7 @@ export const DashboardHome: React.FC = () => {
           </motion.div>
 
           <motion.div
-            className="hidden 2xl:block" 
+            className="grid grid-cols-1 gap-4 lg:col-span-3"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
