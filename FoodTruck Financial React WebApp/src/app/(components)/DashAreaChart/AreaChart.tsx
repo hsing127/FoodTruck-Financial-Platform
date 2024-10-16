@@ -83,7 +83,7 @@ const VolumeOverview = () => {
           </h2>
         </div>
 
-        <div className="w-full h-[17.5vh] min-h-[10px] mt-8">
+        <div className="w-full h-[12.5vh] min-h-[10px] mt-8">
           <ResponsiveContainer>
             <AreaChart data={volumeData}>
               <defs>
