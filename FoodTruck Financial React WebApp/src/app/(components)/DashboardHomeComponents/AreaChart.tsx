@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/app/redux";
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -42,6 +42,8 @@ const foodItems = [
 
 const VolumeOverview = () => {
   const [chartHeight, setChartHeight] = useState("25vh"); // Default height
+  const [isChartVisible, setIsChartVisible] = useState(false);
+  const chartRef = useRef<HTMLDivElement>(null);
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
   const tooltipContentStyle = isDarkMode
@@ -56,7 +58,6 @@ const VolumeOverview = () => {
   const topRightNumber = "$1899.00";
 
   useEffect(() => {
-    // Adjust chart height based on screen height
     const handleResize = () => {
       if (window.innerHeight < 900) {
         setChartHeight("10vh");
@@ -65,10 +66,27 @@ const VolumeOverview = () => {
       }
     };
 
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsChartVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (chartRef.current) {
+      observer.observe(chartRef.current);
+    }
+
     window.addEventListener("resize", handleResize);
     handleResize(); // Set initial height
 
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (chartRef.current) observer.unobserve(chartRef.current);
+    };
   }, []);
 
   return (
@@ -77,6 +95,7 @@ const VolumeOverview = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
+      ref={chartRef}
     >
       <div className="absolute top-4 right-5">
         <div className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer">
@@ -106,34 +125,36 @@ const VolumeOverview = () => {
             height: chartHeight,
           }}
         >
-          <ResponsiveContainer>
-            <AreaChart data={volumeData}>
-              <defs>
-                <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="transparent" />
-              <XAxis hide />
-              <YAxis hide />
-              <Tooltip
-                contentStyle={tooltipContentStyle}
-                itemStyle={tooltipItemStyle}
-                cursor={false}
-              />
-              <Area
-                type="monotone"
-                dataKey="volume"
-                stroke="#8B5CF6"
-                fillOpacity={1}
-                fill="url(#colorVolume)"
-                strokeWidth={3}
-                dot={false}
-                activeDot={false}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          {isChartVisible && (
+            <ResponsiveContainer>
+              <AreaChart data={volumeData}>
+                <defs>
+                  <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="transparent" />
+                <XAxis hide />
+                <YAxis hide />
+                <Tooltip
+                  contentStyle={tooltipContentStyle}
+                  itemStyle={tooltipItemStyle}
+                  cursor={false}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="volume"
+                  stroke="#8B5CF6"
+                  fillOpacity={1}
+                  fill="url(#colorVolume)"
+                  strokeWidth={3}
+                  dot={false}
+                  activeDot={false}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </div>
 

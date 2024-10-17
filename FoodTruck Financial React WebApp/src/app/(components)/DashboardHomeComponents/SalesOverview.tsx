@@ -1,5 +1,5 @@
 import "@/app/globals.css";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAppSelector } from "@/app/redux";
 import { Menu } from "lucide-react";
 import { motion } from "framer-motion";
@@ -31,6 +31,29 @@ const monthlySalesData = [
 const SalesOverview = () => {
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
+  const [isChartVisible, setIsChartVisible] = useState(false);
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsChartVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (chartRef.current) {
+      observer.observe(chartRef.current);
+    }
+
+    return () => {
+      if (chartRef.current) observer.unobserve(chartRef.current);
+    };
+  }, []);
+
   const tooltipContentStyle = isDarkMode
     ? { backgroundColor: "rgba(17, 24, 39, 0.9)", borderColor: "#6B7280" }
     : { backgroundColor: "#ffffff", borderColor: "#000000" };
@@ -46,6 +69,7 @@ const SalesOverview = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
+      ref={chartRef}
     >
       <div className="absolute top-4 right-6">
         <div className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer">
@@ -56,25 +80,27 @@ const SalesOverview = () => {
       <h2 className="text-lg font-medium mb-4 text-black">Sales Overview</h2>
 
       <div className="w-full h-[39vh] min-h-[350px]">
-        <ResponsiveContainer>
-          <LineChart data={monthlySalesData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis dataKey="month" stroke={axisLineColor} />
-            <YAxis stroke={axisLineColor} />
-            <Tooltip
-              contentStyle={tooltipContentStyle}
-              itemStyle={tooltipItemStyle}
-            />
-            <Line
-              type="monotone"
-              dataKey="sales"
-              stroke="#8B5CF6"
-              strokeWidth={3}
-              dot={{ fill: "#8B5CF6", strokeWidth: 2 }}
-              activeDot={{ r: 8, strokeWidth: 2 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        {isChartVisible && (
+          <ResponsiveContainer>
+            <LineChart data={monthlySalesData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="month" stroke={axisLineColor} />
+              <YAxis stroke={axisLineColor} />
+              <Tooltip
+                contentStyle={tooltipContentStyle}
+                itemStyle={tooltipItemStyle}
+              />
+              <Line
+                type="monotone"
+                dataKey="sales"
+                stroke="#8B5CF6"
+                strokeWidth={3}
+                dot={{ fill: "#8B5CF6", strokeWidth: 2 }}
+                activeDot={{ r: 8, strokeWidth: 2 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </motion.div>
   );
