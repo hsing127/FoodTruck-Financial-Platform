@@ -17,6 +17,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 
+// Mock data for chart and items
 const volumeData = [
   { month: "Jan", volume: 5618 },
   { month: "Feb", volume: 7430 },
@@ -41,11 +42,13 @@ const foodItems = [
 ];
 
 const VolumeOverview = () => {
+  // States to handle chart visibility and height
   const [chartHeight, setChartHeight] = useState("25vh"); // Default height
   const [isChartVisible, setIsChartVisible] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
+  // Tooltip styling based on dark mode
   const tooltipContentStyle = isDarkMode
     ? { backgroundColor: "rgba(17, 24, 39, 0.9)", borderColor: "#6B7280" }
     : { backgroundColor: "#ffffff", borderColor: "#000000" };
@@ -54,10 +57,11 @@ const VolumeOverview = () => {
     ? { color: "#ffffff" }
     : { color: "#000000" };
 
-  const itemName = "Pizza Sales";
-  const topRightNumber = "$1899.00";
+  const itemName = "Pizza Sales"; // Mock item name
+  const topRightNumber = "$1899.00"; // Mock top right number
 
   useEffect(() => {
+    // Handle window resize for responsive chart height
     const handleResize = () => {
       if (window.innerHeight < 900) {
         setChartHeight("10vh");
@@ -66,6 +70,7 @@ const VolumeOverview = () => {
       }
     };
 
+    // Observer to trigger chart visibility on scroll
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -76,10 +81,12 @@ const VolumeOverview = () => {
       { threshold: 0.1 }
     );
 
+    // Observe the chart reference
     if (chartRef.current) {
       observer.observe(chartRef.current);
     }
 
+    // Add event listener for window resize
     window.addEventListener("resize", handleResize);
     handleResize(); // Set initial height
 

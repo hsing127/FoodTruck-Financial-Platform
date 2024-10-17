@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+// Mock data for bar chart
 const data = [
   { name: "Jan", revenue: 4000 },
   { name: "Feb", revenue: 3000 },
@@ -26,7 +27,10 @@ const data = [
 ];
 
 const DashBarChart: React.FC = () => {
+  // Check if dark mode is active from global state
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
+
+  // Styling based on dark mode
   const tooltipContentStyle = isDarkMode
     ? { backgroundColor: "rgba(17, 24, 39, 0.9)", borderColor: "#6B7280" }
     : { backgroundColor: "#ffffff", borderColor: "#000000" };
@@ -34,9 +38,12 @@ const DashBarChart: React.FC = () => {
   const tooltipItemStyle = isDarkMode
     ? { color: "#ffffff" }
     : { color: "#000000" };
+  
+  // Axis and grid line colors based on dark mode
   const axisLineColor = isDarkMode ? "#ffffff" : "#000000";
-
   const gridStrokeColor = isDarkMode ? "#374151" : "#e5e7eb";
+  
+  // Bar color
   const barColor = "#8B5CF6";
 
   return (
@@ -45,16 +52,21 @@ const DashBarChart: React.FC = () => {
         Monthly Revenue Distribution
       </h2>
       <div className="h-[270px]">
+        {/* Responsive container for chart */}
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 20, right: 30, left: 20 }}>
+            {/* Grid lines */}
             <CartesianGrid strokeDasharray="3 3" stroke={gridStrokeColor} />
+            {/* X and Y axes */}
             <XAxis dataKey="name" stroke={axisLineColor} />
             <YAxis stroke={axisLineColor} />
+            {/* Tooltip for hover information */}
             <Tooltip
               contentStyle={tooltipContentStyle}
               itemStyle={tooltipItemStyle}
               cursor={{ fill: "rgba(255, 255, 255, 0.1)" }}
             />
+            {/* Bar for revenue data */}
             <Bar dataKey="revenue" fill={barColor} barSize={40} />
           </BarChart>
         </ResponsiveContainer>
