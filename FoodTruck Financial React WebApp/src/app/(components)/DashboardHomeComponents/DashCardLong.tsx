@@ -7,6 +7,7 @@ interface DashCardLongProps {
   icon: LucideIcon;
   value?: string | number;
   color?: string;
+  isYellow?: boolean;
 }
 
 const DashCardLong: React.FC<DashCardLongProps> = ({
@@ -14,13 +15,27 @@ const DashCardLong: React.FC<DashCardLongProps> = ({
   icon: Icon,
   value,
   color,
+  isYellow = false,
 }) => {
   return (
     <motion.div
-      className="w-full bg-white bg-opacity-50 backdrop-blur-md overflow-hidden shadow-lg rounded-xl border border-gray-300"
+      className="w-full bg-white bg-opacity-50 backdrop-blur-md overflow-hidden shadow-lg rounded-xl border border-gray-300 relative"
       whileHover={{ y: -5, boxShadow: "0 10px 30px -12px black" }}
     >
-      <div className="flex items-center px-4 py-3 sm:p-4">
+      <div
+        className={`absolute top-0 right-0 w-20 h-20 rounded-full opacity-20 z-0 ${
+          isYellow ? "bg-yellow-300" : "bg-blue-200"
+        }`}
+        style={{ transform: "translate(50%, -50%)" }}
+      ></div>
+      <div
+        className={`absolute top-0 right-0 w-16 h-16 rounded-full opacity-20 z-0 ${
+          isYellow ? "bg-yellow-300" : "bg-blue-200"
+        }`}
+        style={{ transform: "translate(70%, 20%)" }}
+      ></div>
+
+      <div className="flex items-center px-4 py-3 sm:p-4 relative">
         <span
           className={`inline-flex items-center justify-center rounded-lg ${color} bg-opacity-25`}
           style={{ width: "35px", height: "35px" }}

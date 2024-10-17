@@ -48,7 +48,7 @@ const SalesOverview = () => {
       transition={{ delay: 0.2 }}
     >
       <div className="absolute top-4 right-6">
-        <div className="p-2 rounded-xl hover:bg-gray-50 transition duration-300 cursor-pointer">
+        <div className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer">
           <Menu className="w-6 h-6 text-gray-700 cursor-pointer" />
         </div>
       </div>

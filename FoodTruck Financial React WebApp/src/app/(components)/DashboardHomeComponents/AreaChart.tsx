@@ -79,7 +79,7 @@ const VolumeOverview = () => {
       transition={{ delay: 0.2 }}
     >
       <div className="absolute top-4 right-5">
-        <div className="p-2 rounded-xl hover:bg-gray-50 transition duration-300 cursor-pointer">
+        <div className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer">
           <MoreHorizontal className="w-6 h-6 text-gray-700" />
         </div>
       </div>

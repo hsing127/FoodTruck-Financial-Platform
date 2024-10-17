@@ -13,7 +13,7 @@ import { TrendingUp, ShoppingCart, Banknote, Landmark } from "lucide-react";
 export const DashboardHome: React.FC = () => {
   return (
     <DashboardLayout>
-      <div className="outline outline-white outline-8 flex-1 relative z-10 border-white rounded-3xl border-[16px] overflow-hidden">
+      <div className="outline outline-white outline-8 flex-1 relative border-white rounded-3xl border-[16px] overflow-hidden">
         <div className="pt-2 mx-auto px-4 lg:px-6">
           <motion.div
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4 mt-4"
@@ -30,6 +30,7 @@ export const DashboardHome: React.FC = () => {
                 withToggleButtons={true}
                 monthlyValue="$3000"
                 yearlyValue="$36000"
+                isTrendingUp={true}
               />
             </div>
 
@@ -40,6 +41,7 @@ export const DashboardHome: React.FC = () => {
                 value="1,200"
                 color="bg-gray-100"
                 withEllipse={true}
+                isTrendingUp={false}
               />
             </div>
 
@@ -55,6 +57,7 @@ export const DashboardHome: React.FC = () => {
                 icon={Landmark}
                 value="$550"
                 color="bg-gray-100"
+                isYellow={true}
               />
             </div>
           </motion.div>

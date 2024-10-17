@@ -42,7 +42,7 @@ const SidebarLink = React.memo(
         <motion.div
           className={`cursor-pointer flex items-center ${
             isCollapsed ? "justify-start pl-4 ml-2" : "pl-4 ml-2"
-          } py-4 hover:text-blue-500 z- hover:bg-blue-100 gap-3 transition-colors ${
+          } py-4 hover:text-gray-900 z- hover:bg-blue-100 gap-3 transition-colors ${
             isActive ? "bg-blue-200 text-gray-900 rounded-lg" : "rounded-lg"
           }`}
           whileHover={{ scale: 1.05 }}
