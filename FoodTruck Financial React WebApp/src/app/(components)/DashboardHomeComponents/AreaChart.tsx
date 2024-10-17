@@ -1,4 +1,6 @@
+import { useAppSelector } from "@/app/redux";
 import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -8,14 +10,12 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-import React, { useEffect, useState } from "react";
 import {
   MoreHorizontal,
   ChevronRight,
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-import { useAppSelector } from "@/app/redux";
 
 const volumeData = [
   { month: "Jan", volume: 5618 },

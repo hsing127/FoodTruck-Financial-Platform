@@ -1,3 +1,4 @@
+import { useAppSelector } from "@/app/redux";
 import React from "react";
 import {
   BarChart,
@@ -8,7 +9,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { useAppSelector } from "@/app/redux";
 
 const data = [
   { name: "Jan", revenue: 4000 },

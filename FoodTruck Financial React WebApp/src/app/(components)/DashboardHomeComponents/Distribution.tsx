@@ -1,3 +1,5 @@
+import React from "react";
+import { useAppSelector } from "@/app/redux";
 import { motion } from "framer-motion";
 import {
   ResponsiveContainer,
@@ -8,8 +10,6 @@ import {
   PolarRadiusAxis,
   Tooltip,
 } from "recharts";
-import React from "react";
-import { useAppSelector } from "@/app/redux";
 
 const foodDistributionData = [
   { food: "Pizza", quantity: 120 },

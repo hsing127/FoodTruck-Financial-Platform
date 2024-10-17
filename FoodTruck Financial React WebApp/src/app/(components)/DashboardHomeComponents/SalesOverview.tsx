@@ -1,3 +1,7 @@
+import "@/app/globals.css";
+import React from "react";
+import { useAppSelector } from "@/app/redux";
+import { Menu } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   ResponsiveContainer,
@@ -8,10 +12,6 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-import React from "react";
-import { Menu } from "lucide-react";
-import "@/app/globals.css";
-import { useAppSelector } from "@/app/redux";
 
 const monthlySalesData = [
   { month: "Jan", sales: 4000 },
