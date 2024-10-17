@@ -63,7 +63,7 @@ export const DashboardHome: React.FC = () => {
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-1 lg:grid-cols-[2.03fr_1fr] gap-4 mb-4"
+            className="grid grid-cols-1 lg:grid-cols-[2.04fr_1fr] gap-4 mb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
@@ -76,7 +76,7 @@ export const DashboardHome: React.FC = () => {
             className="grid grid-cols-1 gap-4 lg:col-span-3"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 1, delay: .4 }}
           >
             <DashBarChart />
           </motion.div>
