@@ -16,23 +16,25 @@ import {
   Menu,
   PackageSearch,
   SlidersHorizontal,
+  Sun,
   Upload,
   User,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface SidebarLinkProps {
+  // Props for sidebar links
   href: string;
-  icon: LucideIcon;
-  label: string;
-  isCollapsed: boolean;
+  icon: LucideIcon; // Icon component passed as a prop
+  label: string; // Label for the link
+  isCollapsed: boolean; // Boolean to check if the sidebar is collapsed
 }
 
 const SidebarLink = React.memo(
   ({ href, icon: Icon, label, isCollapsed }: SidebarLinkProps) => {
-    const path = usePathname();
+    const path = usePathname(); // Get current path to highlight active link
     const isActive = useMemo(
-      () => path === href || href === "/dashboard",
+      () => path === href || href === "/dashboard", // Check if the link is active
       [path, href]
     );
 
@@ -40,21 +42,21 @@ const SidebarLink = React.memo(
       <Link href={href} aria-label={label}>
         <motion.div
           className={`cursor-pointer flex items-center ${
-            isCollapsed ? "justify-start pl-5" : "pl-5"
-          } py-4 hover:text-blue-500 hover:bg-blue-100 gap-3 transition-colors ${
-            isActive ? "bg-blue-200 text-gray-900" : ""
+            isCollapsed ? "justify-start pl-4 ml-2" : "pl-4 ml-2"
+          } py-4 hover:text-gray-900 hover:bg-blue-100 gap-3 transition-colors ${
+            isActive ? "bg-blue-200 text-gray-900 rounded-lg" : "rounded-lg"
           }`}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ type: "spring", stiffness: 300 }}
+          whileHover={{ scale: 1.05 }} // Animation on hover
+          whileTap={{ scale: 0.95 }} // Animation on tap
+          transition={{ type: "spring", stiffness: 300 }} // Smooth spring animation
         >
           <div className="w-6 h-6 flex-shrink-0">
-            <Icon className="w-full h-full !text-gray-900" />
+            <Icon className="w-full h-full !text-gray-900" /> {/* Icon display */}
           </div>
           {!isCollapsed && (
             <motion.span
               className="ml-2 whitespace-nowrap"
-              initial={{ opacity: 0, width: 0 }}
+              initial={{ opacity: 0, width: 0 }} // Animation for text appearance
               animate={{ opacity: 1, width: "auto" }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.2 }}
@@ -69,39 +71,39 @@ const SidebarLink = React.memo(
 );
 
 const Sidebar = React.memo(() => {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch(); // Redux dispatch to toggle sidebar
   const isSidebarCollapsed = useAppSelector(
     (state) => state.global.isSidebarCollapsed
-  );
+  ); // Get sidebar state from redux
 
+  // Function to handle sidebar toggle
   const handleToggleSidebar = useCallback(() => {
     dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
   }, [dispatch, isSidebarCollapsed]);
 
+  // Sidebar class names based on collapsed state
   const sidebarClassNames = `fixed flex flex-col ${
     isSidebarCollapsed ? "w-[66px]" : "w-[258px]"
-  } bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40 border border-gray-300`;
+  } bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40`;
 
+  // Main links for the sidebar
   const mainLinks = useMemo(
     () => [
       { href: "/dashboard/home", icon: Layout, label: "Dashboard" },
-      {
-        href: "/dashboard/expenses",
-        icon: CircleDollarSign,
-        label: "Expenses",
-      },
-      { href: "/dashboard/reports", icon: ClipboardList, label: "Reports" },
-      { href: "/dashboard/budget", icon: HandCoins, label: "Budget" },
+      { href: "/dashboard/upload", icon: CircleDollarSign, label: "Purchases" },
+      { href: "/dashboard/menu", icon: Upload, label: "Menu" },
       {
         href: "/dashboard/inventory2",
         icon: PackageSearch,
         label: "Inventory",
       },
-      { href: "/dashboard/upload", icon: Upload, label: "Upload Files" },
+      { href: "/dashboard/reports", icon: ClipboardList, label: "Reports" },
+      { href: "/dashboard/budget", icon: HandCoins, label: "Budget" },
     ],
     []
   );
 
+  // Bottom links for the sidebar
   const bottomLinks = useMemo(
     () => [
       { href: "/dashboard/oldDash/profile", icon: User, label: "Account" },
@@ -118,21 +120,36 @@ const Sidebar = React.memo(() => {
   return (
     <div className={sidebarClassNames}>
       <div
-        className={`flex gap-3 justify-between md:justify-normal items-center pt-8 ${
+        className={`flex gap-3 justify-between md:justify-normal items-center pt-4 ${
           isSidebarCollapsed ? "pl-3" : "pl-3"
         }`}
       >
+        {/* Logo and name when not collapsed */}
+        {!isSidebarCollapsed && (
+          <motion.div className="flex items-center gap-2 pl-2">
+            <Sun className="w-6 h-6 text-gray-900" />
+            <span className="text-lg font-semibold pr-16">Foodtrack</span>
+          </motion.div>
+        )}
+
+        {/* Sidebar toggle button */}
         <motion.button
-          className="px-2 py-2 rounded-full hover:bg-blue-100"
+          className=" px-2 py-2  hover:text-blue-100"
           onClick={handleToggleSidebar}
           aria-label="Toggle Sidebar"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
-          <Menu className="w-6 h-6" />
+          <span
+            className={`inline-flex items-center justify-center rounded-lg bg-gray-100 bg-opacity-25`}
+            style={{ width: "35px", height: "35px" }}
+          >
+            <Menu className="w-6 h-6" />
+          </span>
         </motion.button>
       </div>
 
+      {/* Main section of links */}
       <div className="flex-grow mt-8">
         {mainLinks.map((link) => (
           <SidebarLink
@@ -145,6 +162,7 @@ const Sidebar = React.memo(() => {
         ))}
       </div>
 
+      {/* Bottom section of links */}
       <div className="mb-8">
         {bottomLinks.map((link) => (
           <SidebarLink
@@ -157,6 +175,7 @@ const Sidebar = React.memo(() => {
         ))}
       </div>
 
+      {/* Footer message when not collapsed */}
       {!isSidebarCollapsed && (
         <div className="mb-8">
           <p className="text-center text-xs text-gray-500">
@@ -168,7 +187,7 @@ const Sidebar = React.memo(() => {
   );
 });
 
-Sidebar.displayName = "Sidebar";
-SidebarLink.displayName = "SidebarLink";
+Sidebar.displayName = "Sidebar"; // Set display name for Sidebar
+SidebarLink.displayName = "SidebarLink"; // Set display name for SidebarLink
 
 export default Sidebar;
