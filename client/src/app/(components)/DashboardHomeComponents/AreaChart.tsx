@@ -70,6 +70,9 @@ const VolumeOverview = () => {
       }
     };
 
+    // Store chart reference in a local variable
+    const currentChartRef = chartRef.current;
+
     // Observer to trigger chart visibility on scroll
     const observer = new IntersectionObserver(
       (entries) => {
@@ -82,8 +85,8 @@ const VolumeOverview = () => {
     );
 
     // Observe the chart reference
-    if (chartRef.current) {
-      observer.observe(chartRef.current);
+    if (currentChartRef) {
+      observer.observe(currentChartRef);
     }
 
     // Add event listener for window resize
@@ -92,7 +95,7 @@ const VolumeOverview = () => {
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      if (chartRef.current) observer.unobserve(chartRef.current);
+      if (currentChartRef) observer.unobserve(currentChartRef);
     };
   }, []);
 

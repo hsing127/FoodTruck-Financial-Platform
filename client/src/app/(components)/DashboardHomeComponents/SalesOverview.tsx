@@ -39,6 +39,9 @@ const SalesOverview = () => {
 
   // Set up observer to load chart when in view
   useEffect(() => {
+    // Save the current value of chartRef to avoid changes during cleanup
+    const currentChartRef = chartRef.current;
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -49,12 +52,12 @@ const SalesOverview = () => {
       { threshold: 0.1 }
     );
 
-    if (chartRef.current) {
-      observer.observe(chartRef.current);
+    if (currentChartRef) {
+      observer.observe(currentChartRef);
     }
 
     return () => {
-      if (chartRef.current) observer.unobserve(chartRef.current);
+      if (currentChartRef) observer.unobserve(currentChartRef);
     };
   }, []);
 
