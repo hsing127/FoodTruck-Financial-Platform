@@ -1,6 +1,6 @@
 import "@/app/globals.css";
 import React from "react";
-import DashboardLayout from "../dashboard/DashboardWrapper";
+import DashboardLayout from "./DashboardWrapper";
 
 export const DashboardUploadFiles: React.FC = () => {
   return (
