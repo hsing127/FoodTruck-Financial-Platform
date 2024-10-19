@@ -15,7 +15,7 @@ export const DashboardHome: React.FC = () => {
     <DashboardLayout>
       <div className="outline outline-white outline-8 flex-1 relative border-white rounded-3xl border-[16px] overflow-hidden">
         {/* Main dashboard grid */}
-        <div className="max-w-[1800px] pt-2 mx-auto px-4 lg:px-6">
+        <div className="max-w-[1600px] pt-2 mx-auto px-4 lg:px-6">
           {/* First row of dashboard cards */}
           <motion.div
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4 mt-4"
