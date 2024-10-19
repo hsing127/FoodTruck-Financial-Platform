@@ -90,7 +90,7 @@ const Sidebar = React.memo(() => {
   const mainLinks = useMemo(
     () => [
       { href: "/dashboard/home", icon: Layout, label: "Dashboard" },
-      { href: "/dashboard/upload", icon: CircleDollarSign, label: "Purchases" },
+      { href: "/dashboard/purchases", icon: CircleDollarSign, label: "Purchases" },
       { href: "/dashboard/menu", icon: Upload, label: "Menu" },
       {
         href: "/dashboard/inventory2",
