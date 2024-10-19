@@ -1,4 +1,4 @@
-import { DashboardUploadFiles } from "../../app/dashboard/DashboardUploadFiles";
+import { DashboardUploadFiles } from "../../app/dashboard/DashboardPurchases";
 import "../../app/globals.css";
 
 const Home: React.FC = () => {
