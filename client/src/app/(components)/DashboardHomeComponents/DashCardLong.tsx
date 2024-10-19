@@ -1,4 +1,3 @@
-// src/components/DashCardLong.tsx
 import React from "react";
 import { motion } from "framer-motion";
 import { LucideIcon } from "lucide-react";
@@ -9,8 +8,7 @@ interface DashCardLongProps {
   icon: LucideIcon; // Icon passed as a prop
   value?: string | number; // Optional value to display
   color?: string; // Optional color for the icon background
-  isYellow?: boolean; // Optional flag to conditionally change background to yellow
-  isPurple?: boolean; // Optional flag to conditionally change background to purple
+  isYellow?: boolean; // Optional flag to conditionally change background
 }
 
 const DashCardLong: React.FC<DashCardLongProps> = ({
@@ -19,27 +17,23 @@ const DashCardLong: React.FC<DashCardLongProps> = ({
   value,
   color,
   isYellow = false, // Default value for isYellow is false
-  isPurple = false, // Default value for isPurple is false
 }) => {
-  // Determine background color based on props
-  const circleBgColor = isYellow
-    ? "bg-yellow-300"
-    : isPurple
-    ? "bg-purple-300"
-    : "bg-blue-200";
-
   return (
     <motion.div
       className="w-full bg-white bg-opacity-50 backdrop-blur-md overflow-hidden shadow-lg rounded-xl border border-gray-300 relative"
       whileHover={{ y: -5, boxShadow: "0 10px 30px -12px black" }} // Animation on hover
     >
-      {/* Decorative circle backgrounds with conditional color */} 
+      {/* Decorative circle backgrounds with conditional color */}
       <div
-        className={`absolute top-0 right-0 w-20 h-20 rounded-full opacity-20 z-0 ${circleBgColor}`}
+        className={`absolute top-0 right-0 w-20 h-20 rounded-full opacity-20 z-0 ${
+          isYellow ? "bg-yellow-300" : "bg-blue-200"
+        }`}
         style={{ transform: "translate(50%, -50%)" }}
       ></div>
       <div
-        className={`absolute top-0 right-0 w-16 h-16 rounded-full opacity-20 z-0 ${circleBgColor}`}
+        className={`absolute top-0 right-0 w-16 h-16 rounded-full opacity-20 z-0 ${
+          isYellow ? "bg-yellow-300" : "bg-blue-200"
+        }`}
         style={{ transform: "translate(70%, 20%)" }}
       ></div>
 
