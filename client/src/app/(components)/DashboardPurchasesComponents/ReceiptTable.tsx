@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ReceiptTableRow from "./ReceiptTableRow";
 import SearchInput from "./SearchInput";
 import Pagination from "./Pagination";
 import { RECEIPT_DATA } from "@/app/(components)/DashboardPurchasesComponents/ReceiptData";
 
-// Define items per page constant
-const ITEMS_PER_PAGE = 8;
+// Approximate height of a single row (including padding/margins)
+const ROW_HEIGHT = 60;
 
 const ReceiptTable: React.FC = () => {
   // State hooks to manage search input, filtered data, expanded rows, and editing
@@ -16,6 +16,31 @@ const ReceiptTable: React.FC = () => {
   const [editingReceiptId, setEditingReceiptId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [editedReceipt, setEditedReceipt] = useState<any>(null);
+  const [itemsPerPage, setItemsPerPage] = useState(8); // Initial items per page
+
+  // Function to calculate items per page based on viewport height
+  const calculateItemsPerPage = () => {
+    const viewportHeight = window.innerHeight;
+    const tableHeight = viewportHeight * 0.6; 
+    const items = Math.floor(tableHeight / ROW_HEIGHT);
+    return items;
+  };
+
+  // Update items per page when the component mounts or when the window resizes
+  useEffect(() => {
+    const handleResize = () => {
+      setItemsPerPage(calculateItemsPerPage());
+    };
+
+    // Set items per page initially and add resize event listener
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   // Handle search input changes
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,13 +106,13 @@ const ReceiptTable: React.FC = () => {
   };
 
   // Calculate pagination indices
-  const indexOfLastReceipt = currentPage * ITEMS_PER_PAGE;
-  const indexOfFirstReceipt = indexOfLastReceipt - ITEMS_PER_PAGE;
+  const indexOfLastReceipt = currentPage * itemsPerPage;
+  const indexOfFirstReceipt = indexOfLastReceipt - itemsPerPage;
   const currentReceipts = filteredReceipts.slice(
     indexOfFirstReceipt,
     indexOfLastReceipt
   );
-  const totalPages = Math.ceil(filteredReceipts.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredReceipts.length / itemsPerPage);
 
   return (
     <motion.div
