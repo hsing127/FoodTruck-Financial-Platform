@@ -21,7 +21,7 @@ const ReceiptTable: React.FC = () => {
   // Function to calculate items per page based on viewport height
   const calculateItemsPerPage = () => {
     const viewportHeight = window.innerHeight;
-    const tableHeight = viewportHeight * 0.6; 
+    const tableHeight = viewportHeight * 0.5; 
     const items = Math.floor(tableHeight / ROW_HEIGHT);
     return items;
   };
@@ -116,7 +116,7 @@ const ReceiptTable: React.FC = () => {
 
   return (
     <motion.div
-      className="bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 mb-8"
+      className="bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
