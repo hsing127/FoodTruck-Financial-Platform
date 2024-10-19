@@ -7,6 +7,7 @@ import { RECEIPT_DATA } from "@/app/(components)/DashboardPurchasesComponents/Re
 
 // Approximate height of a single row (including padding/margins)
 const ROW_HEIGHT = 60;
+const BOTTOM_PADDING = 35; 
 
 const ReceiptTable: React.FC = () => {
   // State hooks to manage search input, filtered data, expanded rows, and editing
@@ -18,12 +19,11 @@ const ReceiptTable: React.FC = () => {
   const [editedReceipt, setEditedReceipt] = useState<any>(null);
   const [itemsPerPage, setItemsPerPage] = useState(8); // Initial items per page
 
-  // Function to calculate items per page based on viewport height
   const calculateItemsPerPage = () => {
     const viewportHeight = window.innerHeight;
-    const tableHeight = viewportHeight * 0.5; 
-    const items = Math.floor(tableHeight / ROW_HEIGHT);
-    return items;
+    const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
+    const items = Math.floor(availableHeight / ROW_HEIGHT);
+    return items > 0 ? items : 1; // Ensure at least one item per page
   };
 
   // Update items per page when the component mounts or when the window resizes
@@ -116,13 +116,13 @@ const ReceiptTable: React.FC = () => {
 
   return (
     <motion.div
-      className="bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700"
-      initial={{ opacity: 0, y: 20 }}
+    className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full`}
+    initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
     >
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-black mb-4">Receipt List</h2>
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold text-black mb-2">Receipt List</h2>
 
         {/* Search Input */}
         <div className="w-full">
@@ -131,7 +131,7 @@ const ReceiptTable: React.FC = () => {
       </div>
 
       {/* Table to display receipt data */}
-      <div className="overflow-x-auto">
+      <div className="flex-grow overflow-y-auto">
         <table className="min-w-full divide-y divide-white">
           <thead>
             <tr>
