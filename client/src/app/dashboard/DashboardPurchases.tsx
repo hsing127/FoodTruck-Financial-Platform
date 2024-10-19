@@ -11,7 +11,7 @@ export const DashboardUploadFiles: React.FC = () => {
   return (
     <DashboardLayout>
       <div className="outline outline-white outline-8 flex-1 relative border-white rounded-3xl border-[16px] overflow-hidden">
-        <div className="max-w-[1800px] pt-2 mx-auto px-4 lg:px-6">
+        <div className="max-w-[1800px] mx-auto px-4 lg:px-6">
           <div className="pt-2 mx-auto ">
             {/* First row of dashboard cards */}
             <motion.div
