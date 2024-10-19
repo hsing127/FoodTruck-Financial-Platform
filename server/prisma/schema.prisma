@@ -5,10 +5,108 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    Email        String  @id @db.VarChar(50)
+    Password     String  @db.VarChar(100)
+    BusinessName String? @db.VarChar(50)
+
+    purchases   Purchase[]
+    ingredients Ingredient[]
+    menuItems   MenuItem[]
+    sales       Sale[]
+}
+
+model Purchase {
+    Email     String     @db.VarChar(50)
+    DateTime  DateTime   @db.Timestamp(6)
+    Location  String     @db.VarChar(50)
+    Cost      Decimal    @db.Decimal(8, 2)
+    user      User       @relation(fields: [Email], references: [Email], onDelete: Cascade, onUpdate: Cascade)
+    includes  Includes[]
+
+    @@id([Email, DateTime, Location])
+    @@unique([Email, DateTime, Location])
+}
+
+model Ingredient {
+    Email       String     @db.VarChar(50)
+    Name        String     @db.VarChar(50)
+    Amount      Decimal    @db.Decimal(8, 2)
+    AmountUnits String     @db.VarChar(10)
+    user        User       @relation(fields: [Email], references: [Email], onDelete: Cascade, onUpdate: Cascade)
+    includes    Includes[]
+    uses        Uses[]
+
+    @@id([Email, Name])
+}
+
+model Includes {
+    Email          String     @db.VarChar(50)
+    DateTime       DateTime   @db.Timestamp(6)
+    Location       String     @db.VarChar(50)
+    IngredientName String     @db.VarChar(50)
+    Price          Decimal    @db.Decimal(8, 2)
+    Amount         Decimal    @db.Decimal(8, 2)
+    AmountUnits    String     @db.VarChar(10)
+    ingredient     Ingredient @relation(fields: [Email, IngredientName], references: [Email, Name], onDelete: Cascade, onUpdate: Cascade)
+    purchase       Purchase   @relation(fields: [Email, DateTime, Location], references: [Email, DateTime, Location], onDelete: Cascade, onUpdate: Cascade)
+
+    @@id([Email, DateTime, Location, IngredientName])
+}
+
+model MenuItem {
+    Email     String  @db.VarChar(50)
+    Name      String  @db.VarChar(50)
+    Cost      Decimal @db.Decimal(8, 2)
+    user      User    @relation(fields: [Email], references: [Email], onDelete: Cascade, onUpdate: Cascade)
+    uses      Uses[]
+    soldItems Sold[]
+
+    @@id([Email, Name])
+    @@unique([Email, Name])
+}
+
+model Uses {
+    Email          String     @db.VarChar(50)
+    DateTime       DateTime   @db.Timestamp(6)
+    MenuName       String     @db.VarChar(50)
+    IngredientName String     @db.VarChar(50)
+    Amount         Decimal    @db.Decimal(8, 2)
+    AmountUnits    String     @db.VarChar(10)
+    ingredient     Ingredient @relation(fields: [Email, IngredientName], references: [Email, Name], onDelete: Cascade, onUpdate: Cascade)
+    menuItem       MenuItem   @relation(fields: [Email, MenuName], references: [Email, Name], onDelete: Cascade, onUpdate: Cascade)
+
+    @@id([Email, MenuName, IngredientName])
+}
+
+model Sale {
+    Email     String   @db.VarChar(50)
+    StartDate DateTime @db.Date
+    EndDate   DateTime @db.Date
+    Revenue   Decimal  @db.Decimal(8, 2)
+    user      User     @relation(fields: [Email], references: [Email], onDelete: Cascade, onUpdate: Cascade)
+    soldItems Sold[]
+
+    @@id([Email, StartDate, EndDate])
+    @@unique([Email, StartDate, EndDate])
+}
+
+model Sold {
+    Email     String   @db.VarChar(50)
+    StartDate DateTime @db.Date
+    EndDate   DateTime @db.Date
+    Count     Int
+    MenuName  String   @db.VarChar(50)
+    sale      Sale     @relation(fields: [Email, StartDate, EndDate], references: [Email, StartDate, EndDate], onDelete: Cascade, onUpdate: Cascade)
+    menuItem  MenuItem @relation(fields: [Email, MenuName], references: [Email, Name], onDelete: Cascade)
+
+    @@id([Email, StartDate, EndDate, MenuName])
 }
