@@ -19,7 +19,7 @@ export const DashboardHome: React.FC = () => {
           {/* First row of dashboard cards */}
           <motion.div
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4 mt-4"
-            initial={{ opacity: 0, y: 20 }} // Animation for appearance
+            initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
@@ -33,7 +33,7 @@ export const DashboardHome: React.FC = () => {
                 withToggleButtons={true}
                 monthlyValue="$3000"
                 yearlyValue="$36000"
-                isTrendingUp={true} // Indicates trend direction
+                isTrendingUp={true}
               />
             </div>
 
@@ -44,8 +44,8 @@ export const DashboardHome: React.FC = () => {
                 icon={ShoppingCart}
                 value="1,200"
                 color="bg-gray-100"
-                withEllipse={true} // Adds a visual decoration
-                isTrendingUp={false} // Indicates trend direction
+                withEllipse={true} 
+                isTrendingUp={false} 
               />
             </div>
 
@@ -62,7 +62,7 @@ export const DashboardHome: React.FC = () => {
                 icon={Landmark}
                 value="$550"
                 color="bg-gray-100"
-                isYellow={true} // Special background color for this card
+                isYellow={true} 
               />
             </div>
           </motion.div>
@@ -70,7 +70,7 @@ export const DashboardHome: React.FC = () => {
           {/* Second row with Sales Overview and Distribution chart */}
           <motion.div
             className="grid grid-cols-1 lg:grid-cols-[2.04fr_1fr] gap-4 mb-4"
-            initial={{ opacity: 0, y: 20 }} // Animation for appearance
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
@@ -81,7 +81,7 @@ export const DashboardHome: React.FC = () => {
           {/* Third row with bar chart */}
           <motion.div
             className="grid grid-cols-1 gap-4 lg:col-span-3"
-            initial={{ opacity: 0, y: 20 }} // Delayed animation for appearance
+            initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.4 }}
           >

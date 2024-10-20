@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { ChevronRight, Edit, Save, Trash2, X } from "lucide-react";
 import ReceiptDetails from "./ReceiptDetails";
 
-// Define the type for ReceiptTableRow component props
 interface ReceiptTableRowProps {
   receipt: any;
   isRowExpanded: (id: number) => boolean;
@@ -29,20 +28,34 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
   editedReceipt,
   handleDeleteClick,
 }) => {
-  // Toggle row expansion when clicked, if not in editing mode
+  // Toggle row expansion
   const onRowClick = () => {
     if (editingReceiptId !== receipt.receiptId) {
       toggleRow(receipt.receiptId);
     }
   };
 
-  // Prevent event propagation when interacting with inputs or buttons
+  // Prevent event propagation
   const preventEventPropagation = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
 
+  // Common function for rendering input fields
+  const renderInputField = (name: string, value: string) => (
+    <td className="py-2 text-sm text-black">
+      <input
+        type="text"
+        name={name}
+        value={value}
+        onChange={handleInputChange}
+        className="lg:w-24 p-1 border border-white"
+        onClick={preventEventPropagation}
+      />
+    </td>
+  );
+
   return (
-    <React.Fragment key={receipt.receiptId}>
+    <>
       <tr className="cursor-pointer" onClick={onRowClick}>
         <td className="py-5 text-sm font-medium text-black flex items-center">
           <motion.div
@@ -59,46 +72,9 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
         {/* Conditional rendering for edit mode or normal mode */}
         {editingReceiptId === receipt.receiptId ? (
           <>
-            <td className="py-2 text-sm text-black">
-              <input
-                type="text"
-                name="location"
-                value={editedReceipt.location}
-                onChange={handleInputChange}
-                className="lg:w-24 p-1 border border-white"
-                onClick={preventEventPropagation}
-              />
-            </td>
-            <td className="py-2 text-sm text-black">
-              <input
-                type="text"
-                name="date"
-                value={editedReceipt.date}
-                onChange={handleInputChange}
-                className="lg:w-24 p-1 border border-white"
-                onClick={preventEventPropagation}
-              />
-            </td>
-            <td className="py-2 text-sm text-black">
-              <input
-                type="text"
-                name="time"
-                value={editedReceipt.time}
-                onChange={handleInputChange}
-                className="lg:w-24 p-1 border border-white"
-                onClick={preventEventPropagation}
-              />
-            </td>
-            <td className="py-2 text-sm text-black">
-              <input
-                type="text"
-                name="cost"
-                value={editedReceipt.cost}
-                onChange={handleInputChange}
-                className="lg:w-24 p-1 border border-white"
-                onClick={preventEventPropagation}
-              />
-            </td>
+            {["location", "date", "time", "cost"].map((field) =>
+              renderInputField(field, editedReceipt[field])
+            )}
             <td className="py-2 text-sm text-black">
               <button
                 className="mr-2 text-green-600"
@@ -122,10 +98,11 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
           </>
         ) : (
           <>
-            <td className="py-2 text-sm text-black">{receipt.location}</td>
-            <td className="py-2 text-sm text-black">{receipt.date}</td>
-            <td className="py-2 text-sm text-black">{receipt.time}</td>
-            <td className="py-2 text-sm text-black">{receipt.cost}</td>
+            {["location", "date", "time", "cost"].map((field) => (
+              <td key={field} className="py-2 text-sm text-black">
+                {receipt[field]}
+              </td>
+            ))}
             <td className="py-2 text-sm text-black">
               <button
                 className="mr-2 text-[#8B5CF6] hover:text-[#b07ff0]"
@@ -150,7 +127,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
         )}
       </tr>
 
-      {/* Expandable row for showing detailed receipt information */}
+      {/* Expandable row for detailed receipt information */}
       {isRowExpanded(receipt.receiptId) && (
         <motion.tr
           initial={{ height: 0, opacity: 0 }}
@@ -164,7 +141,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
           </td>
         </motion.tr>
       )}
-    </React.Fragment>
+    </>
   );
 };
 

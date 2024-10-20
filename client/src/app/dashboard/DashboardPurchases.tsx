@@ -1,4 +1,3 @@
-// src/components/DashboardUploadFiles.tsx
 import "@/app/globals.css";
 import React from "react";
 import DashboardLayout from "./DashboardWrapper";

@@ -7,7 +7,7 @@ import { RECEIPT_DATA } from "@/app/(components)/DashboardPurchasesComponents/Re
 
 // Approximate height of a single row (including padding/margins)
 const ROW_HEIGHT = 60;
-const BOTTOM_PADDING = 35; 
+const BOTTOM_PADDING = 40;
 
 const ReceiptTable: React.FC = () => {
   // State hooks to manage search input, filtered data, expanded rows, and editing
@@ -116,8 +116,8 @@ const ReceiptTable: React.FC = () => {
 
   return (
     <motion.div
-    className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full`}
-    initial={{ opacity: 0, y: 20 }}
+      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full`}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
     >
