@@ -67,6 +67,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       {/* Action Buttons */}
       <div className="flex items-center space-x-2">
         {[
+          {
             icon: <Upload size={20} />,
             type: "upload",
             title: "Upload File",
