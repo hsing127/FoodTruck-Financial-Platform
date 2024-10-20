@@ -1,0 +1,20 @@
+[
+    {
+        "Email": "wenjiex1@asu.edu",
+        "DateTime": "2024-09-28T13:56:51Z",
+        "Location": "Walmart",
+        "Cost": 875.11
+    },
+    {
+        "Email": "wenjiex1@asu.edu",
+        "DateTime": "2024-10-03T13:56:51Z",
+        "Location": "HMart",
+        "Cost": 83.34
+    },
+    {
+        "Email": "wenjiex1@asu.edu",
+        "DateTime": "2024-10-15T13:56:51Z",
+        "Location": "Target",
+        "Cost": 87.56
+    }
+]

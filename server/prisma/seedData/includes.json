@@ -1,0 +1,47 @@
+[
+    {
+        "Email": "wenjiex1@asu.edu",
+        "DateTime": "2024-09-28T13:56:51Z",
+        "Location": "Walmart",
+        "IngredientName": "Ground Beef",
+        "Price": 600,
+        "Amount": 50,
+        "AmountUnits": "lbs"
+    },
+    {
+        "Email": "wenjiex1@asu.edu",
+        "DateTime": "2024-09-28T13:56:51Z",
+        "Location": "Walmart",
+        "IngredientName": "MSG",
+        "Price": 275.11,
+        "Amount": 25,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "wenjiex1@asu.edu",
+        "DateTime": "2024-10-03T13:56:51Z",
+        "Location": "HMart",
+        "IngredientName": "Soy Sauce",
+        "Price": 83.34,
+        "Amount": 12,
+        "AmountUnits": "L"
+    },
+    {
+        "Email": "wenjiex1@asu.edu",
+        "DateTime": "2024-10-15T13:56:51Z",
+        "Location": "Target",
+        "IngredientName": "Tortilla",
+        "Price": 50,
+        "Amount": 30,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "wenjiex1@asu.edu",
+        "DateTime": "2024-10-15T13:56:51Z",
+        "Location": "Target",
+        "IngredientName": "Cheddar",
+        "Price": 27.56,
+        "Amount": 14,
+        "AmountUnits": "lb"
+    }
+]
