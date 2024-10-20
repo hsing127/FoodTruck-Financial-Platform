@@ -18,10 +18,14 @@ const SearchInput: React.FC<SearchInputProps> = ({
     setActiveDropdown((prev) => (prev === type ? null : type));
   };
 
-  // Animation variants for dropdown and items
+  // Animation variants for dropdown container and items
   const dropdownVariants = {
     hidden: { opacity: 0, y: -20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.1 } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.05, when: "beforeChildren", staggerChildren: 0.05 },
+    },
   };
 
   const itemVariants = {
@@ -66,8 +70,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
       {/* Action Buttons */}
       <div className="flex items-center space-x-2">
-        {[
-          {
+        {[{
             icon: <Upload size={20} />,
             type: "upload",
             title: "Upload File",
