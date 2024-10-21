@@ -24,7 +24,11 @@ const SearchInput: React.FC<SearchInputProps> = ({
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.05, when: "beforeChildren", staggerChildren: 0.05 },
+      transition: {
+        duration: 0.05,
+        when: "beforeChildren",
+        staggerChildren: 0.05,
+      },
     },
   };
 
@@ -70,7 +74,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
       {/* Action Buttons */}
       <div className="flex items-center space-x-2">
-        {[{
+        {[
+          {
             icon: <Upload size={20} />,
             type: "upload",
             title: "Upload File",
