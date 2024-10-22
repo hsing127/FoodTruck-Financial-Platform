@@ -3,6 +3,7 @@ Setup up rudementary API gateway REST api
 
 authLoginFunction
 const { Client } = require('pg'); // For PostgreSQL
+const bcrypt = require('bcrypt')
 // const mysql = require('mysql2/promise'); // Uncomment if using MySQL instead of PostgreSQL
 
 exports.handler = async (event) => {
@@ -14,6 +15,31 @@ exports.handler = async (event) => {
             statusCode: 400,
             body: JSON.stringify({ error: "Email and password are required" }),
         };
+    }
+
+    const forbiddenChars = [
+        "'",    
+        '"',    
+        ';',    
+        '\\',   
+        '--',  
+        '/*',
+        '*\/',  
+        '=',   
+        '(',   
+        ')',   
+        '>',  
+        '<'   
+    ];
+
+    // Check if any of the forbidden characters are present in the email
+    for (let char of forbiddenChars) {
+        if (email.includes(char)||password.includes(char)) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: "Invalid email or password" }),
+            }; //"Email and Password should not include the following characters or sets ' \" \\ ; -- /* *\/ = ( ) < >"
+        }
     }
 
     // PostgreSQL connection (Replace with your actual RDS connection details)
@@ -42,8 +68,8 @@ exports.handler = async (event) => {
             };
         }
 
-        // Very simple password check (no hash comparison here for simplicity)
-        if (user.password !== password) {
+        const isPasswordValid = await bcrypt.compare(password + email, user.password);
+        if (!isPasswordValid) {
             return {
                 statusCode: 401,
                 body: JSON.stringify({ error: "Invalid email or password" }),
@@ -57,7 +83,11 @@ exports.handler = async (event) => {
         };
 
     } catch (err) {
-        console.error(err);
+        if (err.code === 'ECONNREFUSED') {
+            console.error("Database connection failed:", err);
+        } else {
+            console.error("Unexpected error:", err);
+        }
         return {
             statusCode: 500,
             body: JSON.stringify({ error: "Server error" }),
@@ -67,6 +97,7 @@ exports.handler = async (event) => {
         await client.end();
     }
 };
+
 
 authSignUpFunction
 const { Client } = require('pg'); // For PostgreSQL
