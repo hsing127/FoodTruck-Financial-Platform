@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/app/redux";
 import { motion } from "framer-motion";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -42,41 +42,32 @@ const foodItems = [
 ];
 
 const VolumeOverview = () => {
-  // States to handle chart visibility and height
-  const [chartHeight, setChartHeight] = useState("25vh"); // Default height
+  const [chartHeight, setChartHeight] = useState("25vh");
   const [isChartVisible, setIsChartVisible] = useState(false);
-  const chartRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef(null);
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
   // Tooltip styling based on dark mode
-  const tooltipContentStyle = isDarkMode
-    ? { backgroundColor: "rgba(17, 24, 39, 0.9)", borderColor: "#6B7280" }
-    : { backgroundColor: "#ffffff", borderColor: "#000000" };
+  const tooltipStyles = {
+    contentStyle: {
+      backgroundColor: isDarkMode ? "rgba(17, 24, 39, 0.9)" : "#ffffff",
+      borderColor: isDarkMode ? "#6B7280" : "#000000",
+    },
+    itemStyle: {
+      color: isDarkMode ? "#ffffff" : "#000000",
+    },
+  };
 
-  const tooltipItemStyle = isDarkMode
-    ? { color: "#ffffff" }
-    : { color: "#000000" };
+  // handle window resize events
+  const handleResize = useCallback(() => {
+    setChartHeight(window.innerHeight < 900 ? "10vh" : "15vh");
+  }, []);
 
-  const itemName = "Pizza Sales"; // Mock item name
-  const topRightNumber = "$1899.00"; // Mock top right number
-
+  // observer to watch if chart is visible
   useEffect(() => {
-    // Handle window resize for responsive chart height
-    const handleResize = () => {
-      if (window.innerHeight < 900) {
-        setChartHeight("10vh");
-      } else {
-        setChartHeight("15vh");
-      }
-    };
-
-    // Store chart reference in a local variable
-    const currentChartRef = chartRef.current;
-
-    // Observer to trigger chart visibility on scroll
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
+      ([entry]) => {
+        if (entry.isIntersecting) {
           setIsChartVisible(true);
           observer.disconnect();
         }
@@ -84,57 +75,54 @@ const VolumeOverview = () => {
       { threshold: 0.1 }
     );
 
-    // Observe the chart reference
-    if (currentChartRef) {
-      observer.observe(currentChartRef);
-    }
+    const currentRef = chartRef.current;
+    if (currentRef) observer.observe(currentRef);
 
-    // Add event listener for window resize
+    // Add a event listener to handle window resizing
     window.addEventListener("resize", handleResize);
-    handleResize(); // Set initial height
+    handleResize();
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      if (currentChartRef) observer.unobserve(currentChartRef);
+      if (currentRef) observer.unobserve(currentRef);
     };
-  }, []);
+  }, [handleResize]);
 
   return (
     <motion.div
-      className="p-5 w-full bg-white bg-opacity-50 backdrop-blur-md overflow-hidden shadow-lg rounded-xl border border-gray-300 relative"
+      className="p-5 w-full bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-300 relative"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
       ref={chartRef}
     >
+      {/* Options button at the top right */}
       <div className="absolute top-4 right-5">
         <div className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer">
           <MoreHorizontal className="w-6 h-6 text-gray-700" />
         </div>
       </div>
 
+      {/* Title section */}
       <div className="mb-4">
         <h2 className="text-lg font-semibold text-gray-900">Popular Foods</h2>
       </div>
 
+      {/* Sales info section */}
       <div className="relative p-4 bg-rose-100 rounded-lg shadow-inner">
         <div className="absolute top-2 left-4">
-          <h2 className="text-lg font-semibold text-customBlack">{itemName}</h2>
+          <h2 className="text-lg font-semibold text-customBlack">
+            Pizza Sales
+          </h2>
           <p className="text-sm text-customBlack">10% Profit</p>
         </div>
 
         <div className="absolute top-2 right-4">
-          <h2 className="text-xl font-semibold text-customBlack">
-            {topRightNumber}
-          </h2>
+          <h2 className="text-xl font-semibold text-customBlack">$1899.00</h2>
         </div>
 
-        <div
-          className="w-full mt-8"
-          style={{
-            height: chartHeight,
-          }}
-        >
+        {/* Chart container */}
+        <div className="w-full mt-8" style={{ height: chartHeight }}>
           {isChartVisible && (
             <ResponsiveContainer>
               <AreaChart data={volumeData}>
@@ -148,8 +136,8 @@ const VolumeOverview = () => {
                 <XAxis hide />
                 <YAxis hide />
                 <Tooltip
-                  contentStyle={tooltipContentStyle}
-                  itemStyle={tooltipItemStyle}
+                  contentStyle={tooltipStyles.contentStyle}
+                  itemStyle={tooltipStyles.itemStyle}
                   cursor={false}
                 />
                 <Area
@@ -168,6 +156,7 @@ const VolumeOverview = () => {
         </div>
       </div>
 
+      {/* Food items list */}
       <div className="mt-6">
         {foodItems.slice(0, 3).map((item, index) => (
           <motion.div
@@ -202,6 +191,7 @@ const VolumeOverview = () => {
           </motion.div>
         ))}
 
+        {/* View all button */}
         <div className="text-center mt-4">
           <button className="text-sm text-blue-500 font-medium inline-flex items-center hover:text-blue-700 transition-colors duration-300">
             View All <ChevronRight className="w-4 h-4 ml-1" />

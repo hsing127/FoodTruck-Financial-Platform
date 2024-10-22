@@ -1,0 +1,44 @@
+[
+    {
+        "Email": "wenjiex1@asu.edu",
+        "MenuName": "Beef Taco",
+        "IngredientName": "Ground Beef",
+        "Amount": 2,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "wenjiex1@asu.edu",
+        "MenuName": "Hamburg Steak",
+        "IngredientName": "Ground Beef",
+        "Amount": 6,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "wenjiex1@asu.edu",
+        "MenuName": "Hamburg Steak",
+        "IngredientName": "MSG",
+        "Amount": 1,
+        "AmountUnits": "tsp"
+    },
+    {
+        "Email": "wenjiex1@asu.edu",
+        "MenuName": "Hamburg Steak",
+        "IngredientName": "Soy Sauce",
+        "Amount": 10,
+        "AmountUnits": "ml"
+    },
+    {
+        "Email": "wenjiex1@asu.edu",
+        "MenuName": "Beef Taco",
+        "IngredientName": "Tortilla",
+        "Amount": 1,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "wenjiex1@asu.edu",
+        "MenuName": "Beef Taco",
+        "IngredientName": "Cheddar",
+        "Amount": 1,
+        "AmountUnits": "oz"
+    }
+]

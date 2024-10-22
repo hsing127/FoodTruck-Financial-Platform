@@ -76,7 +76,6 @@ model MenuItem {
 
 model Uses {
     Email          String     @db.VarChar(50)
-    DateTime       DateTime   @db.Timestamp(6)
     MenuName       String     @db.VarChar(50)
     IngredientName String     @db.VarChar(50)
     Amount         Decimal    @db.Decimal(8, 2)
