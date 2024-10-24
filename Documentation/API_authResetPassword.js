@@ -38,7 +38,7 @@ exports.handler = async (event) => {
         if (newPassword.includes(char)) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ error: "Name, email, and password should not include forbidden characters: ' \" \\ ; -- /* *\/ = ( ) < >." }),
+                body: JSON.stringify({ error: "Password should not include forbidden characters: ' \" \\ ; -- /* *\/ = ( ) < >." }),
             }; 
         }
     }
