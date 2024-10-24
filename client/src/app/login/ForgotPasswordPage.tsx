@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import "../../styles/LoginStyles.css";
+import "@/app/globals.css";
 
 const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -17,36 +17,41 @@ const ForgotPasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="LoginBody">
-      <div className="forgotPassWord-container">
-        <div className="login-box">
-          <h2 className="forgot">Forgot Your Password?</h2>
-          <div className="code">
-            <p className="code">
-              Enter your email address and we will send you instructions to
-              reset your password.
-            </p>
+    <div className="flex justify-center items-center h-screen bg-cover bg-fixed bg-center bg-gray-950">
+      <div className="bg-customWhite/5 backdrop-blur-lg rounded-xl shadow-lg p-10 max-w-md w-full mx-auto">
+        <h2 className="text-customWhite text-2xl text-center mb-10">
+          Forgot Your Password?
+        </h2>
+        <p className="text-customWhite text-center mb-6">
+          Enter your email address and we will send you instructions to reset
+          your password.
+        </p>
+        <form>
+          <div className="relative mb-8">
+            <input
+              type="email"
+              id="Email"
+              name="email"
+              placeholder="Email address"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full text-customWhite bg-transparent border-b-2 border-customWhite outline-none py-4 focus:border-[#8B5CF6] transition-all placeholder-customWhite"
+            />
           </div>
-          <form>
-            <div className="input-field2">
-              <input
-                type="text"
-                id="Email"
-                name="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <label htmlFor="email">Email address</label>
-            </div>
-            <button type="submit" className="login-btn" onClick={handleSubmit}>
-              Submit
-            </button>
-            <p className="signup-link">
-              <Link href="/login">Back to Login</Link>
-            </p>
-          </form>
-        </div>
+          <button
+            type="submit"
+            className="w-full bg-[#8B5CF6] text-customWhite font-bold py-4 rounded-full transition-all hover:bg-[#7B49E2]"
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
+          <p className="text-customWhite text-center mt-4">
+            <Link href="/login" className="text-[#8B5CF6] hover:underline">
+              Back to Login
+            </Link>
+          </p>
+        </form>
       </div>
     </div>
   );
