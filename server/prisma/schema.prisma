@@ -109,3 +109,11 @@ model Sold {
 
     @@id([Email, StartDate, EndDate, MenuName])
 }
+
+model Code {
+    Email     String   @db.VarChar(50)
+    ExpireAt DateTime  @db.Date
+    Code      Int
+    Used      Boolean  @default(false)
+    user      User     @relation(fields: [Email], references: [Email], onDelete: Cascade, onUpdate: Cascade)
+}
