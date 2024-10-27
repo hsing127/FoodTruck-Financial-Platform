@@ -93,7 +93,7 @@ const Sidebar = React.memo(() => {
       { href: "/dashboard/purchases", icon: CircleDollarSign, label: "Purchases" },
       { href: "/dashboard/menu", icon: Upload, label: "Menu" },
       {
-        href: "/dashboard/inventory2",
+        href: "/dashboard/inventory",
         icon: PackageSearch,
         label: "Inventory",
       },
