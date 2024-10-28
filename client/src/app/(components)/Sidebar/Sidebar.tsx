@@ -47,7 +47,8 @@ const SidebarLink = React.memo(
           }`}
           whileHover={{ scale: 1.05 }} // Animation on hover
           whileTap={{ scale: 0.95 }} // Animation on tap
-          transition={{ type: "spring", stiffness: 300 }} // Smooth spring animation
+          animate={{ y: isActive ? -2 : 0 }} // Bounce effect for active link
+          transition={{ type: "spring", stiffness: 300, damping: 20 }} // Smooth spring animation with bounce effect
         >
           <div className="w-6 h-6 flex-shrink-0">
             <Icon className="w-full h-full !text-gray-900" />{" "}
