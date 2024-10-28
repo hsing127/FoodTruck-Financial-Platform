@@ -24,7 +24,7 @@ export const DashboardInventory: React.FC = () => {
                 <DashCardLong
                   name="Total Inventory Items"
                   icon={FileText}
-                  value="6"
+                  value="5"
                   color="bg-gray-100"
                 />
               </div>

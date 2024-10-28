@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import InventoryTableRow from "./InventoryTableRow";
-import SearchInput from "./SearchInput";
-import Pagination from "./Pagination";
+import SearchInput from "../DashboardPurchasesComponents/SearchInput";
+import Pagination from "../DashboardPurchasesComponents/Pagination";
 import { INVENTORY_DATA } from "@/app/(components)/DashboardInventoryComponents/InventoryData";
 
 // Approximate height of a single row (including padding/margins)
@@ -10,10 +10,9 @@ const ROW_HEIGHT = 60;
 const BOTTOM_PADDING = 40;
 
 const InventoryTable: React.FC = () => {
-  // State hooks to manage search input, filtered data, expanded rows, and editing
+  // State hooks to manage search input, filtered data, and editing
   const [searchInput, setSearchInput] = useState("");
   const [filteredInventory, setFilteredInventory] = useState(INVENTORY_DATA);
-  const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [editingInventoryName, setEditingInventoryName] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [editedInventory, setEditedInventory] = useState<any>(null);
@@ -54,16 +53,6 @@ const InventoryTable: React.FC = () => {
     setFilteredInventory(filtered);
     setCurrentPage(1);
   };
-
-  // Toggle the row expansion state
-  const toggleRow = (id: number) => {
-    setExpandedRows((prev) =>
-      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
-    );
-  };
-
-  // Check if a row is expanded
-  const isRowExpanded = (id: number) => expandedRows.includes(id);
 
   // Handle edit button click
   const handleEditClick = (inventory: any) => {
@@ -155,8 +144,6 @@ const InventoryTable: React.FC = () => {
               <InventoryTableRow
                 key={inventory.Name}
                 inventory={inventory}
-                isRowExpanded={isRowExpanded}
-                toggleRow={toggleRow}
                 editingInventoryName={editingInventoryName}
                 handleEditClick={handleEditClick}
                 handleSaveClick={handleSaveClick}
