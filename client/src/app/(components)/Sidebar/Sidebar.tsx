@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSidebarCollapsed } from "@/app/state";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useMemo, useCallback, useEffect, useState } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import {
   CircleDollarSign,
   ClipboardList,
@@ -78,22 +78,15 @@ const Sidebar = React.memo(() => {
 
   const [isOverflowHidden, setIsOverflowHidden] = useState(false); // State for controlling overflow visibility
 
-  useEffect(() => {
-    // Temporarily hide overflow during the transition
-    setIsOverflowHidden(true);
-
-    // Show overflow after transition ends when sidebar is fully open or closed
-    const timeout = setTimeout(() => {
-      setIsOverflowHidden(false);
-    }, 600);
-
-    // Cleanup timeout on unmount or sidebar toggle
-    return () => clearTimeout(timeout);
-  }, [isSidebarCollapsed]);
-
-  // Function to handle sidebar toggle
+  // Function to handle sidebar toggle, with overflow visibility delay
   const handleToggleSidebar = useCallback(() => {
+    setIsOverflowHidden(true); // Hide overflow during transition
     dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
+
+    // Delay to allow animation to complete, then show overflow
+    setTimeout(() => {
+      setIsOverflowHidden(false);
+    }, 300); // Match this duration to the animation duration
   }, [dispatch, isSidebarCollapsed]);
 
   // Sidebar class names based on collapsed state
