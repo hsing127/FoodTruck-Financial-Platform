@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsSidebarCollapsed } from "@/app/state";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useEffect, useState } from "react";
 import {
   CircleDollarSign,
   ClipboardList,
@@ -23,7 +23,6 @@ import {
 import { motion } from "framer-motion";
 
 interface SidebarLinkProps {
-  // Props for sidebar links
   href: string;
   icon: LucideIcon; // Icon component passed as a prop
   label: string; // Label for the link
@@ -42,7 +41,7 @@ const SidebarLink = React.memo(
       <Link href={href} aria-label={label}>
         <motion.div
           className={`cursor-pointer flex items-center ${
-            isCollapsed ? "justify-start pl-4 ml-2" : "pl-4 ml-2"
+            isCollapsed ? "justify-start pl-4 ml-3" : "pl-4 ml-3"
           } py-4 hover:text-gray-900 hover:bg-blue-100 gap-3 transition-colors ${
             isActive ? "bg-blue-200 text-gray-900 rounded-lg" : "rounded-lg"
           }`}
@@ -51,12 +50,13 @@ const SidebarLink = React.memo(
           transition={{ type: "spring", stiffness: 300 }} // Smooth spring animation
         >
           <div className="w-6 h-6 flex-shrink-0">
-            <Icon className="w-full h-full !text-gray-900" /> {/* Icon display */}
+            <Icon className="w-full h-full !text-gray-900" />{" "}
+            {/* Icon display */}
           </div>
           {!isCollapsed && (
             <motion.span
               className="ml-2 whitespace-nowrap"
-              initial={{ opacity: 0, width: 0 }} // Animation for text appearance
+              initial={{ opacity: 0, width: 0 }}
               animate={{ opacity: 1, width: "auto" }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.2 }}
@@ -76,6 +76,21 @@ const Sidebar = React.memo(() => {
     (state) => state.global.isSidebarCollapsed
   ); // Get sidebar state from redux
 
+  const [isOverflowHidden, setIsOverflowHidden] = useState(false); // State for controlling overflow visibility
+
+  useEffect(() => {
+    // Temporarily hide overflow during the transition
+    setIsOverflowHidden(true);
+
+    // Show overflow after transition ends when sidebar is fully open or closed
+    const timeout = setTimeout(() => {
+      setIsOverflowHidden(false);
+    }, 600);
+
+    // Cleanup timeout on unmount or sidebar toggle
+    return () => clearTimeout(timeout);
+  }, [isSidebarCollapsed]);
+
   // Function to handle sidebar toggle
   const handleToggleSidebar = useCallback(() => {
     dispatch(setIsSidebarCollapsed(!isSidebarCollapsed));
@@ -83,14 +98,20 @@ const Sidebar = React.memo(() => {
 
   // Sidebar class names based on collapsed state
   const sidebarClassNames = `fixed flex flex-col ${
-    isSidebarCollapsed ? "w-[66px]" : "w-[258px]"
-  } bg-white transition-all duration-300 overflow-hidden h-full shadow-md z-40`;
+    isSidebarCollapsed ? "w-[70px]" : "w-[260px]"
+  } ${
+    isOverflowHidden ? "overflow-hidden" : "overflow-visible"
+  } bg-white transition-all duration-300 h-full shadow-md z-40`;
 
   // Main links for the sidebar
   const mainLinks = useMemo(
     () => [
       { href: "/dashboard/home", icon: Layout, label: "Dashboard" },
-      { href: "/dashboard/purchases", icon: CircleDollarSign, label: "Purchases" },
+      {
+        href: "/dashboard/purchases",
+        icon: CircleDollarSign,
+        label: "Purchases",
+      },
       { href: "/dashboard/menu", icon: Upload, label: "Menu" },
       {
         href: "/dashboard/inventory2",
@@ -134,14 +155,14 @@ const Sidebar = React.memo(() => {
 
         {/* Sidebar toggle button */}
         <motion.button
-          className=" px-2 py-2  hover:text-blue-100"
+          className="pl-3 py-2 hover:text-blue-100"
           onClick={handleToggleSidebar}
           aria-label="Toggle Sidebar"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
           <span
-            className={`inline-flex items-center justify-center rounded-lg bg-gray-100 bg-opacity-25`}
+            className="inline-flex items-center justify-center rounded-lg bg-gray-100 bg-opacity-25"
             style={{ width: "35px", height: "35px" }}
           >
             <Menu className="w-6 h-6" />
