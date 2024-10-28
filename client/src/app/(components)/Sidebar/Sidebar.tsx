@@ -14,6 +14,7 @@ import {
   LogOut,
   LucideIcon,
   Menu,
+  MenuSquare,
   PackageSearch,
   SlidersHorizontal,
   Sun,
@@ -106,7 +107,7 @@ const Sidebar = React.memo(() => {
         icon: CircleDollarSign,
         label: "Purchases",
       },
-      { href: "/dashboard/menu", icon: Upload, label: "Menu" },
+      { href: "/dashboard/menu", icon: MenuSquare, label: "Menu" },
       {
         href: "/dashboard/inventory2",
         icon: PackageSearch,
