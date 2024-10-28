@@ -41,7 +41,7 @@ const SidebarLink = React.memo(
       <Link href={href} aria-label={label}>
         <motion.div
           className={`cursor-pointer flex items-center ${
-            isCollapsed ? "justify-start pl-4 ml-3" : "pl-4 ml-3"
+            isCollapsed ? "justify-start px-5 ml-2" : "px-5 ml-2"
           } py-4 hover:text-gray-900 hover:bg-blue-100 gap-3 transition-colors ${
             isActive ? "bg-blue-200 text-gray-900 rounded-lg" : "rounded-lg"
           }`}
@@ -91,7 +91,7 @@ const Sidebar = React.memo(() => {
 
   // Sidebar class names based on collapsed state
   const sidebarClassNames = `fixed flex flex-col ${
-    isSidebarCollapsed ? "w-[70px]" : "w-[260px]"
+    isSidebarCollapsed ? "w-[74px]" : "w-[264px]"
   } ${
     isOverflowHidden ? "overflow-hidden" : "overflow-visible"
   } bg-white transition-all duration-300 h-full shadow-md z-40`;
@@ -142,7 +142,7 @@ const Sidebar = React.memo(() => {
         {!isSidebarCollapsed && (
           <motion.div className="flex items-center gap-2 pl-2">
             <Sun className="w-6 h-6 text-gray-900" />
-            <span className="text-lg font-semibold pr-16">Foodtrack</span>
+            <span className="text-lg font-semibold pr-[72px]">Foodtrack</span>
           </motion.div>
         )}
 

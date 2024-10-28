@@ -25,7 +25,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className="z-10 flex justify-between items-center w-full bg-white h-[80px] px-6 mb-[-16px]">
+    <div className="z-10 flex justify-between items-center w-full bg-white h-[80px] px-4 mb-[-16px]">
       {/* Left side - Search input */}
       <div className="flex items-center gap-2">
         <div className="relative flex items-center w-[300px] bg-gray-100 rounded-lg px-3 py-2">
