@@ -24,11 +24,11 @@ const SectionCard: React.FC<SectionCardProps> = ({
     >
       {/* Decorative background circles */}
       <div
-        className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-20 bg-purple-300"
+        className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-30 bg-[#8B5CF6]"
         style={{ transform: "translate(20%, -70%)" }}
       ></div>
       <div
-        className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-20 bg-purple-300"
+        className="absolute top-0 right-0 w-40 h-40 rounded-full opacity-30 bg-[#8B5CF6]"
         style={{ transform: "translate(70%, -40%)" }}
       ></div>
 
