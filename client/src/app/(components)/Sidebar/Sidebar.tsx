@@ -43,7 +43,7 @@ const SidebarLink = React.memo(
           className={`cursor-pointer flex items-center ${
             isCollapsed ? "justify-start px-[17px] ml-3" : "px-[17px] ml-3"
           } py-4 hover:text-gray-900 hover:bg-blue-100 gap-3 transition-colors ${
-            isActive ? "bg-blue-200 text-gray-900 rounded-lg" : "rounded-lg"
+            isActive ? "bg-blue-200 text-gray-900 rounded-xl" : "rounded-xl"
           }`}
           whileHover={{ scale: 1.05 }} // Animation on hover
           whileTap={{ scale: 0.95 }} // Animation on tap
@@ -140,9 +140,9 @@ const Sidebar = React.memo(() => {
       >
         {/* Logo and name when not collapsed */}
         {!isSidebarCollapsed && (
-          <motion.div className="flex items-center gap-2 pl-2">
+          <motion.div className="flex items-center gap-2 pl-4">
             <Sun className="w-6 h-6 text-gray-900" />
-            <span className="text-lg font-semibold pr-[68px]">Foodtrack</span>
+            <span className="text-lg font-semibold pr-[60px]">Foodtrack</span>
           </motion.div>
         )}
 
