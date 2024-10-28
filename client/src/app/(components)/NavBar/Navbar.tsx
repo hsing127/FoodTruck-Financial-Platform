@@ -41,6 +41,7 @@ const NavBar = () => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             className="absolute right-2 text-[#8B5CF6]"
+            aria-label="Settings"
           >
             <Settings size={20} />
           </motion.button>
@@ -50,29 +51,27 @@ const NavBar = () => {
       {/* Right Side - Icons section */}
       <div className="flex items-center gap-4 ml-auto">
         {/* Upload button */}
-        <div>
-          <motion.button
-            onClick={handleSearchClick}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="p-[6px] rounded-lg cursor-pointer text-gray-500 bg-gray-100 bg-opacity-25"
-          >
-            <Upload size={24} />
-          </motion.button>
-        </div>
+        <motion.button
+          onClick={handleSearchClick}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="p-[6px] rounded-lg cursor-pointer text-gray-500 bg-gray-100 bg-opacity-25"
+          aria-label="Upload"
+        >
+          <Upload size={24} />
+        </motion.button>
 
         {/* Theme toggle button */}
-        <div>
-          <motion.button
-            onClick={handleThemeToggle}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="p-[6px] rounded-lg cursor-pointer text-gray-500 hover:text-blue-300 bg-gray-100 bg-opacity-25"
-          >
-            {/* Conditional rendering based on dark mode */}
-            {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
-          </motion.button>
-        </div>
+        <motion.button
+          onClick={handleThemeToggle}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="p-[6px] rounded-lg cursor-pointer text-gray-500 hover:text-blue-300 bg-gray-100 bg-opacity-25"
+          aria-label="Toggle Theme"
+        >
+          {/* Conditional rendering based on dark mode */}
+          {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
+        </motion.button>
 
         {/* Notification button with badge */}
         <div className="relative">
@@ -80,6 +79,7 @@ const NavBar = () => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             className="cursor-pointer text-gray-500 bg-gray-100 bg-opacity-25 p-[6px] rounded-lg"
+            aria-label="Notifications"
           >
             <Bell size={24} />
             {/* Badge for notification count */}
@@ -93,5 +93,5 @@ const NavBar = () => {
   );
 };
 
-NavBar.displayName = "Navbar"; // Set component display name
+NavBar.displayName = "NavBar"; // Set component display name
 export default NavBar;

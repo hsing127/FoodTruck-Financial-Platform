@@ -6,6 +6,7 @@ import { setIsSidebarCollapsed } from "@/app/state";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useMemo, useCallback, useState } from "react";
+import { motion } from "framer-motion";
 import {
   CircleDollarSign,
   ClipboardList,
@@ -18,10 +19,8 @@ import {
   PackageSearch,
   SlidersHorizontal,
   Sun,
-  Upload,
   User,
 } from "lucide-react";
-import { motion } from "framer-motion";
 
 interface SidebarLinkProps {
   href: string;
@@ -34,18 +33,17 @@ const SidebarLink = React.memo(
   ({ href, icon: Icon, label, isCollapsed }: SidebarLinkProps) => {
     const path = usePathname(); // Get current path to highlight active link
     const isActive = useMemo(
-      () => path === href || href === "/dashboard", // Check if the link is active
+      () => path === href || href === "/dashboard",
       [path, href]
     );
 
     return (
       <Link href={href} aria-label={label}>
         <motion.div
-          className={`cursor-pointer flex items-center ${
-            isCollapsed ? "justify-start px-[17px] ml-3" : "px-[17px] ml-3"
-          } py-4 hover:text-gray-900 hover:bg-blue-100 gap-3 transition-colors ${
-            isActive ? "bg-blue-200 text-gray-900 rounded-xl" : "rounded-xl"
-          }`}
+          className={`cursor-pointer flex items-center px-[17px] ml-3 py-4 gap-3 transition-colors rounded-xl 
+          ${isCollapsed ? "justify-start" : ""}
+          ${isActive ? "bg-blue-200 text-gray-900" : ""}
+          hover:text-gray-900 hover:bg-blue-100`}
           whileHover={{ scale: 1.05 }} // Animation on hover
           whileTap={{ scale: 0.95 }} // Animation on tap
           animate={{ y: isActive ? -2 : 0 }} // Bounce effect for active link
@@ -136,9 +134,7 @@ const Sidebar = React.memo(() => {
   return (
     <div className={sidebarClassNames}>
       <div
-        className={`flex gap-3 justify-between md:justify-normal items-center pt-4 ${
-          isSidebarCollapsed ? "pl-3" : "pl-3"
-        }`}
+        className={`flex gap-3 justify-between md:justify-normal items-center pt-4 pl-3`}
       >
         {/* Logo and name when not collapsed */}
         {!isSidebarCollapsed && (

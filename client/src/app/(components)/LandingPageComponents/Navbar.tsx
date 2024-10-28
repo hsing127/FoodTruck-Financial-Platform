@@ -50,7 +50,7 @@ export const Navbar = () => {
             >
               Contact Us
             </a>
-            <Link href="/signup">
+            <Link href="/login/signup">
               <button className="bg-customWhite text-customBlack py-2 px-4 rounded-lg">
                 Create Account
               </button>
