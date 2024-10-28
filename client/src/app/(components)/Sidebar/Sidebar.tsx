@@ -108,7 +108,7 @@ const Sidebar = React.memo(() => {
     () => [
       { href: "/dashboard/oldDash/profile", icon: User, label: "Account" },
       {
-        href: "/dashboard/oldDash/settings",
+        href: "/dashboard/settings",
         icon: SlidersHorizontal,
         label: "Settings",
       },

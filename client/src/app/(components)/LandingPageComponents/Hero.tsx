@@ -1,4 +1,4 @@
-import ArrowWIcon from "../../assets/icons/arrow-w.svg";
+import ArrowWIcon from "../../../assets/icons/arrow-w.svg";
 import Link from "next/link"; // Using Next.js Link instead of react-router-dom
 
 export const Hero = () => {

@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Logo from "../../assets/Logo.png";
-import MenuIcon from "../../assets/icons/menu.svg";
+import Logo from "./../../../assets/Logo.png";
+import MenuIcon from "../../../assets/icons/menu.svg";
 import Link from "next/link"; // Using Next.js Link instead of react-router-dom
 
 export const Navbar = () => {
