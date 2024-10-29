@@ -33,7 +33,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
       ></div>
 
       {/* Main card content */}
-      <div className="flex items-center px-4 py-3 sm:p-4 relative z-10">
+      <div className="flex items-center px-4 pt-4 pb-2 relative z-10">
         <span
           className="inline-flex items-center justify-center rounded-lg bg-indigo-200 bg-opacity-25"
           style={{ width: "35px", height: "35px" }}
@@ -46,7 +46,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
         </div>
       </div>
 
-      <div className="px-4 pb-4 sm:p-4 text-sm text-gray-700">{children}</div>
+      <div className="px-4 pb-4 sm:p-4 text-md text-gray-700">{children}</div>
     </motion.div>
   );
 };

@@ -6,7 +6,7 @@ const Profile: React.FC = () => {
   return (
     <SectionCard icon={User} title="Profile">
       <div className="flex flex-col sm:flex-row items-center mb-6">
-        <div className="w-20 h-20 mr-4 rounded-full bg-gray-200 flex items-center justify-center">
+        <div className="w-16 h-16 mr-4 rounded-full bg-gray-200 flex items-center justify-center">
           <User2 className="w-12 h-12 text-gray-600" />
         </div>
 

@@ -22,7 +22,7 @@ const ForgotPasswordPage: React.FC = () => {
   return (
     <FormLayout
       title="Forgot Your Password?"
-      description="Enter your email address and we will send you iinstructions to reset your password."
+      description="Enter your email address and we will send you instructions to reset your password."
     >
       <form onSubmit={handleSubmit}>
         <FormInput
