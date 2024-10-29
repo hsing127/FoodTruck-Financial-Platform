@@ -48,7 +48,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
         name={name}
         value={value}
         onChange={handleInputChange}
-        className="lg:w-24 p-1 border border-white"
+        className="lg:w-24 p-1 border border-black rounded-lg"
         onClick={preventEventPropagation}
       />
     </td>

@@ -24,8 +24,9 @@ const DashCardLong: React.FC<DashCardLongProps> = ({
   const circleBgColor = isYellow
     ? "bg-yellow-300"
     : isPurple
-    ? "bg-purple-300"
-    : "bg-blue-200";
+    ? "bg-[#8B5CF6]"
+    : "bg-blue-400";
+
 
   return (
     <motion.div
@@ -34,12 +35,12 @@ const DashCardLong: React.FC<DashCardLongProps> = ({
     >
       {/* Decorative background circles */}
       <div
-        className={`absolute top-0 right-0 w-20 h-20 rounded-full opacity-20 ${circleBgColor}`}
-        style={{ transform: "translate(50%, -50%)" }}
+        className={`absolute top-0 right-0 w-20 h-20 rounded-full opacity-30 ${circleBgColor}`}
+        style={{ transform: "translate(50%, -60%)" }}
       ></div>
       <div
-        className={`absolute top-0 right-0 w-16 h-16 rounded-full opacity-20 ${circleBgColor}`}
-        style={{ transform: "translate(70%, 20%)" }}
+        className={`absolute top-0 right-0 w-16 h-16 rounded-full opacity-30 ${circleBgColor}`}
+        style={{ transform: "translate(70%, 0%)" }}
       ></div>
 
       {/* Main card content */}

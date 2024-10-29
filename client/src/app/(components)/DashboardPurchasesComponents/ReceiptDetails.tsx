@@ -116,7 +116,7 @@ const ReceiptDetails: React.FC<ReceiptDetailsProps> = ({
                             : ""
                         }
                         onChange={handleInputChange}
-                        className="lg:w-24 p-1 border border-white ml-6"
+                        className="lg:w-24 p-1 border border-black ml-6 rounded-lg"
                       />
                     </td>
                   ))}

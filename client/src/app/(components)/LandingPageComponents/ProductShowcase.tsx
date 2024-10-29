@@ -1,5 +1,5 @@
 "use client";
-import appScreen from "../../assets/teamImage.png";
+import appScreen from "../../../assets/teamImage.png";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef } from "react";

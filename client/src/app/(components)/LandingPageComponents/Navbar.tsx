@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Logo from "../../assets/Logo.png";
-import MenuIcon from "../../assets/icons/menu.svg";
+import Logo from "./../../../assets/Logo.png";
+import MenuIcon from "../../../assets/icons/menu.svg";
 import Link from "next/link"; // Using Next.js Link instead of react-router-dom
 
 export const Navbar = () => {
@@ -50,7 +50,7 @@ export const Navbar = () => {
             >
               Contact Us
             </a>
-            <Link href="/signup">
+            <Link href="/login/signup">
               <button className="bg-customWhite text-customBlack py-2 px-4 rounded-lg">
                 Create Account
               </button>

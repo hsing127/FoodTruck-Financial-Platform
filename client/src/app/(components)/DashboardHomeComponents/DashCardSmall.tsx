@@ -39,7 +39,7 @@ const DashCardSmall: React.FC<DashCardSmallProps> = ({
     setCurrentValue(type === "month" ? monthlyValue : yearlyValue);
   };
 
-  const backgroundColor = isTrendingUp ? "bg-purple-500" : "bg-blue-400";
+  const backgroundColor = isTrendingUp ? "bg-[#8B5CF6]" : "bg-blue-400";
 
   return (
     <motion.div
@@ -79,7 +79,7 @@ const DashCardSmall: React.FC<DashCardSmallProps> = ({
         (transform, index) => (
           <div
             key={index}
-            className={`absolute top-0 right-0 rounded-full opacity-20 ${backgroundColor}`}
+            className={`absolute top-0 right-0 rounded-full opacity-30 ${backgroundColor}`}
             style={{
               width: index === 0 ? "160px" : "130px",
               height: index === 0 ? "160px" : "130px",
