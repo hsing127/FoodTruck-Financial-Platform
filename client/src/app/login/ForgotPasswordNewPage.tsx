@@ -1,66 +1,48 @@
+import "@/app/globals.css";
 import React, { useState } from "react";
-import { useRouter } from "next/router";
-import "../../styles/LoginStyles.css";
+import { validatePasswords } from "@/app/(components)/LoginComponents/validateForm";
+import FormLayout from "@/app/(components)/LoginComponents/formLayout";
+import FormInput from "@/app/(components)/LoginComponents/formInput";
+import SubmitButton from "@/app/(components)/LoginComponents/submitButton";
+import router from "next/router";
 
 const ForgotPasswordNewPage: React.FC = () => {
-  const [password, setPassword] = useState<string>("");
-  const [password2, setPassword2] = useState<string>("");
-  const router = useRouter();
+  const [formData, setFormData] = useState({ password: "", password2: "" });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (password.trim() && password2.trim() && password === password2) {
-      // Navigate to the dashboard page
-      router.push("/dashboard/finance");
+    if (validatePasswords(formData.password, formData.password2)) {
+      router.push("/dashboard/home");
     } else {
-      alert(
-        "Please fill in both password fields and make sure they are the same."
-      );
+      alert("Passwords must match and cannot be empty.");
     }
   };
 
   return (
-    <div className="LoginBody">
-      <div className="login-container">
-        <div className="login-box">
-          <h2 className="forgot">New Password</h2>
-          <div className="code">
-            <p className="code">
-              Enter a new password below to change your password.
-            </p>
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div className="input-field2">
-              <input
-                type="password"
-                id="password"
-                name="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <label htmlFor="password">New Password</label>
-            </div>
-
-            <div className="input-field2">
-              <input
-                type="password"
-                id="password2"
-                name="password2"
-                required
-                value={password2}
-                onChange={(e) => setPassword2(e.target.value)}
-              />
-              <label htmlFor="password2">Confirm New Password</label>
-            </div>
-            <button type="submit" className="login-btn">
-              Confirm
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
+    <FormLayout title="New Password" description="Enter a new password below to change your current password.">
+      <form onSubmit={handleSubmit}>
+        <FormInput
+          type="password"
+          name="password"
+          placeholder="New Password"
+          value={formData.password}
+          onChange={handleChange}
+        />
+        <FormInput
+          type="password"
+          name="password2"
+          placeholder="Confirm New Password"
+          value={formData.password2}
+          onChange={handleChange}
+        />
+        <SubmitButton text="Confirm" />
+      </form>
+    </FormLayout>
   );
 };
 

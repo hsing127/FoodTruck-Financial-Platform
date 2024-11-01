@@ -1,54 +1,45 @@
+import "@/app/globals.css";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import FormLayout from "@/app/(components)/LoginComponents/formLayout";
+import FormInput from "@/app/(components)/LoginComponents/formInput";
+import SubmitButton from "@/app/(components)/LoginComponents/submitButton";
 import Link from "next/link";
-import "../../styles/LoginStyles.css";
 
 const ForgotPasswordPage: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState("");
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (email.trim()) {
-      router.push("/forgotpasswordcode");
+      router.push("/login/forgotpasswordcode");
     } else {
       alert("Please enter the email before submitting.");
     }
   };
 
   return (
-    <div className="LoginBody">
-      <div className="forgotPassWord-container">
-        <div className="login-box">
-          <h2 className="forgot">Forgot Your Password?</h2>
-          <div className="code">
-            <p className="code">
-              Enter your email address and we will send you instructions to
-              reset your password.
-            </p>
-          </div>
-          <form>
-            <div className="input-field2">
-              <input
-                type="text"
-                id="Email"
-                name="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <label htmlFor="email">Email address</label>
-            </div>
-            <button type="submit" className="login-btn" onClick={handleSubmit}>
-              Submit
-            </button>
-            <p className="signup-link">
-              <Link href="/login">Back to Login</Link>
-            </p>
-          </form>
-        </div>
-      </div>
-    </div>
+    <FormLayout
+      title="Forgot Your Password?"
+      description="Enter your email address and we will send you instructions to reset your password."
+    >
+      <form onSubmit={handleSubmit}>
+        <FormInput
+          type="text"
+          name="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <SubmitButton text="Submit" />
+      </form>
+      <p className="text-customWhite text-center mt-4">
+        <Link href="/login/login" className="text-[#8B5CF6] hover:underline">
+          Back to Login
+        </Link>
+      </p>
+    </FormLayout>
   );
 };
 

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import EcosystemIcon from "../../assets/icons/ecosystem.svg";
+import EcosystemIcon from "../../../assets/icons/ecosystem.svg";
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 
 export const Feature = ({

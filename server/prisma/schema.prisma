@@ -22,6 +22,7 @@ model User {
     ingredients Ingredient[]
     menuItems   MenuItem[]
     sales       Sale[]
+    code        Code?
 }
 
 model Purchase {
@@ -111,7 +112,7 @@ model Sold {
 }
 
 model Code {
-    Email     String   @db.VarChar(50)
+    Email     String   @id @db.VarChar(50)
     ExpireAt DateTime  @db.Date
     Code      Int
     Used      Boolean  @default(false)

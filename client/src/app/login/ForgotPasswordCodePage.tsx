@@ -1,59 +1,51 @@
+import "@/app/globals.css";
 import React, { useState } from "react";
+import FormLayout from "@/app/(components)/LoginComponents/formLayout";
+import FormInput from "@/app/(components)/LoginComponents/formInput";
+import SubmitButton from "@/app/(components)/LoginComponents/submitButton";
+import router from "next/router";
 
 const ForgotPasswordCodePage: React.FC = () => {
-  const [verificationCode, setVerificationCode] = useState<string>(""); // State with type string
+  const [verificationCode, setVerificationCode] = useState("");
 
-  const resendCode = () => {
-    alert("A new recovery code has been sent to your email.");
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // Prevent the default form submission
-
-    // Check if the input field has a value
-    if (verificationCode.trim()) {
-      // Redirect to the new page if the verification code is not empty
-      window.location.href = "/forgotpasswordnew";
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (verificationCode) {
+      router.push("/login/forgotpasswordnew");
     } else {
-      // Show alert if the input is empty
-      alert("Please enter the verification code before submitting.");
+      alert("Please enter the verification code.");
     }
   };
 
+  const handleResendCode = () => {
+    alert("A new recovery code has been sent to your email.");
+  };
+
   return (
-    <div className="LoginBody">
-      <div className="forgotPassWord-container">
-        <div className="login-box">
-          <h2 className="forgot">Account Verification</h2>
-          <div className="code">
-            <p className="code">
-              A verification code has been sent to your Email. Please provide
-              the verification code to verify.
-            </p>
-          </div>
-          <form>
-            <div className="input-field2">
-              <input
-                type="text"
-                required
-                value={verificationCode}
-                onChange={(e) => setVerificationCode(e.target.value)}
-              />
-              <label htmlFor="verificationCode">Verification Code</label>
-            </div>
-            <button type="submit" className="login-btn" onClick={handleSubmit}>
-              Submit
-            </button>
-            <p className="signup-link">
-              Didn&apos;t receive a code?{" "}
-              <a onClick={resendCode} style={{ cursor: "pointer" }}>
-                Resend
-              </a>
-            </p>
-          </form>
-        </div>
-      </div>
-    </div>
+    <FormLayout
+      title="Account Verification"
+      description="A verification code has been sent to your email. Please enter the code to verify."
+    >
+      <form onSubmit={handleSubmit}>
+        <FormInput
+          type="text"
+          name="verificationCode"
+          placeholder="Verification Code"
+          value={verificationCode}
+          onChange={(e) => setVerificationCode(e.target.value)}
+        />
+        <SubmitButton text="Submit" />
+      </form>
+      <p className="text-customWhite text-center mt-4">
+        Didn&apos;t receive a code?{" "}
+        <span
+          onClick={handleResendCode}
+          className="text-[#8B5CF6] hover:underline cursor-pointer"
+        >
+          Resend
+        </span>
+      </p>
+    </FormLayout>
   );
 };
 

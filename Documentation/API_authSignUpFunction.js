@@ -1,11 +1,13 @@
 /*
-authSignUpFunction:
 const { Client } = require('pg'); // For PostgreSQL
 const bcrypt = require('bcryptjs'); // For password hashing
+const AWS = require('aws-sdk');
+const ses = new AWS.SES({ region: 'ca-central-1' });
+
 
 exports.handler = async (event) => {
     const { name, email, password } = JSON.parse(event.body);
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     // Input validation
     if (!name || !email || !password) {
         return {
@@ -62,6 +64,33 @@ exports.handler = async (event) => {
         database: process.env.RDS_DATABASE
     });
 
+    const senderEmail = "noreplyfoodtrack@gmail.com";    
+    const subject = "Welcome!";
+    const bodyText = "Hello!\nThank you for signing up an account with FoodTrack! \nWe are excited to help you track your finances and inventory.";
+    const bodyHtml = `
+        <html>
+        <head></head>
+        <body>
+        <h1>Hello!</h1>
+        <p>Thank you for signing up an account with FoodTrack!</p>
+        <p>We are excited to help you track your finances and inventory.</p>
+        </body>
+        </html>
+    `;
+
+    const params = {
+        Source: senderEmail,
+        Destination: {
+            ToAddresses: [email],
+        },
+        Message: {
+            Subject: { Data: subject },
+            Body: {
+                Text: { Data: bodyText },
+                Html: { Data: bodyHtml }
+            }
+        }
+    };
     try {
         await client.connect();
 
@@ -90,6 +119,7 @@ exports.handler = async (event) => {
         const insertResult = await client.query(insertUserQuery, insertUserValues);
         const newUser = insertResult.rows[0];
 
+        const data = await ses.sendEmail(params).promise();
         // Success response without returning the password
         return {
             statusCode: 201,
@@ -97,7 +127,7 @@ exports.handler = async (event) => {
         };
 
     } catch (err) {
-        console.error("Database error:", err.message);
+        console.error("Database or SES error:", err.message);
         
         return {
             statusCode: 500,
@@ -107,6 +137,7 @@ exports.handler = async (event) => {
         await client.end(); // Close the database connection
     }
 };
+
 
 
 */
