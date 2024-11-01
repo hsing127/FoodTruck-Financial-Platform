@@ -11,14 +11,41 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (email && password) {
-      router.push("/dashboard/finance");
-    } else {
+  
+    if (!email || !password) {
       alert("Please enter both email and password.");
+      return;
+    }
+  
+    try {
+      const response = await fetch("https://frih5a7ugg.execute-api.ca-central-1.amazonaws.com/dev/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(errorData.error || "Failed to log in");
+        return;
+      }
+  
+      const data = await response.json();
+      console.log("Login successful:", data.message);
+  
+      // Redirect to the dashboard on successful login
+      router.push("/dashboard/home");
+  
+    } catch (error) {
+      console.error("An error occurred:", error);
+      alert("An error occurred. Please try again.");
     }
   };
+  
 
   return (
     <FormLayout title="Login" description="Enter your login details below.">
