@@ -13,11 +13,15 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("Form submission started");
   
     if (!email || !password) {
+      console.log("Missing email or password");
       alert("Please enter both email and password.");
       return;
     }
+    
+    console.log("Attempting to send login request");
   
     try {
       const response = await fetch("https://frih5a7ugg.execute-api.ca-central-1.amazonaws.com/dev/auth/login", {
@@ -28,8 +32,12 @@ const LoginPage: React.FC = () => {
         body: JSON.stringify({ email, password }),
       });
   
+      console.log("Received response from server");
+  
       if (!response.ok) {
+        console.log("Login failed, response not ok");
         const errorData = await response.json();
+        console.log("Error data:", errorData);
         alert(errorData.error || "Failed to log in");
         return;
       }
@@ -38,13 +46,15 @@ const LoginPage: React.FC = () => {
       console.log("Login successful:", data.message);
   
       // Redirect to the dashboard on successful login
+      console.log("Redirecting to dashboard");
       router.push("/dashboard/home");
   
     } catch (error) {
-      console.error("An error occurred:", error);
+      console.error("An error occurred in handleSubmit:", error);
       alert("An error occurred. Please try again.");
     }
   };
+  
   
 
   return (
