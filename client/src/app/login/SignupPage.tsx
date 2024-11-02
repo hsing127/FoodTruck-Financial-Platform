@@ -81,7 +81,11 @@ const SignupPage: React.FC = () => {
                 console.log("Signup failed, response not ok");
                 const errorData = data;
                 console.log("Error data:", errorData);
-                alert(errorData.error || "Failed to sign up");
+                var x = errorData.body;
+                if (x) {
+                    x = JSON.parse(x).error;
+                }
+                alert(errorData.error || errorData.errorMessage || x || "Failed to sign up");
                 return;
             }
 
