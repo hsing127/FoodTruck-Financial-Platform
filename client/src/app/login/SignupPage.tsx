@@ -35,7 +35,7 @@ const SignupPage: React.FC = () => {
             return;
         }
 
-        console.log("Attempting to send login request");
+        console.log("Attempting to send signup request");
         const email = formData.email;
         const password = formData.password;
         try {
@@ -87,7 +87,7 @@ const SignupPage: React.FC = () => {
 
             console.log("Signup successful:", data);
 
-            // Redirect to the dashboard on successful login
+            // Redirect to the dashboard on successful signup
             console.log("Redirecting to dashboard");
             router.push("/dashboard/home");
 
