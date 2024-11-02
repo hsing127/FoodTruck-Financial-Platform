@@ -24,16 +24,42 @@ const LoginPage: React.FC = () => {
     console.log("Attempting to send login request");
   
     try {
-      const response = await fetch("https://frih5a7ugg.execute-api.ca-central-1.amazonaws.com/dev/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-  
+
+        console.log(
+            {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  body: JSON.stringify({ email, password }),
+                }),
+    });
+
+        const response = await fetch("https://frih5a7ugg.execute-api.ca-central-1.amazonaws.com/dev/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            body: JSON.stringify({ email, password }),
+          }),
+        });
+      
+      
+      console.log(
+      {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          }
+      );
+      console.log(JSON.stringify({ email, password }));
       console.log("Received response from server");
-  
+      console.log(response);
+
       if (!response.ok) {
         console.log("Login failed, response not ok");
         const errorData = await response.json();
