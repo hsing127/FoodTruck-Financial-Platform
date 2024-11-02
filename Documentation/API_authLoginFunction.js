@@ -2,11 +2,12 @@
 Setup up rudementary API gateway REST api
 
 authLoginFunction
-const { Client } = require('pg'); // For PostgreSQL
-const bcrypt = require('bcryptjs')
+import pkg from 'pg';
+import bcrypt from 'bcryptjs';
+const { Client } = pkg;
 // const mysql = require('mysql2/promise'); // Uncomment if using MySQL instead of PostgreSQL
 
-exports.handler = async (event) => {
+const handler =  async (event) => {
     const { email, password } = JSON.parse(event.body);
 
     // Input validation
@@ -47,7 +48,10 @@ exports.handler = async (event) => {
         host: process.env.RDS_HOST,
         user: process.env.RDS_USER,
         password: process.env.RDS_PASSWORD,
-        database: process.env.RDS_DATABASE
+        database: process.env.RDS_DATABASE,
+        ssl: {
+            rejectUnauthorized: false,
+        },
     });
 
     try {
@@ -55,10 +59,8 @@ exports.handler = async (event) => {
         await client.connect();
 
         // Query to find the user with the provided email
-        const query = 'SELECT email, password FROM users WHERE email = $1';
-        const values = [email];
-
-        const result = await client.query(query, values);
+        const result = await client.query('SELECT "Email", "Password" FROM "User" WHERE "Email" = $1', [email]);
+        console.log(result.rows);
         const user = result.rows[0];
 
         if (!user) {
@@ -67,8 +69,9 @@ exports.handler = async (event) => {
                 body: JSON.stringify({ error: "Invalid email or password" }),
             };
         }
-
-        const isPasswordValid = await bcrypt.compare(password + email, user.password);
+        console.log(password+email)
+        console.log(user.Password)
+        const isPasswordValid = await bcrypt.compare(password + email, user.Password);
         if (!isPasswordValid) {
             return {
                 statusCode: 401,
@@ -97,6 +100,7 @@ exports.handler = async (event) => {
         await client.end();
     }
 };
+export { handler };
 
 */
 

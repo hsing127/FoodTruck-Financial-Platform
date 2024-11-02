@@ -1,11 +1,10 @@
 /*
-const { Client } = require('pg'); // For PostgreSQL
-const bcrypt = require('bcryptjs'); // For password hashing
-const AWS = require('aws-sdk');
-const ses = new AWS.SES({ region: 'ca-central-1' });
+import pkg from 'pg';
+import bcrypt from 'bcryptjs';
+const { Client } = pkg;
+import nodemailer from 'nodemailer';
 
-
-exports.handler = async (event) => {
+const handler =  async (event) => {
     const { name, email, password } = JSON.parse(event.body);
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     // Input validation
@@ -61,43 +60,34 @@ exports.handler = async (event) => {
         host: process.env.RDS_HOST,
         user: process.env.RDS_USER,
         password: process.env.RDS_PASSWORD,
-        database: process.env.RDS_DATABASE
+        database: process.env.RDS_DATABASE,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: 'noreplyfoodtrack@gmail.com',
+            pass: 'qxse uoyp ghza aesg', 
+        },
     });
 
-    const senderEmail = "noreplyfoodtrack@gmail.com";    
-    const subject = "Welcome!";
-    const bodyText = "Hello!\nThank you for signing up an account with FoodTrack! \nWe are excited to help you track your finances and inventory.";
-    const bodyHtml = `
-        <html>
-        <head></head>
-        <body>
-        <h1>Hello!</h1>
-        <p>Thank you for signing up an account with FoodTrack!</p>
-        <p>We are excited to help you track your finances and inventory.</p>
-        </body>
-        </html>
-    `;
-
-    const params = {
-        Source: senderEmail,
-        Destination: {
-            ToAddresses: [email],
-        },
-        Message: {
-            Subject: { Data: subject },
-            Body: {
-                Text: { Data: bodyText },
-                Html: { Data: bodyHtml }
-            }
-        }
+    const mailOptions = {
+        from: 'noreplyfoodtrack@gmail.com',
+        to: email,
+        subject: "Welcome!",
+        text: "Hello!\n\nThank you for signing up an account with FoodTrack! \nWe are excited to help you track your finances and inventory.",
     };
+
+
     try {
         await client.connect();
-
         // Check if the email is already registered
-        const checkUserQuery = 'SELECT email FROM users WHERE email = $1';
-        const checkUserValues = [email];
-        const checkResult = await client.query(checkUserQuery, checkUserValues);
+        const checkResult = await client.query('SELECT "Email" FROM "User" WHERE "Email" = $1', [email]);
+        console.log(checkResult.rows);
 
         if (checkResult.rows.length > 0) {
             return {
@@ -107,24 +97,27 @@ exports.handler = async (event) => {
         }
 
         // Hash the password before storing it
-        const salt = await bcrypt.genSalt(12);
+        const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password + email, salt);
 
-        // Insert the new user into the database
-        const insertUserQuery = `
-            INSERT INTO users (name, email, password)
-            VALUES ($1, $2, $3) RETURNING id, name, email`;
-        const insertUserValues = [name, email, hashedPassword];
-
-        const insertResult = await client.query(insertUserQuery, insertUserValues);
+        const insertResult = await client.query(
+            `INSERT INTO "User" ("BusinessName", "Email", "Password") VALUES ($1, $2, $3) RETURNING "Email", "BusinessName"`,
+            [name, email, hashedPassword]
+          );
         const newUser = insertResult.rows[0];
+        
+        try {
+            const info = await transporter.sendMail(mailOptions);
+            console.log('Email sent:', info.response);
 
-        const data = await ses.sendEmail(params).promise();
-        // Success response without returning the password
-        return {
-            statusCode: 201,
-            body: JSON.stringify(newUser),
-        };
+            return {
+                statusCode: 201,
+                body: JSON.stringify(newUser),
+            };
+
+        } catch (error) {
+            console.error('Error sending email:', error);
+        }
 
     } catch (err) {
         console.error("Database or SES error:", err.message);
@@ -137,8 +130,7 @@ exports.handler = async (event) => {
         await client.end(); // Close the database connection
     }
 };
-
-
+export { handler };
 
 */
 
