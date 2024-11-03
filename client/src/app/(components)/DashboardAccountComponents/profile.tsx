@@ -10,7 +10,6 @@ const Profile: React.FC = () => {
     phone: "+123456789",
     birthDate: "1990-01-01",
     company: "company.ltd",
-    website: "www.company.com",
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,14 +19,12 @@ const Profile: React.FC = () => {
 
   return (
     <SectionCard icon={User} title="Profile Information">
-      <div className="flex flex-col items-center mb-6">
+      <div className="flex flex-col items-center mb-4">
         <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mb-4">
           <User2 className="w-12 h-12 text-gray-600" />
         </div>
 
-        <p className="text-gray-500 text-sm">
-          Image size limit: 125kb max
-        </p>
+        <p className="text-gray-500 text-sm">Image size limit: 125kb max</p>
       </div>
 
       <form className="space-y-4">
@@ -40,7 +37,7 @@ const Profile: React.FC = () => {
               name="firstName"
               value={profile.firstName}
               onChange={handleInputChange}
-              className="border p-2 rounded-md bg-white text-black"
+              className="border p-2 rounded-md bg-white text-black border-gray-400"
             />
           </div>
 
@@ -52,7 +49,7 @@ const Profile: React.FC = () => {
               name="lastName"
               value={profile.lastName}
               onChange={handleInputChange}
-              className="border p-2 rounded-md bg-white text-black"
+              className="border p-2 rounded-md bg-white text-black border-gray-400"
             />
           </div>
 
@@ -64,7 +61,7 @@ const Profile: React.FC = () => {
               name="email"
               value={profile.email}
               onChange={handleInputChange}
-              className="border p-2 rounded-md bg-white text-black"
+              className="border p-2 rounded-md bg-white text-black border-gray-400"
             />
           </div>
 
@@ -76,7 +73,7 @@ const Profile: React.FC = () => {
               name="phone"
               value={profile.phone}
               onChange={handleInputChange}
-              className="border p-2 rounded-md bg-white text-black"
+              className="border p-2 rounded-md bg-white text-black border-gray-400"
             />
           </div>
 
@@ -88,7 +85,7 @@ const Profile: React.FC = () => {
               name="birthDate"
               value={profile.birthDate}
               onChange={handleInputChange}
-              className="border p-2 rounded-md bg-white text-black"
+              className="border p-2 rounded-md bg-white text-black border-gray-400"
             />
           </div>
 
@@ -100,19 +97,7 @@ const Profile: React.FC = () => {
               name="company"
               value={profile.company}
               onChange={handleInputChange}
-              className="border p-2 rounded-md bg-white text-black"
-            />
-          </div>
-
-          {/* Website */}
-          <div className="flex flex-col">
-            <label className="text-gray-700 font-medium">Website</label>
-            <input
-              type="text"
-              name="website"
-              value={profile.website}
-              onChange={handleInputChange}
-              className="border p-2 rounded-md bg-white text-black"
+              className="border p-2 rounded-md bg-white text-black border-gray-400"
             />
           </div>
         </div>
