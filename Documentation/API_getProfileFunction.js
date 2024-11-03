@@ -40,23 +40,17 @@ try {
 const handler = async (event) => {
     const { email } = JSON.parse(event.body);
     try {
-        // Check if cache exists
-        if (!usersCache ) { 
-            console.log("Cache is empty, fetching data from the database...");
-            try {
-                await fetchDataFromDatabase(email);
-            } catch (dbError) {
-                console.error("Error fetching data from the database:", dbError);
-                return {
-                    statusCode: 500,
-                    body: JSON.stringify({ error: "Failed to retrieve data from the database" }),
-                };
-            }
-        } else {
-            console.log("Using cached data...");
+        console.log("Cache is empty, fetching data from the database...");
+        try {
+            await fetchDataFromDatabase(email);
+        } catch (dbError) {
+            console.error("Error fetching data from the database:", dbError);
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: "Failed to retrieve data from the database" }),
+            };
         }
-        //console.log(usersCache)
-        // Return cached data
+    
         return {
             statusCode: 200,
             body: usersCache,
@@ -72,5 +66,6 @@ const handler = async (event) => {
 
 // Use export default for ES module syntax
 export { handler };
+
 
 */
