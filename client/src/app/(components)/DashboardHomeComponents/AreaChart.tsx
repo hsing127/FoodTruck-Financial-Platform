@@ -109,7 +109,7 @@ const VolumeOverview = () => {
       </div>
 
       {/* Sales info section */}
-      <div className="relative p-4 bg-rose-100 rounded-lg shadow-inner">
+      <div className="relative p-4 bg-[#e5d5f6] rounded-lg shadow-inner">
         <div className="absolute top-2 left-4">
           <h2 className="text-lg font-semibold text-customBlack">
             Pizza Sales
