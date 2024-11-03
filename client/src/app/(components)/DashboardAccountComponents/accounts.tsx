@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link2 } from "lucide-react";
 import { SiGoogle, SiFacebook, SiX, SiYoutube } from "react-icons/si";
-import SectionCard from "./sectionCard";
+import SectionCard from "../DashboardSettingsComponents/sectionCard";
 
 const ConnectedAccounts: React.FC = () => {
   const [isGoogleConnected, setIsGoogleConnected] = useState(true);
@@ -48,24 +48,6 @@ const ConnectedAccounts: React.FC = () => {
               } text-white font-bold py-2 px-4 rounded transition duration-200 w-full sm:w-auto`}
             >
               {isFacebookConnected ? "Connected" : "Not Connected"}
-            </button>
-          </div>
-
-          {/* Twitter (X) Account Row */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <SiX className="w-6 h-6 mr-2 " />
-              <span className="font-medium text-black">Twitter (X)</span>
-            </div>
-            <button
-              onClick={() => setIsTwitterConnected(!isTwitterConnected)}
-              className={`${
-                isTwitterConnected
-                  ? "bg-[#8B5CF6] hover:bg-purple-700"
-                  : "bg-gray-400 hover:bg-gray-500"
-              } text-white font-bold py-2 px-4 rounded transition duration-200 w-full sm:w-auto`}
-            >
-              {isTwitterConnected ? "Connected" : "Not Connected"}
             </button>
           </div>
 
