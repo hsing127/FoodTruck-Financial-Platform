@@ -9,23 +9,61 @@ import Link from "next/link";
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (email && password) {
-      router.push("/dashboard/finance");
-    } else {
-      alert("Please enter both email and password.");
+
+    if (!email || !password) {
+      setErrorMessage("Please enter both email and password.");
+      return;
+    }
+
+    try {
+      const response = await fetch("https://frih5a7ugg.execute-api.ca-central-1.amazonaws.com/dev/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          body: JSON.stringify({ email, password })
+        }),
+      });
+
+      const data = await response.json();
+      const statusCode = data.statusCode || response.status;
+
+      // Redirect on successful login; otherwise, show error message
+      if (statusCode === 200) {
+        setErrorMessage("");
+        router.push("/dashboard/home");
+      } else {
+        setErrorMessage("Invalid username or password.");
+      }
+    } catch (error) {
+      setErrorMessage("An error occurred. Please try again.");
     }
   };
 
   return (
     <FormLayout title="Login" description="Enter your login details below.">
       <form onSubmit={handleSubmit}>
-        <FormInput type="text" name="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <FormInput type="password" name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <div className="flex justify-between items-center mb-8">
+        <FormInput
+          type="text"
+          name="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <FormInput
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <div className="flex justify-between items-center mb-4">
           <div className="flex items-center">
             <input
               type="checkbox"
@@ -41,6 +79,11 @@ const LoginPage: React.FC = () => {
             Forgot Password?
           </Link>
         </div>
+
+        {errorMessage && (
+          <p className="text-red-500 text-sm mb-4">{errorMessage}</p>
+        )}
+
         <SubmitButton text="Login" />
       </form>
       <p className="text-customWhite text-center mt-4">
