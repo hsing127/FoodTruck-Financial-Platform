@@ -1,23 +1,18 @@
 import React, { useState } from "react";
 import { Trash2 } from "lucide-react";
 import SectionCard from "./sectionCard";
-import ConfirmModal from "./confirmModal";
+import ConfirmModal from "../DashboardSettingsComponents/confirmModal";
+import Button from "../DashboardSettingsComponents/button";
 
 const DeleteAccount: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleDeleteClick = () => {
-    setIsModalOpen(true);
-  };
-
+  const handleDeleteClick = () => setIsModalOpen(true);
   const handleConfirmDelete = () => {
     setIsModalOpen(false);
     console.log("Account deleted");
   };
-
-  const handleCancelDelete = () => {
-    setIsModalOpen(false);
-  };
+  const handleCancelDelete = () => setIsModalOpen(false);
 
   return (
     <SectionCard icon={Trash2} title="Delete Account">
@@ -25,14 +20,15 @@ const DeleteAccount: React.FC = () => {
         <p className="mb-4">
           Permanently delete your account. This action cannot be undone.
         </p>
-        <button
+        <Button
           onClick={handleDeleteClick}
-          className="bg-red-400 hover:bg-red-300 text-white font-bold py-2 px-4 rounded transition duration-200 w-full sm:w-auto"
-        >
-          Delete Account
-        </button>
+          label="Delete Account"
+          type="danger"
+        />
         <ConfirmModal
           isOpen={isModalOpen}
+          title="Confirm Deletion"
+          message="Are you sure you want to delete your account? This action cannot be undone."
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}
         />
