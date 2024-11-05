@@ -15,13 +15,15 @@ const ForgotPasswordPage: React.FC = () => {
     if (email.trim()) {
       try {
         //Make the API call to send the email
-        const response = await fetch("/api/auth/send-reset-email", {
+        const response = await fetch("https://frih5a7ugg.execute-api.ca-central-1.amazonaws.com/dev/auth/forgot-password/send-code", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ email }),
         });
+
+        console.log(JSON.stringify({response}));
 
         if (!response.ok) {
           throw new Error("Failed to send reset email");
