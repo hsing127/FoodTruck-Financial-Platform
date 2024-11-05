@@ -21,11 +21,8 @@ const SignupPage: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        
-        console.log("Form submission started");
 
         if (!formData.email || !formData.password || !formData.password2) {
-            console.log("Missing email or password");
             alert("Please enter both email and password.");
             return;
         } else if (formData.password !== formData.password2) {
@@ -33,21 +30,9 @@ const SignupPage: React.FC = () => {
             return;
         }
 
-        console.log("Attempting to send signup request");
         const email = formData.email;
         const password = formData.password;
         try {
-
-            console.log(
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        body: JSON.stringify({email, password }),
-                    }),
-                });
 
             const response = await fetch("https://frih5a7ugg.execute-api.ca-central-1.amazonaws.com/dev/auth/signup", {
                 method: "POST",
@@ -59,26 +44,16 @@ const SignupPage: React.FC = () => {
                 }),
             });
 
-
-            console.log(
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({email, password }),
-                }
-            );
-            console.log(JSON.stringify({ email, password }));
-            console.log("Received response from server");
-            console.log(response);
+            //console.log(JSON.stringify({ email, password }));
+            //console.log("Received response from server");
+            //console.log(response);
 
             const data = await response.json();
-            console.log("response:", data);
+            //console.log("response:", data);
             if (!response.ok || data.hasOwnProperty("errorType") || (data.hasOwnProperty("statusCode") && data.statusCode===400)) {
-                console.log("Signup failed, response not ok");
+                //console.log("Signup failed, response not ok");
                 const errorData = data;
-                console.log("Error data:", errorData);
+                //console.log("Error data:", errorData);
                 var x = errorData.body;
                 if (x) {
                     x = JSON.parse(x).error;
@@ -87,14 +62,14 @@ const SignupPage: React.FC = () => {
                 return;
             }
 
-            console.log("Signup successful:", data);
+            //console.log("Signup successful:", data);
 
             // Redirect to the dashboard on successful signup
-            console.log("Redirecting to dashboard");
+            //console.log("Redirecting to dashboard");
             router.push("/dashboard/home");
 
         } catch (error) {
-            console.error("An error occurred in handleSubmit:", error);
+            //console.error("An error occurred in handleSubmit:", error);
             alert("An error occurred. Please try again.");
         }
     };
