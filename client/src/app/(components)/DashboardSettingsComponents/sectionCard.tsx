@@ -5,7 +5,7 @@ import { LucideIcon } from "lucide-react";
 // Props for SectionCard
 interface SectionCardProps {
   icon: LucideIcon;
-  title: string;
+  title?: string;
   children: React.ReactNode;
 }
 
@@ -16,7 +16,7 @@ const SectionCard: React.FC<SectionCardProps> = ({
 }) => {
   return (
     <motion.div
-      className="pb-2 w-full bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-300 relative overflow-hidden"
+      className="w-full bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-300 relative overflow-hidden"
       whileHover={{ boxShadow: "0 10px 30px -12px black" }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
