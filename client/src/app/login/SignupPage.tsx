@@ -21,9 +21,7 @@ const SignupPage: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        /*if (formData.email && formData.password === formData.password2) {
-          router.push("/dashboard/finance");
-        }*/
+        
         console.log("Form submission started");
 
         if (!formData.email || !formData.password || !formData.password2) {
