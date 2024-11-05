@@ -70,8 +70,8 @@ const handler =  async (event) => {
         port: 587,
         secure: false,
         auth: {
-            user: 'noreplyfoodtrack@gmail.com',
-            pass: 'qxse uoyp ghza aesg', 
+            user: process.env.EMAIL,
+            pass: process.env.EMAIL_PASS,
         },
     });
 
