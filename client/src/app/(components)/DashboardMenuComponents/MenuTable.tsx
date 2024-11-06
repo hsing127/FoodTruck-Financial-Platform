@@ -27,13 +27,18 @@ const MenuTable: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS * ITEMS_PER_ROW);
   const [isAnimating, setIsAnimating] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>(
+    []
+  );
 
   // Calculate items per page based on viewport height, with a minimum row count
   const calculateItemsPerPage = () => {
     const viewportHeight = window.innerHeight;
     const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
-    const maxRows = Math.max(MIN_ROWS, Math.floor(availableHeight / ROW_HEIGHT)); // Minimum of 2 rows
+    const maxRows = Math.max(
+      MIN_ROWS,
+      Math.floor(availableHeight / ROW_HEIGHT)
+    ); // Minimum of 2 rows
     const rowsToDisplay = Math.min(maxRows, ROWS);
     return rowsToDisplay * ITEMS_PER_ROW;
   };
@@ -132,11 +137,11 @@ const MenuTable: React.FC = () => {
         key={currentPage} // Add key to trigger re-render
       >
         {currentItems.map((item, index) => (
-          <motion.div 
-            key={item.id} 
-            variants={itemVariants} 
-            initial="hidden" 
-            animate="show" 
+          <motion.div
+            key={item.id}
+            variants={itemVariants}
+            initial="hidden"
+            animate="show"
             transition={{ delay: index * 0.05, duration: 0.3 }}
           >
             <MenuCard
