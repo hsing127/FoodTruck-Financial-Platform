@@ -6,26 +6,26 @@ import Pagination from "./Pagination";
 import { RECEIPT_DATA } from "@/app/(components)/DashboardPurchasesComponents/ReceiptData";
 import { Upload, Plus, Filter } from "lucide-react";
 
-// Approximate height of a single row (including padding/margins)
+// Constants
 const ROW_HEIGHT = 60;
 const BOTTOM_PADDING = 40;
+const MIN_ROWS = 6;
 
 const ReceiptTable: React.FC = () => {
-  // State hooks to manage search input, filtered data, expanded rows, and editing
   const [searchInput, setSearchInput] = useState("");
   const [filteredReceipts, setFilteredReceipts] = useState(RECEIPT_DATA);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [editingReceiptId, setEditingReceiptId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [editedReceipt, setEditedReceipt] = useState<any>(null);
-  const [itemsPerPage, setItemsPerPage] = useState(8); // Initial items per page
-  const [isAnimating, setIsAnimating] = useState(false); // Animation state for controlling overflow
+  const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const calculateItemsPerPage = () => {
     const viewportHeight = window.innerHeight;
     const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
-    const items = Math.floor(availableHeight / ROW_HEIGHT);
-    return items > 0 ? items : 1; // Ensure at least one item per page
+    const calculatedRows = Math.floor(availableHeight / ROW_HEIGHT);
+    return Math.max(calculatedRows, MIN_ROWS); // min 6 rows
   };
 
   // Update items per page when the component mounts or when the window resizes
