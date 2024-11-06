@@ -29,7 +29,7 @@ const MenuCard: React.FC<MenuCardProps> = ({
   return (
     <div className="p-4 border border-gray-300 bg-white rounded-xl shadow-md overflow-hidden flex flex-col items-center text-center">
       <div className="text-[#8B5CF6] pt-2">{item.image}</div>
-      <p className="text-lg font-medium text-gray-600 mt-6">{item.price}</p>
+      <p className="text-lg font-medium text-gray-600 mt-4">{item.price}</p>
       <h3 className="text-lg font-medium text-black">{item.name}</h3>
       <div className="text-center">
         <button

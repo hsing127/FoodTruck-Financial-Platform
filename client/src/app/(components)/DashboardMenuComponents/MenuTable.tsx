@@ -7,10 +7,11 @@ import MenuCard from "../DashboardMenuComponents/MenuCard";
 import { Plus, Filter } from "lucide-react";
 import MenuItemDetailsModal from "./MenuItemDetailsModal";
 
-const ROW_HEIGHT = 195; // Approximate height of a menu card row
-const BOTTOM_PADDING = 70;
+const ROW_HEIGHT = 170; // Approximate height of a menu card row
+const BOTTOM_PADDING = 40;
 const ROWS = 4;
 const ITEMS_PER_ROW = 3;
+const MIN_ROWS = 2;
 
 interface Ingredient {
   ingredient: string;
@@ -23,18 +24,16 @@ const MenuTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
   const [filteredMenu, setFilteredMenu] = useState(MENU_DATA);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(ROWS * ITEMS_PER_ROW);
+  const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS * ITEMS_PER_ROW);
   const [isAnimating, setIsAnimating] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>(
-    []
-  );
+  const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>([]);
 
-  // Calculate items per page based on viewport height
+  // Calculate items per page based on viewport height, with a minimum row count
   const calculateItemsPerPage = () => {
     const viewportHeight = window.innerHeight;
     const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
-    const maxRows = Math.floor(availableHeight / ROW_HEIGHT);
+    const maxRows = Math.max(MIN_ROWS, Math.floor(availableHeight / ROW_HEIGHT)); // Minimum of 2 rows
     const rowsToDisplay = Math.min(maxRows, ROWS);
     return rowsToDisplay * ITEMS_PER_ROW;
   };
