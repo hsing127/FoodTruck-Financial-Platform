@@ -81,18 +81,6 @@ const MenuTable: React.FC = () => {
   const totalPages = Math.ceil(filteredMenu.length / itemsPerPage);
 
   // Animation variants for staggered animation
-  const containerVariants = {
-    hidden: { opacity: 0, y: 50 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        staggerChildren: 0.05,
-        duration: 0.3,
-      },
-    },
-  };
-
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 },
@@ -141,12 +129,16 @@ const MenuTable: React.FC = () => {
         className="mb-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 flex-grow"
         initial="hidden"
         animate="show"
-        variants={containerVariants}
-        onAnimationComplete={() => setIsAnimating(false)} // Reset after animation
         key={currentPage} // Add key to trigger re-render
       >
-        {currentItems.map((item) => (
-          <motion.div key={item.id} variants={itemVariants}>
+        {currentItems.map((item, index) => (
+          <motion.div 
+            key={item.id} 
+            variants={itemVariants} 
+            initial="hidden" 
+            animate="show" 
+            transition={{ delay: index * 0.05, duration: 0.3 }}
+          >
             <MenuCard
               item={item}
               handleMoreDetailsClick={handleMoreDetailsClick} // Pass handleMoreDetailsClick to MenuCard
