@@ -75,7 +75,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       {items.map((item, index) => (
         <motion.button
           key={index}
-          className="w-full text-left text-sm p-2 hover:bg-gray-200 hover:rounded-lg"
+          className="w-full text-left text-sm p-2 hover:bg-[#8B5CF6] hover:rounded-lg"
           variants={itemVariants}
         >
           {item}
