@@ -4,6 +4,7 @@ import InventoryTableRow from "./InventoryTableRow";
 import SearchInput from "../DashboardPurchasesComponents/SearchInput";
 import Pagination from "../DashboardPurchasesComponents/Pagination";
 import { INVENTORY_DATA } from "@/app/(components)/DashboardInventoryComponents/InventoryData";
+import { Upload, Plus, Filter } from "lucide-react";
 
 // Approximate height of a single row (including padding/margins)
 const ROW_HEIGHT = 60;
@@ -114,7 +115,38 @@ const InventoryTable: React.FC = () => {
 
         {/* Search Input */}
         <div className="w-full">
-          <SearchInput searchInput={searchInput} handleSearch={handleSearch} />
+          <SearchInput
+            searchInput={searchInput}
+            handleSearch={handleSearch}
+            actions={[
+              {
+                icon: <Upload size={20} />,
+                type: "upload",
+                title: "Upload File",
+                items: [
+                  "Upload Image",
+                  "Upload Document",
+                  "Upload Spreadsheet",
+                ],
+              },
+              {
+                icon: <Plus size={20} />,
+                type: "addEntry",
+                title: "Add Entry",
+                items: ["Add Manual Entry", "Add Expense"],
+              },
+              {
+                icon: <Filter size={20} />,
+                type: "filter",
+                title: "Filter",
+                items: [
+                  "Filter by Date",
+                  "Filter by Cost",
+                  "Filter by Location",
+                ],
+              },
+            ]}
+          />
         </div>
       </div>
 
