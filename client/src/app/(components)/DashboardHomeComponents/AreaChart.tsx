@@ -118,7 +118,7 @@ const VolumeOverview = () => {
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: i * 0.1 },
+      transition: { delay: i * 0.05 },
     }),
     exit: { opacity: 0, y: -10 },
   };
@@ -157,7 +157,7 @@ const VolumeOverview = () => {
                       setTimeframe(option as "week" | "month" | "year");
                       setIsDropdownOpen(false);
                     }}
-                    className={`w-full px-4 py-2 text-sm text-left hover:bg-gray-200 ${
+                    className={`w-full px-4 py-2 text-sm text-left hover:bg-[#8B5CF6] ${
                       timeframe === option
                         ? "bg-[#8B5CF6] text-white font-semibold"
                         : ""
