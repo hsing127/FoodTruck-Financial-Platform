@@ -1,6 +1,7 @@
 import { useAppSelector } from "@/app/redux";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import React, { useEffect, useState, useRef, useCallback } from "react";
+import FoodItemsModal from "./FoodItemsModal";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -16,35 +17,23 @@ import {
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
-
-// Mock data for chart and items
-const volumeData = [
-  { month: "Jan", volume: 5618 },
-  { month: "Feb", volume: 7430 },
-  { month: "Mar", volume: 4649 },
-  { month: "Apr", volume: 5840 },
-  { month: "May", volume: 4796 },
-  { month: "Jun", volume: 7174 },
-  { month: "Jul", volume: 5738 },
-  { month: "Aug", volume: 7290 },
-  { month: "Sep", volume: 7974 },
-  { month: "Oct", volume: 6280 },
-  { month: "Nov", volume: 3237 },
-  { month: "Dec", volume: 7947 },
-];
-
-const foodItems = [
-  { name: "Pizza", price: "$15.00", profit: "10% Profit", isProfit: true },
-  { name: "Burger", price: "$10.00", profit: "5% Loss", isProfit: false },
-  { name: "Pasta", price: "$12.00", profit: "8% Profit", isProfit: true },
-  { name: "Salad", price: "$8.00", profit: "6% Profit", isProfit: true },
-  { name: "Sushi", price: "$20.00", profit: "12% Profit", isProfit: true },
-];
+import {
+  weeklyVolumeData,
+  monthlyVolumeData,
+  yearlyVolumeData,
+  foodItems,
+} from "./areaData";
 
 const VolumeOverview = () => {
   const [chartHeight, setChartHeight] = useState("25vh");
   const [isChartVisible, setIsChartVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [timeframe, setTimeframe] = useState<"week" | "month" | "year">(
+    "month"
+  );
   const chartRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
   // Tooltip styling based on dark mode
@@ -88,6 +77,52 @@ const VolumeOverview = () => {
     };
   }, [handleResize]);
 
+  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [isDropdownOpen]);
+
+  // Determine data based on selected timeframe
+  const getChartData = () => {
+    switch (timeframe) {
+      case "week":
+        return weeklyVolumeData;
+      case "month":
+        return monthlyVolumeData;
+      case "year":
+        return yearlyVolumeData;
+      default:
+        return monthlyVolumeData;
+    }
+  };
+
+  // Dropdown animation variants
+  const dropdownVariants = {
+    hidden: { opacity: 0, y: -10 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: i * 0.1 },
+    }),
+    exit: { opacity: 0, y: -10 },
+  };
+
   return (
     <motion.div
       className="p-5 w-full bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-300 relative"
@@ -96,10 +131,49 @@ const VolumeOverview = () => {
       transition={{ delay: 0.2 }}
       ref={chartRef}
     >
-      {/* Options button at the top right */}
+      {/* Options button */}
       <div className="absolute top-4 right-5">
-        <div className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer">
-          <MoreHorizontal className="w-6 h-6 text-gray-700" />
+        <div className="relative">
+          <button
+            className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer"
+            onClick={toggleDropdown}
+          >
+            <MoreHorizontal className="w-6 h-6 text-gray-700" />
+          </button>
+
+          <AnimatePresence>
+            {isDropdownOpen && (
+              <motion.div
+                ref={dropdownRef}
+                className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg overflow-hidden z-10"
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+              >
+                {["week", "month", "year"].map((option, index) => (
+                  <motion.button
+                    key={option}
+                    onClick={() => {
+                      setTimeframe(option as "week" | "month" | "year");
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full px-4 py-2 text-sm text-left hover:bg-gray-200 ${
+                      timeframe === option
+                        ? "bg-[#8B5CF6] text-white font-semibold"
+                        : ""
+                    }`}
+                    custom={index}
+                    variants={dropdownVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    {option.charAt(0).toUpperCase() + option.slice(1)}
+                  </motion.button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
@@ -125,7 +199,7 @@ const VolumeOverview = () => {
         <div className="w-full mt-8" style={{ height: chartHeight }}>
           {isChartVisible && (
             <ResponsiveContainer>
-              <AreaChart data={volumeData}>
+              <AreaChart data={getChartData()}>
                 <defs>
                   <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8} />
@@ -133,7 +207,10 @@ const VolumeOverview = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="transparent" />
-                <XAxis hide />
+                <XAxis
+                  hide={timeframe === "week"}
+                  dataKey={timeframe === "year" ? "year" : "month"}
+                />
                 <YAxis hide />
                 <Tooltip
                   contentStyle={tooltipStyles.contentStyle}
@@ -193,11 +270,21 @@ const VolumeOverview = () => {
 
         {/* View all button */}
         <div className="text-center mt-4">
-          <button className="text-sm text-blue-500 font-medium inline-flex items-center hover:text-blue-700 transition-colors duration-300">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="text-sm text-blue-500 font-medium inline-flex items-center hover:text-blue-700 transition-colors duration-300"
+          >
             View All <ChevronRight className="w-4 h-4 ml-1" />
           </button>
         </div>
       </div>
+
+      {/* Food items modal */}
+      <FoodItemsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        items={foodItems}
+      />
     </motion.div>
   );
 };
