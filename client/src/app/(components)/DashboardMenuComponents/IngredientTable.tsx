@@ -135,7 +135,7 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
                     )}
                     <td className="py-3 text-sm text-black">
                       <button
-                        className="mr-2 text-green-600"
+                        className="pl-2 mr-2 text-green-600"
                         onClick={() => handleSaveClick(idx)}
                       >
                         <Save size={20} />
