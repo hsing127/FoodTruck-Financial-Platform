@@ -19,7 +19,6 @@ const InventoryTable: React.FC = () => {
   useEffect(() => {
     const fetchInventoryData = async () => {
       try {
-        console.log("Fetching inventory data...");
         const response = await fetch("https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/inventory", {
           method: "POST",
           headers: {
@@ -34,7 +33,6 @@ const InventoryTable: React.FC = () => {
         }
         
         const data = await response.json();
-        console.log("Fetched inventory data:", data);
   
         // Parse the 'body' field, which contains the actual inventory data as a JSON string
         const parsedBody = JSON.parse(data.body);
@@ -55,28 +53,24 @@ const InventoryTable: React.FC = () => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
-    console.log("Search term:", term);
     setSearchInput(term);
     const filtered = filteredInventory.filter(
       item =>
         item.Name.toLowerCase().includes(term) ||
         item.AmountUnits.toLowerCase().includes(term)
     );
-    console.log("Filtered inventory after search:", filtered);
     setFilteredInventory(filtered);
     setCurrentPage(1);
   };
 
   // Edit button click handler
   const handleEditClick = (inventory: any) => {
-    console.log("Editing inventory item:", inventory);
     setEditingInventoryName(inventory.Name);
     setEditedInventory({ ...inventory });
   };
 
   // Save button click handler
   const handleSaveClick = () => {
-    console.log("Saving edited inventory item:", editedInventory);
     setFilteredInventory(prev =>
       prev.map((inventory) =>
         inventory.Name === editingInventoryName ? editedInventory : inventory
@@ -88,7 +82,6 @@ const InventoryTable: React.FC = () => {
 
   // Cancel button click handler
   const handleCancelClick = () => {
-    console.log("Canceling edit for item:", editingInventoryName);
     setEditingInventoryName("");
     setEditedInventory(null);
   };
@@ -96,7 +89,6 @@ const InventoryTable: React.FC = () => {
   // Input change handler during editing
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    console.log(`Editing field '${name}' to value:`, value);
     setEditedInventory((prev: any) => ({
       ...prev,
       [name]: value,
@@ -105,7 +97,6 @@ const InventoryTable: React.FC = () => {
 
   // Delete button click handler
   const handleDeleteClick = (inventoryName: string) => {
-    console.log("Deleting inventory item:", inventoryName);
     setFilteredInventory((prev) =>
       prev.filter((inventory) => inventory.Name !== inventoryName)
     );
