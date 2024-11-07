@@ -120,7 +120,6 @@ const Sidebar = React.memo(() => {
   // Bottom links for the sidebar
   const bottomLinks = useMemo(
     () => [
-      { href: "/dashboard/account", icon: User, label: "Account" },
       {
         href: "/dashboard/settings",
         icon: SlidersHorizontal,

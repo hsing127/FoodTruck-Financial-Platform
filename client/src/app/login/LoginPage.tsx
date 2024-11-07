@@ -21,15 +21,18 @@ const LoginPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch("https://frih5a7ugg.execute-api.ca-central-1.amazonaws.com/dev/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          body: JSON.stringify({ email, password })
-        }),
-      });
+      const response = await fetch(
+        "https://frih5a7ugg.execute-api.ca-central-1.amazonaws.com/dev/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            body: JSON.stringify({ email, password }),
+          }),
+        }
+      );
 
       const data = await response.json();
       const statusCode = data.statusCode || response.status;
@@ -69,13 +72,16 @@ const LoginPage: React.FC = () => {
               type="checkbox"
               id="remember-me"
               name="remember-me"
-              className="w-4 h-4 text-[#8B5CF6] focus:ring-[#8B5CF6] rounded border-gray-300 bg-gray-700 focus:ring-2"
+              className="w-4 h-4  rounded border-gray-300 bg-gray-700"
             />
             <label htmlFor="remember-me" className="ml-2 text-customWhite">
               Remember Me
             </label>
           </div>
-          <Link href="/login/forgotpassword" className="text-[#8B5CF6] hover:underline">
+          <Link
+            href="/login/forgotpassword"
+            className="text-[#8B5CF6] hover:underline"
+          >
             Forgot Password?
           </Link>
         </div>

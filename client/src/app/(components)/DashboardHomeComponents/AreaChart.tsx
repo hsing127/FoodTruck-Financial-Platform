@@ -77,24 +77,31 @@ const VolumeOverview = () => {
     };
   }, [handleResize]);
 
-  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
+  // Toggle dropdown visibility
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+
+      // Close dropdown only if clicked outside of dropdown and button
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        !dropdownRef.current.contains(target) &&
+        !target?.closest(".dropdown-toggle")
       ) {
         setIsDropdownOpen(false);
       }
     };
 
     if (isDropdownOpen) {
-      document.addEventListener("mousedown", handleOutsideClick);
+      document.addEventListener("mouseup", handleOutsideClick);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("mouseup", handleOutsideClick);
     };
   }, [isDropdownOpen]);
 
@@ -135,7 +142,7 @@ const VolumeOverview = () => {
       <div className="absolute top-4 right-5">
         <div className="relative">
           <button
-            className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer"
+            className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer dropdown-toggle"
             onClick={toggleDropdown}
           >
             <MoreHorizontal className="w-6 h-6 text-gray-700" />

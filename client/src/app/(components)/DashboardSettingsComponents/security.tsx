@@ -3,6 +3,7 @@ import { Lock } from "lucide-react";
 import SectionCard from "./sectionCard";
 import SettingsSection from "../DashboardSettingsComponents/settingsSection";
 import Button from "../DashboardSettingsComponents/button";
+import ChangePasswordModal from "./changePasswordModal";
 
 const Security: React.FC = () => {
   const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(false);
@@ -11,17 +12,21 @@ const Security: React.FC = () => {
     { id: 1, name: "Chrome on Windows", location: "New York, USA" },
     { id: 2, name: "Safari on iPhone", location: "San Francisco, USA" },
   ]);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
+    useState(false);
 
   const settings = [
     {
       label: "Enable Two-Factor Authentication",
       isEnabled: isTwoFactorEnabled,
       onToggle: () => setIsTwoFactorEnabled(!isTwoFactorEnabled),
-    }
+    },
   ];
 
   const removeTrustedDevice = (deviceId: number) => {
-    setTrustedDevices(trustedDevices.filter((device) => device.id !== deviceId));
+    setTrustedDevices(
+      trustedDevices.filter((device) => device.id !== deviceId)
+    );
   };
 
   return (
@@ -34,8 +39,26 @@ const Security: React.FC = () => {
         </p>
       )}
 
+      <div className="mt-4">
+        <h3 className="font-medium text-gray-700">Change Password</h3>
+        {/* Change Password Button, aligned to the right */}
+        <div className="mt-4 flex justify-start">
+          <Button
+            onClick={() => setIsChangePasswordModalOpen(true)}
+            label="Change Password"
+            type="primary"
+          />
+        </div>
+
+        {/* Change Password Modal */}
+        <ChangePasswordModal
+          isOpen={isChangePasswordModalOpen}
+          onClose={() => setIsChangePasswordModalOpen(false)}
+        />
+      </div>
+
       {/* Trusted Devices Section */}
-      <div className="mt-2">
+      {/* <div className="mt-4">
         <h3 className="font-medium text-gray-700">Trusted Devices</h3>
         <ul className="mt-2 text-sm space-y-2">
           {trustedDevices.map((device) => (
@@ -51,7 +74,7 @@ const Security: React.FC = () => {
             </li>
           ))}
         </ul>
-      </div>
+      </div> */}
     </SectionCard>
   );
 };

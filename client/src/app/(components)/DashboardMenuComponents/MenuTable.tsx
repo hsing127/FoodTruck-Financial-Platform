@@ -129,35 +129,43 @@ const MenuTable: React.FC = () => {
         />
       </div>
 
-      {/* Grid of Menu Cards */}
-      <motion.div
-        className="mb-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 flex-grow"
-        initial="hidden"
-        animate="show"
-        key={currentPage} // Add key to trigger re-render
-      >
-        {currentItems.map((item, index) => (
+      {/* Conditionally Render No Items Message or Grid of Menu Cards */}
+      {filteredMenu.length === 0 ? (
+        <p className="text-center text-gray-600 mt-8">
+          No menu items found. Add or upload items to get started.
+        </p>
+      ) : (
+        <>
           <motion.div
-            key={item.id}
-            variants={itemVariants}
+            className="mb-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 flex-grow"
             initial="hidden"
             animate="show"
-            transition={{ delay: index * 0.05, duration: 0.3 }}
+            key={currentPage}
           >
-            <MenuCard
-              item={item}
-              handleMoreDetailsClick={handleMoreDetailsClick} // Pass handleMoreDetailsClick to MenuCard
-            />
+            {currentItems.map((item, index) => (
+              <motion.div
+                key={item.id}
+                variants={itemVariants}
+                initial="hidden"
+                animate="show"
+                transition={{ delay: index * 0.05, duration: 0.3 }}
+              >
+                <MenuCard
+                  item={item}
+                  handleMoreDetailsClick={handleMoreDetailsClick}
+                />
+              </motion.div>
+            ))}
           </motion.div>
-        ))}
-      </motion.div>
 
-      {/* Pagination */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        paginate={handlePageChange}
-      />
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            paginate={handlePageChange}
+          />
+        </>
+      )}
 
       {/* Menu Item Details Modal */}
       <MenuItemDetailsModal
