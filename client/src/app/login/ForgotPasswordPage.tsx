@@ -22,15 +22,21 @@ const ForgotPasswordPage: React.FC = () => {
           },
           body: JSON.stringify({ email }),
         });
+        // if (!response.ok) {
+        //   throw new Error("Failed to send reset email");
+        // }
 
-        console.log(JSON.stringify({response}));
+        const data = await response.json();
+        const statusCode = data.statusCode;
+        console.log(JSON.stringify({data}));
 
-        if (!response.ok) {
-          throw new Error("Failed to send reset email");
+        if(statusCode === 200) {
+          //Redirect if the email was sent successfully
+          router.push("/login/forgotpasswordcode");
+        }else {
+          alert("Invalid email");
         }
 
-        //Redirect if the email was sent successfully
-        router.push("/login/forgotpasswordcode");
       } catch (error) {
         alert("There was an error sending the email. Please try again.");
         console.error("Error:", error);
