@@ -87,7 +87,7 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
               <Edit size={18} />
             </button>
             <button
-              className="text-red-400 hover:text-red-300"
+              className="text-red-400 hover:text-red-500"
               onClick={(e) => {
                 preventEventPropagation(e);
                 handleDeleteClick(inventory.Name);
