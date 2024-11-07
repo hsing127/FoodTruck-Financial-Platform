@@ -1,0 +1,107 @@
+[
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Garlic Herb Chicken with Rice",
+        "IngredientName": "Chicken Breast",
+        "Amount": 8,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Garlic Herb Chicken with Rice",
+        "IngredientName": "Garlic",
+        "Amount": 3,
+        "AmountUnits": "cloves"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Garlic Herb Chicken with Rice",
+        "IngredientName": "Olive Oil",
+        "Amount": 1,
+        "AmountUnits": "tbsp"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Garlic Herb Chicken with Rice",
+        "IngredientName": "Paprika",
+        "Amount": 1,
+        "AmountUnits": "tsp"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Garlic Herb Chicken with Rice",
+        "IngredientName": "Black Pepper",
+        "Amount": 0.5,
+        "AmountUnits": "tsp"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Garlic Herb Chicken with Rice",
+        "IngredientName": "Basmati Rice",
+        "Amount": 6,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Garlic Herb Chicken with Rice",
+        "IngredientName": "Cilantro",
+        "Amount": 0.25,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Spicy Chicken and Bell Pepper Stir Fry",
+        "IngredientName": "Chicken Breast",
+        "Amount": 6,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Spicy Chicken and Bell Pepper Stir Fry",
+        "IngredientName": "Bell Pepper",
+        "Amount": 2,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Spicy Chicken and Bell Pepper Stir Fry",
+        "IngredientName": "Onion",
+        "Amount": 1,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Spicy Chicken and Bell Pepper Stir Fry",
+        "IngredientName": "Garlic",
+        "Amount": 2,
+        "AmountUnits": "cloves"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Spicy Chicken and Bell Pepper Stir Fry",
+        "IngredientName": "Olive Oil",
+        "Amount": 1,
+        "AmountUnits": "tbsp"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Spicy Chicken and Bell Pepper Stir Fry",
+        "IngredientName": "Paprika",
+        "Amount": 1,
+        "AmountUnits": "tsp"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Spicy Chicken and Bell Pepper Stir Fry",
+        "IngredientName": "Black Pepper",
+        "Amount": 0.5,
+        "AmountUnits": "tsp"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Spicy Chicken and Bell Pepper Stir Fry",
+        "IngredientName": "Cilantro",
+        "Amount": 0.25,
+        "AmountUnits": "oz"
+    }
+]
