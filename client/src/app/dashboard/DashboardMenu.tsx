@@ -2,11 +2,11 @@ import "@/app/globals.css";
 import React from "react";
 import DashboardLayout from "./DashboardWrapper";
 import { motion } from "framer-motion";
-import { Banknote, ShoppingCart, FileText, Store } from "lucide-react";
-import ReceiptTable from "../(components)/DashboardPurchasesComponents/ReceiptTable";
+import { Pizza, Star, DollarSign, Layers } from "lucide-react"; // Lucide icons for menu stats
 import DashCardLong from "../(components)/DashboardHomeComponents/DashCardLong";
+import MenuTable from "../(components)/DashboardMenuComponents/MenuTable";
 
-export const DashboardPurchases: React.FC = () => {
+export const DashboardMenu: React.FC = () => {
   return (
     <DashboardLayout>
       <div className="outline outline-white outline-8 flex-1 relative border-white rounded-3xl border-[16px] overflow-hidden">
@@ -14,43 +14,43 @@ export const DashboardPurchases: React.FC = () => {
           <div className="pt-2 mx-auto ">
             {/* First row of dashboard cards */}
             <motion.div
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 mt-4 mb-4"
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 mb-4 mt-4"
               initial={{ opacity: 0, y: 20 }} // Animation for appearance
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
             >
-              {/* Receipt Dashboard Cards */}
+              {/* Menu Dashboard Cards */}
               <div className="col-span-1 lg:col-span-1 space-y-[20px] sm:space-y-0 sm:grid sm:grid-cols-2 sm:col-span-2 lg:grid-cols-4 gap-4">
                 <DashCardLong
-                  name="Total Receipts"
-                  icon={FileText}
-                  value="8"
+                  name="Total Menu Items"
+                  icon={Pizza}
+                  value="50"
                   color="bg-gray-100"
                 />
                 <DashCardLong
-                  name="Total Spendings"
-                  icon={Banknote}
-                  value="$1,400"
+                  name="Most Popular Item"
+                  icon={Star}
+                  value="Margherita Pizza"
                   color="bg-gray-100"
                   isPurple={true}
                 />
                 <DashCardLong
-                  name="Average Cost/Receipt"
-                  icon={ShoppingCart}
-                  value="$175"
+                  name="Average Price"
+                  icon={DollarSign}
+                  value="$12"
                   color="bg-gray-100"
                 />
                 <DashCardLong
-                  name="Most Visited Store"
-                  icon={Store}
-                  value="Walmart"
+                  name="New Foods"
+                  icon={Layers}
+                  value="8"
                   color="bg-gray-100"
                   isPurple={true}
                 />
               </div>
             </motion.div>
           </div>
-          <ReceiptTable />
+          <MenuTable />
         </div>
       </div>
     </DashboardLayout>

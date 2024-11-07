@@ -22,8 +22,8 @@ const FormInput: React.FC<FormInputProps> = ({
       name={name}
       value={value}
       onChange={onChange}
-      className="border p-2 rounded-md bg-white text-black border-gray-400"
-    />
+      className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+      />
   </div>
 );
 

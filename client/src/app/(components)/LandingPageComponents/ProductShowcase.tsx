@@ -1,10 +1,13 @@
 "use client";
-import appScreen from "../../../assets/teamImage.png";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useRef, useMemo } from "react";
+import React from "react";
 
-export const ProductShowcase = () => {
+import appScreen from "../../../assets/WebsiteImg.png";
+
+export const ProductShowcase = React.memo(() => {
   const appImg = useRef<HTMLImageElement>(null);
   const { scrollYProgress } = useScroll({
     target: appImg,
@@ -15,7 +18,10 @@ export const ProductShowcase = () => {
   const rotateY = useTransform(scrollYProgress, [0, 1], [0.05, 1]);
 
   return (
-    <div className="bg-customBlack overflow-hidden text-customWhite bg-gradient-to-b from-customBlack to-[#5D2CA8] sm:py-24 py-[72px]">
+    <div
+      id="updates"
+      className="bg-customBlack overflow-hidden text-customWhite bg-gradient-to-b from-customBlack to-[#5D2CA8] sm:py-24 py-[72px]"
+    >
       <div className="container relative">
         <h2 className="text-center text-5xl sm:text-6xl font-bold tracking-tighter">
           Intuitive Interface
@@ -38,13 +44,15 @@ export const ProductShowcase = () => {
         >
           <Image
             src={appScreen}
-            priority
             alt="the Product Screenshot"
             className="mt-14"
             ref={appImg}
+            loading="lazy"
           />
         </motion.div>
       </div>
     </div>
   );
-};
+});
+
+ProductShowcase.displayName = "ProductShowcase";

@@ -1,9 +1,12 @@
-import Insta from "../../../assets/icons/insta.svg";
-import X from "../../../assets/icons/pinterest.svg";
-import Tiktok from "../../../assets/icons/tiktok.svg";
-import Youtube from "../../../assets/icons/youtube.svg";
+import dynamic from "next/dynamic";
+import React from "react";
 
-export const Footer = () => {
+const Insta = dynamic(() => import("../../../assets/icons/insta.svg"));
+const Pinterest = dynamic(() => import("../../../assets/icons/pinterest.svg"));
+const Tiktok = dynamic(() => import("../../../assets/icons/tiktok.svg"));
+const Youtube = dynamic(() => import("../../../assets/icons/youtube.svg"));
+
+export const Footer = React.memo(() => {
   return (
     <footer className="py-5 bg-customBlack text-customWhite/60 border-t border-customWhite/20">
       <div className="container">
@@ -11,13 +14,12 @@ export const Footer = () => {
           <div className="text-center">
             2024 FoodTrack, Inc. All rights reserved
           </div>
-          <div className=""></div>
           <ul className="flex justify-center gap-2.5">
             <li>
               <Insta />
             </li>
             <li>
-              <X />
+              <Pinterest />
             </li>
             <li>
               <Tiktok />
@@ -30,4 +32,6 @@ export const Footer = () => {
       </div>
     </footer>
   );
-};
+});
+
+Footer.displayName = "Footer";

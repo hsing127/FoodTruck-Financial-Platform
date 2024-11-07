@@ -94,7 +94,7 @@ const Sidebar = React.memo(() => {
     isSidebarCollapsed ? "w-[70px]" : "w-[260px]"
   } ${
     isOverflowHidden ? "overflow-hidden" : "overflow-visible"
-  } bg-white transition-all duration-300 h-full shadow-md z-40`;
+  } bg-white transition-all duration-300 h-full z-40`;
 
   // Main links for the sidebar
   const mainLinks = useMemo(
@@ -120,7 +120,6 @@ const Sidebar = React.memo(() => {
   // Bottom links for the sidebar
   const bottomLinks = useMemo(
     () => [
-      { href: "/dashboard/account", icon: User, label: "Account" },
       {
         href: "/dashboard/settings",
         icon: SlidersHorizontal,
