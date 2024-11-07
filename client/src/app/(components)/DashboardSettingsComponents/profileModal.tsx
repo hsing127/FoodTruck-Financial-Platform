@@ -79,7 +79,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="overflow-y-auto max-h-[90vh] p-6">
-              <SectionCard icon={User} title="Edit Profile">
                 <div className="flex justify-between mb-6">
                   <h2 className="text-2xl font-semibold text-black">
                     Edit Profile
@@ -166,7 +165,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
                     />
                   </div>
                 </form>
-              </SectionCard>
             </div>
           </motion.div>
         </motion.div>
