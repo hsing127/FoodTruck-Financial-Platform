@@ -17,7 +17,7 @@ const Profile: React.FC = () => {
         const fetchProfileData = async () => {
             const email = "wenjiex1@asu.edu";
             try {
-                const response = await fetch("https://frih5a7ugg.execute-api.ca-central-1.amazonaws.com/dev/data/profile", {
+                const response = await fetch("https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/profile", {
                     method: "POST",
                     body: JSON.stringify({
                         body: JSON.stringify({ email }),
