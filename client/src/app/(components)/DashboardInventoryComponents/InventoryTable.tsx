@@ -3,67 +3,75 @@ import { motion } from "framer-motion";
 import InventoryTableRow from "./InventoryTableRow";
 import SearchInput from "../DashboardPurchasesComponents/SearchInput";
 import Pagination from "../DashboardPurchasesComponents/Pagination";
-import { INVENTORY_DATA } from "@/app/(components)/DashboardInventoryComponents/InventoryData";
 import { Upload, Plus, Filter } from "lucide-react";
 
-// Approximate height of a single row (including padding/margins)
 const ROW_HEIGHT = 60;
 const BOTTOM_PADDING = 40;
 
 const InventoryTable: React.FC = () => {
-  // State hooks to manage search input, filtered data, and editing
   const [searchInput, setSearchInput] = useState("");
-  const [filteredInventory, setFilteredInventory] = useState(INVENTORY_DATA);
+  const [filteredInventory, setFilteredInventory] = useState<any[]>([]);
   const [editingInventoryName, setEditingInventoryName] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const [editedInventory, setEditedInventory] = useState<any>(null);
-  const [itemsPerPage, setItemsPerPage] = useState(8); // Initial items per page
+  const [itemsPerPage, setItemsPerPage] = useState(8);
 
-  const calculateItemsPerPage = () => {
-    const viewportHeight = window.innerHeight;
-    const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
-    const items = Math.floor(availableHeight / ROW_HEIGHT);
-    return items > 0 ? items : 1; // Ensure at least one item per page
-  };
-
-  // Update items per page when the component mounts or when the window resizes
   useEffect(() => {
-    const handleResize = () => {
-      setItemsPerPage(calculateItemsPerPage());
+    const fetchInventoryData = async () => {
+      try {
+        const response = await fetch("https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/inventory", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          //Will be changed to reference JSON Tokening to populate unique inventory data per user
+          body: JSON.stringify({ email: "wenjiex1@asu.edu" }),
+        });
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch inventory data");
+        }
+        
+        const data = await response.json();
+  
+        // Parse the 'body' field, which contains the actual inventory data as a JSON string
+        const parsedBody = JSON.parse(data.body);
+  
+        if (parsedBody.inventory && Array.isArray(parsedBody.inventory)) {
+          setFilteredInventory(parsedBody.inventory);
+        } else {
+          console.error("Unexpected data format:", parsedBody);
+        }
+      } catch (error) {
+        console.error("Error fetching inventory:", error);
+      }
     };
-
-    // Set items per page initially and add resize event listener
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+  
+    fetchInventoryData();
   }, []);
+  
 
-  // Handle search input changes
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     setSearchInput(term);
-    const filtered = INVENTORY_DATA.filter(
-      (inventory) =>
-        inventory.Name.toLowerCase().includes(term) ||
-        inventory.AmountUnits.toLowerCase().includes(term)
+    const filtered = filteredInventory.filter(
+      item =>
+        item.Name.toLowerCase().includes(term) ||
+        item.AmountUnits.toLowerCase().includes(term)
     );
     setFilteredInventory(filtered);
     setCurrentPage(1);
   };
 
-  // Handle edit button click
+  // Edit button click handler
   const handleEditClick = (inventory: any) => {
     setEditingInventoryName(inventory.Name);
     setEditedInventory({ ...inventory });
   };
 
-  // Handle save button click
+  // Save button click handler
   const handleSaveClick = () => {
-    setFilteredInventory((prev) =>
+    setFilteredInventory(prev =>
       prev.map((inventory) =>
         inventory.Name === editingInventoryName ? editedInventory : inventory
       )
@@ -72,13 +80,13 @@ const InventoryTable: React.FC = () => {
     setEditedInventory(null);
   };
 
-  // Handle cancel button click
+  // Cancel button click handler
   const handleCancelClick = () => {
     setEditingInventoryName("");
     setEditedInventory(null);
   };
 
-  // Handle input changes during editing
+  // Input change handler during editing
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditedInventory((prev: any) => ({
@@ -87,14 +95,27 @@ const InventoryTable: React.FC = () => {
     }));
   };
 
-  // Handle delete button click
+  // Delete button click handler
   const handleDeleteClick = (inventoryName: string) => {
     setFilteredInventory((prev) =>
       prev.filter((inventory) => inventory.Name !== inventoryName)
     );
   };
 
-  // Calculate pagination indices
+  const calculateItemsPerPage = () => {
+    const viewportHeight = window.innerHeight;
+    const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
+    return Math.max(1, Math.floor(availableHeight / ROW_HEIGHT));
+  };
+
+  useEffect(() => {
+    const handleResize = () => setItemsPerPage(calculateItemsPerPage());
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Pagination calculations
   const indexOfLastInventory = currentPage * itemsPerPage;
   const indexOfFirstInventory = indexOfLastInventory - itemsPerPage;
   const currentInventory = filteredInventory.slice(
