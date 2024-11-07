@@ -150,50 +150,60 @@ const InventoryTable: React.FC = () => {
         </div>
       </div>
 
-      {/* Table to display inventory data */}
-      <div className="flex-grow overflow-y-auto">
-        <table className="min-w-full divide-y divide-white">
-          <thead>
-            <tr>
-              <th className="pl-7 text-left w-1/3 py-2 text-xs font-medium text-black uppercase tracking-wider">
-                Ingredient Name
-              </th>
-              <th className="text-left w-1/3 text-xs font-medium text-black uppercase tracking-wider">
-                Amount
-              </th>
-              <th className="text-left w-1/3 text-xs font-medium text-black uppercase tracking-wider">
-                Units
-              </th>
-              <th className="pr-6 w-[100px] text-left text-xs font-medium text-black uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
+      {/* Conditionally Render No Items Message or Inventory Table */}
+      {filteredInventory.length === 0 ? (
+        <p className="text-center text-gray-600 mt-8">
+          No inventory items found. Add or upload items to get started.
+        </p>
+      ) : (
+        <>
+          {/* Table to display inventory data */}
+          <div className="flex-grow overflow-y-auto">
+            <table className="min-w-full divide-y divide-white">
+              <thead>
+                <tr>
+                  <th className="pl-7 text-left w-1/3 py-2 text-xs font-medium text-black uppercase tracking-wider">
+                    Ingredient Name
+                  </th>
+                  <th className="text-left w-1/3 text-xs font-medium text-black uppercase tracking-wider">
+                    Amount
+                  </th>
+                  <th className="text-left w-1/3 text-xs font-medium text-black uppercase tracking-wider">
+                    Units
+                  </th>
+                  <th className="pr-6 w-[100px] text-left text-xs font-medium text-black uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
 
-          <tbody className="divide-y divide-white">
-            {/* Map through currentInventory and render each row */}
-            {currentInventory.map((inventory) => (
-              <InventoryTableRow
-                key={inventory.Name}
-                inventory={inventory}
-                editingInventoryName={editingInventoryName}
-                handleEditClick={handleEditClick}
-                handleSaveClick={handleSaveClick}
-                handleCancelClick={handleCancelClick}
-                handleInputChange={handleInputChange}
-                editedInventory={editedInventory}
-                handleDeleteClick={handleDeleteClick}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
+              <tbody className="divide-y divide-white">
+                {/* Map through currentInventory and render each row */}
+                {currentInventory.map((inventory) => (
+                  <InventoryTableRow
+                    key={inventory.Name}
+                    inventory={inventory}
+                    editingInventoryName={editingInventoryName}
+                    handleEditClick={handleEditClick}
+                    handleSaveClick={handleSaveClick}
+                    handleCancelClick={handleCancelClick}
+                    handleInputChange={handleInputChange}
+                    editedInventory={editedInventory}
+                    handleDeleteClick={handleDeleteClick}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        paginate={setCurrentPage}
-      />
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            paginate={setCurrentPage}
+          />
+        </>
+      )}
     </motion.div>
   );
 };

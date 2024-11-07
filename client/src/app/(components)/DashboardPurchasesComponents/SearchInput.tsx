@@ -85,14 +85,14 @@ const SearchInput: React.FC<SearchInputProps> = ({
   );
 
   return (
-    <div className="flex items-center justify-between w-full space-x-4 pr-6 relative">
+    <div className="flex items-center justify-between w-full space-x-4  relative">
       {/* Search Bar */}
       <div className="flex items-center bg-gray-50 rounded-lg px-3 py-2 w-80">
         <Search className="text-gray-600" size={20} />
         <input
           type="text"
           placeholder="Search..."
-          className="bg-transparent outline-none text-sm text-gray-600 placeholder-gray-400 placeholder-opacity-75 pl-2"
+          className="w-80 bg-transparent outline-none text-sm text-gray-600 placeholder-gray-400 placeholder-opacity-75 pl-2"
           onChange={handleSearch}
           value={searchInput}
         />
@@ -103,7 +103,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         {actions.map(({ icon, type, title, items }) => (
           <div key={type} className="relative">
             <button
-              className="bg-gray-50 rounded-lg p-2 focus:outline-none hover:bg-gray-200"
+              className="bg-gray-50 rounded-lg p-2 focus:outline-none hover:text-blue-400 hover:bg-gray-200"
               title={title}
               onClick={() => toggleDropdown(type)}
             >

@@ -40,6 +40,7 @@ const AccordianItem = ({
       key={question}
       className="py-7 border-b border-customWhite/30"
       onClick={() => setIsOpen(!isOpen)}
+      id="help"
     >
       <div className="flex items-center">
         <span className="flex-1 text-lg font-bold">{question}</span>

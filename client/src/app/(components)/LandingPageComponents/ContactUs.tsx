@@ -19,6 +19,7 @@ export const ContactUs = () => {
     <div
       className="bg-customBlack text-customWhite py-[72px] sm:py-24 text-center"
       ref={containRef}
+      id="contactUs"
     >
       customWhite
       <div className="container max-w-xl relative">

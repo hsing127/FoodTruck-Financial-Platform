@@ -164,65 +164,73 @@ const ReceiptTable: React.FC = () => {
         </div>
       </div>
 
-      <table className="min-w-full divide-y divide-white">
-        <thead>
-          <tr>
-            <th className="pl-7 text-left w-1/5 py-2 text-xs font-medium text-black uppercase tracking-wider">
-              Receipt ID
-            </th>
-            <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
-              Location
-            </th>
-            <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
-              Date
-            </th>
-            <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
-              Time
-            </th>
-            <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
-              Cost
-            </th>
-            <th className="pr-6 w-[100px] text-left text-xs font-medium text-black uppercase tracking-wider">
-              Actions
-            </th>
-          </tr>
-        </thead>
+      {filteredReceipts.length === 0 ? (
+        <p className="text-center text-gray-600 mt-8">
+          You have not uploaded or added any receipt data.
+        </p>
+      ) : (
+        <>
+          <table className="min-w-full divide-y divide-white">
+            <thead>
+              <tr>
+                <th className="pl-7 text-left w-1/5 py-2 text-xs font-medium text-black uppercase tracking-wider">
+                  Receipt ID
+                </th>
+                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
+                  Location
+                </th>
+                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
+                  Time
+                </th>
+                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
+                  Cost
+                </th>
+                <th className="w-[100px] text-left text-xs font-medium text-black uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
 
-        <motion.tbody
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
-          }}
-          onAnimationComplete={() => setIsAnimating(false)}
-          key={currentPage} // Reset animation on page change
-        >
-          {currentReceipts.map((receipt, index) => (
-            <ReceiptTableRow
-              key={receipt.receiptId}
-              receipt={receipt}
-              isRowExpanded={isRowExpanded}
-              toggleRow={toggleRow}
-              editingReceiptId={editingReceiptId}
-              handleEditClick={handleEditClick}
-              handleSaveClick={handleSaveClick}
-              handleCancelClick={handleCancelClick}
-              handleInputChange={handleInputChange}
-              editedReceipt={editedReceipt}
-              handleDeleteClick={handleDeleteClick}
-              index={index} // pass index for staggered animation
-              setIsAnimating={setIsAnimating}
-            />
-          ))}
-        </motion.tbody>
-      </table>
+            <motion.tbody
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
+              }}
+              onAnimationComplete={() => setIsAnimating(false)}
+              key={currentPage}
+            >
+              {currentReceipts.map((receipt, index) => (
+                <ReceiptTableRow
+                  key={receipt.receiptId}
+                  receipt={receipt}
+                  isRowExpanded={isRowExpanded}
+                  toggleRow={toggleRow}
+                  editingReceiptId={editingReceiptId}
+                  handleEditClick={handleEditClick}
+                  handleSaveClick={handleSaveClick}
+                  handleCancelClick={handleCancelClick}
+                  handleInputChange={handleInputChange}
+                  editedReceipt={editedReceipt}
+                  handleDeleteClick={handleDeleteClick}
+                  index={index}
+                  setIsAnimating={setIsAnimating}
+                />
+              ))}
+            </motion.tbody>
+          </table>
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        paginate={setCurrentPage}
-      />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            paginate={setCurrentPage}
+          />
+        </>
+      )}
     </motion.div>
   );
 };

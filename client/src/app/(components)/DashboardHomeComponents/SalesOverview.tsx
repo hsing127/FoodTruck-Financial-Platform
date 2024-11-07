@@ -40,20 +40,25 @@ const SalesOverview: React.FC = () => {
   // Close dropdown on outside click
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        !dropdownRef.current.contains(target) &&
+        !target?.closest(".dropdown-toggle")
       ) {
         setIsDropdownOpen(false);
       }
     };
 
     if (isDropdownOpen) {
-      document.addEventListener("mousedown", handleOutsideClick);
+      document.addEventListener("mouseup", handleOutsideClick);
+    } else {
+      document.removeEventListener("mouseup", handleOutsideClick);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("mouseup", handleOutsideClick);
     };
   }, [isDropdownOpen]);
 
@@ -136,7 +141,7 @@ const SalesOverview: React.FC = () => {
       <div className="absolute top-4 right-6">
         <div className="relative">
           <button
-            className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer"
+            className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer dropdown-toggle"
             onClick={toggleDropdown}
           >
             <Menu className="w-6 h-6 text-gray-700 cursor-pointer" />

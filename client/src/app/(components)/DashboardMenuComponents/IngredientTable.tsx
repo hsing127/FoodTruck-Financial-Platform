@@ -128,8 +128,8 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
                                 : ""
                             }
                             onChange={handleInputChange}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                          />
+                            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                            />
                         </td>
                       )
                     )}
@@ -168,7 +168,7 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
                         <Edit size={20} />
                       </button>
                       <button
-                        className="text-red-400 hover:text-red-300"
+                        className="text-red-400 hover:text-red-500"
                         onClick={() => onItemDelete && onItemDelete(idx)}
                       >
                         <Trash2 size={20} />
@@ -190,8 +190,8 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
                   placeholder="Ingredient"
                   value={newItem.ingredient}
                   onChange={handleNewInputChange}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                />
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                  />
               </td>
               <td className="py-3 text-sm text-black">
                 <input
@@ -200,8 +200,8 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
                   placeholder="Quantity"
                   value={newItem.quantity}
                   onChange={handleNewInputChange}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                />
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                  />
               </td>
               <td className="py-3 text-sm text-black">
                 <input
@@ -210,8 +210,8 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
                   placeholder="Units"
                   value={newItem.units}
                   onChange={handleNewInputChange}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                />
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                  />
               </td>
               <td className="py-3 text-sm text-black">
                 <input
@@ -220,8 +220,8 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
                   placeholder="Price"
                   value={newItem.price}
                   onChange={handleNewInputChange}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                />
+                  className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                  />
               </td>
               <td className="pl-2 py-3 text-sm text-black">
                 <button

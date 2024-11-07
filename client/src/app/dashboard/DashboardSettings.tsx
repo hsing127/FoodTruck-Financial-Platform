@@ -6,6 +6,7 @@ import Notifications from "../(components)/DashboardSettingsComponents/notificat
 import Language from "../(components)/DashboardSettingsComponents/language";
 import Security from "../(components)/DashboardSettingsComponents/security";
 import DeleteAccount from "../(components)/DashboardSettingsComponents/delete";
+import Accounts from "../(components)/DashboardSettingsComponents/accounts";
 
 export const DashboardSettings: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ export const DashboardSettings: React.FC = () => {
             <Notifications />
             <Security />
             <Language />
+            <Accounts />
             <DeleteAccount />
           </div>
         </div>
