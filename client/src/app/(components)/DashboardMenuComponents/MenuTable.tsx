@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { MENU_DATA } from "@/app/(components)/DashboardMenuComponents/MenuData";
 import Pagination from "../DashboardPurchasesComponents/Pagination";
@@ -7,7 +7,7 @@ import MenuCard from "../DashboardMenuComponents/MenuCard";
 import { Plus, Filter } from "lucide-react";
 import MenuItemDetailsModal from "./MenuItemDetailsModal";
 
-const ROW_HEIGHT = 170; // Approximate height of a menu card row
+const ROW_HEIGHT = 170;
 const BOTTOM_PADDING = 40;
 const ROWS = 4;
 const ITEMS_PER_ROW = 3;
@@ -32,45 +32,33 @@ const MenuTable: React.FC = () => {
   );
 
   // Calculate items per page based on viewport height, with a minimum row count
-  const calculateItemsPerPage = () => {
+  const calculateItemsPerPage = useCallback(() => {
     const viewportHeight = window.innerHeight;
     const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
-    const maxRows = Math.max(
-      MIN_ROWS,
-      Math.floor(availableHeight / ROW_HEIGHT)
-    ); // Minimum of 2 rows
-    const rowsToDisplay = Math.min(maxRows, ROWS);
+    const rowsToDisplay = Math.min(
+      Math.max(MIN_ROWS, Math.floor(availableHeight / ROW_HEIGHT)),
+      ROWS
+    );
     return rowsToDisplay * ITEMS_PER_ROW;
-  };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setItemsPerPage(calculateItemsPerPage());
-    };
-
-    // Set items per page initially and add resize event listener
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
   }, []);
 
-  // Handle search input changes
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    const handleResize = () => setItemsPerPage(calculateItemsPerPage());
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [calculateItemsPerPage]);
+
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     setSearchInput(term);
-    const filtered = MENU_DATA.filter((item) =>
-      item.name.toLowerCase().includes(term)
+    setFilteredMenu(
+      MENU_DATA.filter((item) => item.name.toLowerCase().includes(term))
     );
-    setFilteredMenu(filtered);
     setCurrentPage(1);
-    setIsAnimating(true); // Re-trigger animation on search
-  };
+    setIsAnimating(true);
+  }, []);
 
-  // Handle "More Details" click to open the modal with selected ingredients
   const handleMoreDetailsClick = (ingredients: Ingredient[]) => {
     setSelectedIngredients(ingredients);
     setIsModalOpen(true);
@@ -79,10 +67,12 @@ const MenuTable: React.FC = () => {
   // Close the modal
   const handleModalClose = () => setIsModalOpen(false);
 
-  // Calculate pagination indices
+  // Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredMenu.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredMenu.slice(
+    indexOfLastItem - itemsPerPage,
+    indexOfLastItem
+  );
   const totalPages = Math.ceil(filteredMenu.length / itemsPerPage);
 
   // Animation variants for staggered animation
@@ -93,7 +83,7 @@ const MenuTable: React.FC = () => {
 
   // Handle page change with animation
   const handlePageChange = (page: number) => {
-    setIsAnimating(true); // Trigger animation when changing pages
+    setIsAnimating(true);
     setCurrentPage(page);
   };
 
