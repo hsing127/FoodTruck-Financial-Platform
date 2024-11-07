@@ -34,7 +34,7 @@ const SignupPage: React.FC = () => {
         const password = formData.password;
         try {
 
-            const response = await fetch("https://frih5a7ugg.execute-api.ca-central-1.amazonaws.com/dev/auth/signup", {
+            const response = await fetch("https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
