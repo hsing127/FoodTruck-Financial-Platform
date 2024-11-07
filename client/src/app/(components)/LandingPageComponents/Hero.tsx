@@ -1,7 +1,10 @@
-import ArrowWIcon from "../../../assets/icons/arrow-w.svg";
-import Link from "next/link"; // Using Next.js Link instead of react-router-dom
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import React from "react";
 
-export const Hero = () => {
+const ArrowWIcon = dynamic(() => import("../../../assets/icons/arrow-w.svg"));
+
+export const Hero = React.memo(() => {
   return (
     <div className="bg-customBlack text-customWhite bg-[linear-gradient(to_bottom,#000,#200D42_34%,#4F21A1_65%,#A46EDB_82%)] py-[72px] sm:py-24 relative overflow-clip">
       <div
@@ -44,4 +47,6 @@ export const Hero = () => {
       </div>
     </div>
   );
-};
+});
+
+Hero.displayName = "Hero";

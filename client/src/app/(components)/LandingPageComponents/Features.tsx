@@ -1,5 +1,11 @@
-import EcosystemIcon from "../../assets/icons/ecosystem.svg";
-import { Feature } from "./Feature";
+"use client";
+import dynamic from "next/dynamic";
+import { useMemo } from "react";
+
+const Feature = dynamic(() =>
+  import("./Feature").then((module) => ({ default: module.Feature }))
+);
+
 const features = [
   {
     title: "Receipt and Document Processing",
@@ -19,8 +25,19 @@ const features = [
 ];
 
 export const Features = () => {
+  const memoizedFeatures = useMemo(
+    () =>
+      features.map(({ title, description }) => (
+        <Feature title={title} description={description} key={title} />
+      )),
+    []
+  );
+
   return (
-    <div id="features" className="bg-customBlack text-customWhite py-[72px] sm:py-24">
+    <div
+      id="features"
+      className="bg-customBlack text-customWhite py-[72px] sm:py-24"
+    >
       <div className="container">
         <h2 className="text-center font-bold text-5xl sm:text-6xl tracking-tighter">
           Everything you need
@@ -33,11 +50,11 @@ export const Features = () => {
           </p>
         </div>
         <div className="mt-16 flex flex-col sm:flex-row gap-4 justify-center max-w-6xl mx-auto">
-          {features.map(({ title, description }) => (
-            <Feature title={title} description={description} key={title} />
-          ))}
+          {memoizedFeatures}
         </div>
       </div>
     </div>
   );
 };
+
+Features.displayName = "Features";

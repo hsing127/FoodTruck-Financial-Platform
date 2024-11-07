@@ -3,7 +3,7 @@ import emoji from "../../../assets/images/emojistar.png";
 import helix from "../../../assets/images/helix2.png";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 
 export const ContactUs = () => {
   const containRef = useRef<HTMLDivElement>(null);
@@ -15,29 +15,44 @@ export const ContactUs = () => {
 
   const translateY = useTransform(scrollYProgress, [0, 1], [40, -40]);
 
+  // Memoized animation to reduce re-renders
+  const animatedHelix = useMemo(
+    () => (
+      <motion.div style={{ translateY }}>
+        <Image
+          src={helix}
+          alt=""
+          loading="lazy"
+          className="absolute top-12 left-[calc(100%+36px)]"
+        />
+      </motion.div>
+    ),
+    [translateY]
+  );
+
+  const animatedEmoji = useMemo(
+    () => (
+      <motion.div style={{ translateY }}>
+        <Image
+          src={emoji}
+          alt=""
+          loading="lazy"
+          className="absolute -top-[80px] right-[calc(100%+12px)]"
+        />
+      </motion.div>
+    ),
+    [translateY]
+  );
+
   return (
     <div
       className="bg-customBlack text-customWhite py-[72px] sm:py-24 text-center"
       ref={containRef}
       id="contactUs"
     >
-      customWhite
       <div className="container max-w-xl relative">
-        <motion.div style={{ translateY }}>
-          <Image
-            src={helix}
-            alt=""
-            className="absolute top-12 left-[calc(100%+36px)]"
-          />
-        </motion.div>
-        <motion.div style={{ translateY }}>
-          <Image
-            src={emoji}
-            alt=""
-            className="absolute -top-[80px] right-[calc(100%+12px)]"
-          />
-        </motion.div>
-
+        {animatedHelix}
+        {animatedEmoji}
         <h2 className="font-bold text-5xl tracking-tighter sm:text-6xl">
           Contact Us!
         </h2>
