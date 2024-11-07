@@ -14,7 +14,14 @@ interface ReceiptTableRowProps {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   editedReceipt: any;
   handleDeleteClick: (receiptId: number) => void;
+  index: number;
+  setIsAnimating: (isAnimating: boolean) => void;
 }
+
+const rowVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0 },
+};
 
 const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
   receipt,
@@ -27,6 +34,8 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
   handleInputChange,
   editedReceipt,
   handleDeleteClick,
+  index,
+  setIsAnimating,
 }) => {
   // Toggle row expansion
   const onRowClick = () => {
@@ -48,7 +57,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
         name={name}
         value={value}
         onChange={handleInputChange}
-        className="lg:w-24 p-1 border border-black rounded-lg"
+        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
         onClick={preventEventPropagation}
       />
     </td>
@@ -56,7 +65,21 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
 
   return (
     <>
-      <tr className="cursor-pointer" onClick={onRowClick}>
+      <motion.tr
+        onClick={onRowClick}
+        variants={rowVariants}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        transition={{
+          delay: index * 0.03,
+          duration: 0.3,
+          onStart: () => setIsAnimating(true),
+          onComplete: () => setIsAnimating(false),
+        }}
+        className="cursor-pointer"
+        style={{ overflow: "hidden" }}
+      >
         <td className="py-5 text-sm font-medium text-black flex items-center">
           <motion.div
             initial={false}
@@ -75,7 +98,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
             {["location", "date", "time", "cost"].map((field) =>
               renderInputField(field, editedReceipt[field])
             )}
-            <td className="py-2 text-sm text-black">
+            <td className="pl-2 py-2 text-sm text-black">
               <button
                 className="mr-2 text-green-600"
                 onClick={(e) => {
@@ -103,7 +126,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
                 {receipt[field]}
               </td>
             ))}
-            <td className="py-2 text-sm text-black">
+            <td className="pl-2 py-2 text-sm text-black">
               <button
                 className="mr-2 text-[#8B5CF6] hover:text-[#b07ff0]"
                 onClick={(e) => {
@@ -114,7 +137,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
                 <Edit size={18} />
               </button>
               <button
-                className="text-red-400 hover:text-red-300"
+                className="text-red-400 hover:text-red-500"
                 onClick={(e) => {
                   preventEventPropagation(e);
                   handleDeleteClick(receipt.receiptId);
@@ -125,7 +148,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
             </td>
           </>
         )}
-      </tr>
+      </motion.tr>
 
       {/* Expandable row for detailed receipt information */}
       {isRowExpanded(receipt.receiptId) && (
@@ -135,6 +158,8 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.3 }}
           style={{ overflow: "hidden" }}
+          onAnimationStart={() => setIsAnimating(true)}
+          onAnimationComplete={() => setIsAnimating(false)}
         >
           <td colSpan={6} className="py-2 bg-white-50 rounded-xl">
             <ReceiptDetails details={receipt.details} />
