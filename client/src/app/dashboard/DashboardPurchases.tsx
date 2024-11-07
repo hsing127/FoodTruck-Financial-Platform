@@ -6,7 +6,7 @@ import { Banknote, ShoppingCart, FileText, Store } from "lucide-react";
 import ReceiptTable from "../(components)/DashboardPurchasesComponents/ReceiptTable";
 import DashCardLong from "../(components)/DashboardHomeComponents/DashCardLong";
 
-export const DashboardPurchases: React.FC = () => {
+export const DashboardUploadFiles: React.FC = () => {
   return (
     <DashboardLayout>
       <div className="outline outline-white outline-8 flex-1 relative border-white rounded-3xl border-[16px] overflow-hidden">
@@ -14,7 +14,7 @@ export const DashboardPurchases: React.FC = () => {
           <div className="pt-2 mx-auto ">
             {/* First row of dashboard cards */}
             <motion.div
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 mt-4 mb-4"
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 mb-4 mt-4"
               initial={{ opacity: 0, y: 20 }} // Animation for appearance
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}

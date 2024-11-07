@@ -1,43 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { Search, Upload, Plus, Filter } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Define the props for SearchInput
 interface SearchInputProps {
   searchInput: string;
   handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  actions: Array<{
-    icon: React.ReactNode;
-    type: string;
-    title: string;
-    items: string[];
-  }>;
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
   searchInput,
   handleSearch,
-  actions,
 }) => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setActiveDropdown(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   // Toggle dropdown visibility based on the clicked type
   const toggleDropdown = (type: string) => {
@@ -75,7 +49,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       {items.map((item, index) => (
         <motion.button
           key={index}
-          className="w-full text-left text-sm p-2 hover:bg-[#8B5CF6] hover:rounded-lg"
+          className="w-full text-left text-sm p-2 hover:bg-gray-200"
           variants={itemVariants}
         >
           {item}
@@ -85,25 +59,44 @@ const SearchInput: React.FC<SearchInputProps> = ({
   );
 
   return (
-    <div className="flex items-center justify-between w-full space-x-4  relative">
+    <div className="flex items-center justify-between w-full space-x-4 pr-6 relative">
       {/* Search Bar */}
       <div className="flex items-center bg-gray-50 rounded-lg px-3 py-2 w-80">
         <Search className="text-gray-600" size={20} />
         <input
           type="text"
           placeholder="Search..."
-          className="w-80 bg-transparent outline-none text-sm text-gray-600 placeholder-gray-400 placeholder-opacity-75 pl-2"
+          className="bg-transparent outline-none text-sm text-gray-600 placeholder-gray-400 placeholder-opacity-75 pl-2"
           onChange={handleSearch}
           value={searchInput}
         />
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center space-x-2" ref={dropdownRef}>
-        {actions.map(({ icon, type, title, items }) => (
+      <div className="flex items-center space-x-2">
+        {[
+          {
+            icon: <Upload size={20} />,
+            type: "upload",
+            title: "Upload File",
+            items: ["Upload Image", "Upload Document", "Upload Spreadsheet"],
+          },
+          {
+            icon: <Plus size={20} />,
+            type: "addEntry",
+            title: "Add Entry",
+            items: ["Add Manual Entry", "Add Expense"],
+          },
+          {
+            icon: <Filter size={20} />,
+            type: "filter",
+            title: "Filter",
+            items: ["Filter by Date", "Filter by Location", "Filter by Cost"],
+          },
+        ].map(({ icon, type, title, items }) => (
           <div key={type} className="relative">
             <button
-              className="bg-gray-50 rounded-lg p-2 focus:outline-none hover:text-blue-400 hover:bg-gray-200"
+              className="bg-gray-50 rounded-lg p-2 focus:outline-none hover:bg-gray-200"
               title={title}
               onClick={() => toggleDropdown(type)}
             >

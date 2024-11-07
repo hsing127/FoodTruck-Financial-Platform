@@ -16,7 +16,7 @@ const Button: React.FC<ButtonProps> = ({
   const colorStyles =
     type === "primary"
       ? "bg-[#8B5CF6] hover:bg-[#b07ff0]"
-      : "bg-red-400 hover:bg-red-500";
+      : "bg-red-400 hover:bg-red-300";
 
   return (
     <button onClick={onClick} className={`${baseStyles} ${colorStyles}`}>

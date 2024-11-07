@@ -1,7 +1,6 @@
 "use client";
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import React from "react";
 
 const texts = [
   "A Common Voice to Government",
@@ -12,22 +11,15 @@ const texts = [
   "Networking & News You Can Use",
 ];
 
-export const LogoTicker = React.memo(() => {
+export const LogoTicker = () => {
   const tickerRef = useRef<HTMLDivElement>(null);
   const [tickerWidth, setTickerWidth] = useState(0);
 
-  // Efficiently calculate the ticker width
-  const calculateTickerWidth = useCallback(() => {
+  useEffect(() => {
     if (tickerRef.current) {
       setTickerWidth(tickerRef.current.scrollWidth);
     }
   }, []);
-
-  useEffect(() => {
-    calculateTickerWidth();
-    window.addEventListener("resize", calculateTickerWidth);
-    return () => window.removeEventListener("resize", calculateTickerWidth);
-  }, [calculateTickerWidth]);
 
   return (
     <div className="bg-customBlack text-customWhite py-[72px] sm:py-24">
@@ -35,10 +27,14 @@ export const LogoTicker = React.memo(() => {
         <h2 className="text-xl text-center text-customWhite/70">
           Sponsored by Food Truck Association Of Canada
         </h2>
-        <h2 className="text-lg text-center text-customWhite/70 mt-2">
+        <h2 className="text-lg text-center text-customWhite/70">
           How we support the industry:
         </h2>
-        <div className="overflow-hidden mt-9 relative">
+        <div
+          className="overflow-hidden mt-9 before:content-[''] after:content-[''] before:absolute before:z-10 after:absolute before:h-full 
+        after:h-full before:w-5 after:w-5 relative after:right-0 before:left-0 before:top-0 after:top-0 
+        before:bg-[linear-gradient(to_right,#000,rgb(0,0,0,0))] after:bg-[linear-gradient(to_left,#000,rgb(0,0,0,0))]"
+        >
           <motion.div
             ref={tickerRef}
             initial={{ translateX: 0 }}
@@ -47,7 +43,7 @@ export const LogoTicker = React.memo(() => {
               duration: tickerWidth / 200,
               ease: "linear",
               repeat: Infinity,
-            }}
+            }} // Adjust the speed based on width
             className="flex gap-16 flex-none pr-16"
           >
             {texts.concat(texts).map((text, index) => (
@@ -60,6 +56,4 @@ export const LogoTicker = React.memo(() => {
       </div>
     </div>
   );
-});
-
-LogoTicker.displayName = "LogoTicker";
+};

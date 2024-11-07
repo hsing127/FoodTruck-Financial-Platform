@@ -1,12 +1,12 @@
-import { DashboardPurchases } from "../../app/dashboard/DashboardPurchases";
+import { DashboardUploadFiles } from "../../app/dashboard/DashboardPurchases";
 import "../../app/globals.css";
 
 const Home: React.FC = () => {
   return (
     <>
-      <DashboardPurchases />
+      <DashboardUploadFiles />
     </>
   );
 };
 
-export default DashboardPurchases;
+export default DashboardUploadFiles;

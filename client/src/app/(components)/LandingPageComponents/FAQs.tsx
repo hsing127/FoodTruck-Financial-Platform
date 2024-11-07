@@ -1,7 +1,9 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import PlusIcon from "../../../assets/icons/plus.svg";
+import MinusIcon from "../../../assets/icons/minus.svg";
+import React from "react";
+import clsx from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Minus } from "lucide-react"; // Using Plus and Minus icons from Lucide
 
 const items = [
   {
@@ -25,57 +27,64 @@ const items = [
   },
 ];
 
-const AccordianItem = React.memo(
-  ({ question, answer }: { question: string; answer: string }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    return (
-      <div
-        key={question}
-        className="py-7 border-b border-customWhite/30"
-        onClick={() => setIsOpen(!isOpen)}
-        id="help"
-      >
-        <div className="flex items-center cursor-pointer">
-          <span className="flex-1 text-lg font-bold">{question}</span>
-          {isOpen ? <Minus size={20} /> : <Plus size={20} />}
-        </div>
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0, marginTop: 0 }}
-              animate={{ opacity: 1, height: "auto", marginTop: "16px" }}
-              exit={{ opacity: 0, height: 0, marginTop: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <p className="mt-3 text-customWhite/70">{answer}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    );
-  }
-);
-
-export const FAQs = () => {
-  const memoizedItems = useMemo(
-    () =>
-      items.map(({ question, answer }) => (
-        <AccordianItem question={question} answer={answer} key={question} />
-      )),
-    []
-  );
-
+const AccordianItem = ({
+  question,
+  answer,
+}: {
+  question: string;
+  answer: string;
+}) => {
+  const [isOpen, setIsOpen] = React.useState(false);
   return (
-    <div className="bg-customBlack text-customWhite bg-gradient-to-b from-[#5D2CA8] to-customBlack py-[72px] sm:py-24">
-      <div className="container">
-        <h2 className="text-center text-5xl font-bold tracking-tighter sm:text-6xl sm:max-w-[648px] mx-auto">
-          Frequently Asked Questions
-        </h2>
-        <div className="mt-12 max-w-[648px] mx-auto">{memoizedItems}</div>
+    <div
+      key={question}
+      className="py-7 border-b border-customWhite/30"
+      onClick={() => setIsOpen(!isOpen)}
+    >
+      <div className="flex items-center">
+        <span className="flex-1 text-lg font-bold">{question}</span>
+        {isOpen ? <MinusIcon /> : <PlusIcon />}
       </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{
+              opacity: 0,
+              height: 0,
+              marginTop: 0,
+            }}
+            animate={{
+              opacity: 1,
+              height: "auto",
+              marginTop: "16px",
+            }}
+            exit={{
+              opacity: 0,
+              height: 0,
+              marginTop: 0,
+            }}
+          >
+            {answer}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
-AccordianItem.displayName = "AccordionItem";
+export const FAQs = () => {
+  return (
+    <div className="bg-customBlack text-customWhite bg-gradient-to-b from-[#5D2CA8] to-customBlack py-[72px] sm:py-24">
+      <div className="container">
+        <h2 className="text-center text-5xl font-bold tracking-tighter sm:text-6xl sm:max-w-[648px] mx-auto">
+          Frequency Asked Questions
+        </h2>
+        <div className="mt-12 max-w-[648px] mx-auto">
+          {items.map(({ question, answer }) => (
+            <AccordianItem question={question} answer={answer} key={question} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};

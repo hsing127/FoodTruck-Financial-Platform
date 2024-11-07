@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link2 } from "lucide-react";
 import { SiGoogle, SiFacebook, SiYoutube } from "react-icons/si";
-import SectionCard from "./sectionCard";
-import Button from "./button";
+import SectionCard from "../DashboardSettingsComponents/sectionCard";
+import Button from "../DashboardSettingsComponents/button";
 
 const ConnectedAccounts: React.FC = () => {
   const [isGoogleConnected, setIsGoogleConnected] = useState(true);
@@ -21,6 +21,12 @@ const ConnectedAccounts: React.FC = () => {
       icon: <SiFacebook />,
       isConnected: isFacebookConnected,
       toggle: () => setIsFacebookConnected(!isFacebookConnected),
+    },
+    {
+      name: "YouTube",
+      icon: <SiYoutube />,
+      isConnected: isYouTubeConnected,
+      toggle: () => setIsYouTubeConnected(!isYouTubeConnected),
     },
   ];
 
