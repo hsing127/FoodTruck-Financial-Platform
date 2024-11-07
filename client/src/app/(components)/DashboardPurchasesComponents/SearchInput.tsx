@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Search, Upload, Plus, Filter } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Define the props for SearchInput
 interface SearchInputProps {
   searchInput: string;
   handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -22,29 +21,29 @@ const SearchInput: React.FC<SearchInputProps> = ({
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setActiveDropdown(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+  // Close dropdown on outside click
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setActiveDropdown(null);
+    }
   }, []);
 
-  // Toggle dropdown visibility based on the clicked type
-  const toggleDropdown = (type: string) => {
-    setActiveDropdown((prev) => (prev === type ? null : type));
-  };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [handleClickOutside]);
 
-  // Animation variants for dropdown container and items
+  // Toggle dropdown
+  const toggleDropdown = useCallback(
+    (type: string) =>
+      setActiveDropdown((prev) => (prev === type ? null : type)),
+    []
+  );
+
+  // Animation variants
   const dropdownVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: {
@@ -60,39 +59,18 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   const itemVariants = {
     hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.2 } },
+    visible: { opacity: 1, y: 0 },
   };
 
-  // Common rendering for dropdowns
-  const renderDropdown = (items: string[]) => (
-    <motion.div
-      className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-2 w-40 z-10"
-      variants={dropdownVariants}
-      initial="hidden"
-      animate="visible"
-      exit="hidden"
-    >
-      {items.map((item, index) => (
-        <motion.button
-          key={index}
-          className="w-full text-left text-sm p-2 hover:bg-[#8B5CF6] hover:rounded-lg"
-          variants={itemVariants}
-        >
-          {item}
-        </motion.button>
-      ))}
-    </motion.div>
-  );
-
   return (
-    <div className="flex items-center justify-between w-full space-x-4  relative">
+    <div className="flex items-center justify-between w-full space-x-4 relative">
       {/* Search Bar */}
       <div className="flex items-center bg-gray-50 rounded-lg px-3 py-2 w-80">
         <Search className="text-gray-600" size={20} />
         <input
           type="text"
           placeholder="Search..."
-          className="w-80 bg-transparent outline-none text-sm text-gray-600 placeholder-gray-400 placeholder-opacity-75 pl-2"
+          className="w-80 bg-transparent outline-none text-sm text-gray-600 placeholder-gray-400 pl-2"
           onChange={handleSearch}
           value={searchInput}
         />
@@ -110,7 +88,25 @@ const SearchInput: React.FC<SearchInputProps> = ({
               {icon}
             </button>
             <AnimatePresence>
-              {activeDropdown === type && renderDropdown(items)}
+              {activeDropdown === type && (
+                <motion.div
+                  className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-2 w-40 z-10"
+                  variants={dropdownVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                >
+                  {items.map((item, index) => (
+                    <motion.button
+                      key={index}
+                      className="w-full text-left text-sm p-2 hover:bg-[#8B5CF6] hover:rounded-lg"
+                      variants={itemVariants}
+                    >
+                      {item}
+                    </motion.button>
+                  ))}
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
         ))}
