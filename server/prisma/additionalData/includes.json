@@ -1,0 +1,110 @@
+[
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-01T10:23:45Z",
+        "Location": "Walmart",
+        "IngredientName": "Chicken Breast",
+        "Price": 80.00,
+        "Amount": 20,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-01T10:23:45Z",
+        "Location": "Walmart",
+        "IngredientName": "Garlic",
+        "Price": 15.78,
+        "Amount": 12,
+        "AmountUnits": "cloves"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-01T10:23:45Z",
+        "Location": "Walmart",
+        "IngredientName": "Olive Oil",
+        "Price": 50.00,
+        "Amount": 2,
+        "AmountUnits": "L"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-10T15:37:12Z",
+        "Location": "HMart",
+        "IngredientName": "Paprika",
+        "Price": 20.34,
+        "Amount": 10,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-10T15:37:12Z",
+        "Location": "HMart",
+        "IngredientName": "Bell Pepper",
+        "Price": 42.00,
+        "Amount": 15,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-18T12:09:05Z",
+        "Location": "Target",
+        "IngredientName": "Onion",
+        "Price": 20.00,
+        "Amount": 8,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-18T12:09:05Z",
+        "Location": "Target",
+        "IngredientName": "Black Pepper",
+        "Price": 10.00,
+        "Amount": 5,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-18T12:09:05Z",
+        "Location": "Target",
+        "IngredientName": "Basmati Rice",
+        "Price": 48.56,
+        "Amount": 25,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-25T14:45:30Z",
+        "Location": "Trader Joe's",
+        "IngredientName": "Cilantro",
+        "Price": 12.19,
+        "Amount": 1,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-25T14:45:30Z",
+        "Location": "Trader Joe's",
+        "IngredientName": "Olive Oil",
+        "Price": 80.00,
+        "Amount": 2,
+        "AmountUnits": "L"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-02T09:17:44Z",
+        "Location": "Whole Foods",
+        "IngredientName": "Chicken Breast",
+        "Price": 100.67,
+        "Amount": 20,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-02T09:17:44Z",
+        "Location": "Whole Foods",
+        "IngredientName": "Garlic",
+        "Price": 25.00,
+        "Amount": 10,
+        "AmountUnits": "cloves"
+    }
+]

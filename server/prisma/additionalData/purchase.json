@@ -1,0 +1,32 @@
+[
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-01T10:23:45Z",
+        "Location": "Walmart",
+        "Cost": 145.78
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-10T15:37:12Z",
+        "Location": "HMart",
+        "Cost": 62.34
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-18T12:09:05Z",
+        "Location": "Target",
+        "Cost": 78.56
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-25T14:45:30Z",
+        "Location": "Trader Joe's",
+        "Cost": 92.19
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-02T09:17:44Z",
+        "Location": "Whole Foods",
+        "Cost": 125.67
+    }
+]
