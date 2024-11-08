@@ -50,7 +50,7 @@ const ReceiptTable: React.FC = () => {
           const dateObj = new Date(receipt.date);
           return {
             ...receipt,
-            localReceiptId: index + 1, // Start at 1 and increment
+            localReceiptId: index + 1001, // Start at 1 and increment
             date: dateObj.toLocaleDateString(), // Format date
             time: dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) // Format time
           };
