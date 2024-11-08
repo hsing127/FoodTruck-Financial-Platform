@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import ReceiptTableRow from "./ReceiptTableRow";
 import SearchInput from "./SearchInput";
 import Pagination from "./Pagination";
+import { RECEIPT_DATA } from "@/app/(components)/DashboardPurchasesComponents/ReceiptData";
 import { Upload, Plus, Filter } from "lucide-react";
 
 // Constants
@@ -12,7 +13,7 @@ const MIN_ROWS = 6;
 
 const ReceiptTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [filteredReceipts, setFilteredReceipts] = useState<any[]>([]);
+  const [filteredReceipts, setFilteredReceipts] = useState(RECEIPT_DATA);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [editingReceiptId, setEditingReceiptId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,51 +21,6 @@ const ReceiptTable: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Fetch receipts data from AWS Lambda on component mount
-  useEffect(() => {
-    const fetchReceipts = async () => {
-      try {
-        const response = await fetch(
-          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/purchases",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email: "ajwitt2@asu.edu" }),
-          }
-        );
-
-        const data = await response.json();
-
-        let purchasesData;
-        if (typeof data.body === "string") {
-          purchasesData = JSON.parse(data.body);
-        } else {
-          purchasesData = data.body;
-        }
-
-        // Assign localReceiptId sequentially to each purchase item and format date/time
-        const receiptsWithId = purchasesData.purchases.map((receipt: any, index: number) => {
-          const dateObj = new Date(receipt.date);
-          return {
-            ...receipt,
-            localReceiptId: index + 1, // Start at 1 and increment
-            date: dateObj.toLocaleDateString(), // Format date
-            time: dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) // Format time
-          };
-        });
-
-        setFilteredReceipts(receiptsWithId);
-      } catch (error) {
-        console.error("Error fetching receipts:", error);
-      }
-    };
-
-    fetchReceipts();
-  }, []);
-
-  // Calculate number of items per page based on viewport height
   const calculateItemsPerPage = () => {
     const viewportHeight = window.innerHeight;
     const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
@@ -72,13 +28,17 @@ const ReceiptTable: React.FC = () => {
     return Math.max(calculatedRows, MIN_ROWS); // min 6 rows
   };
 
-  // Set items per page and add window resize listener
+  // Update items per page when the component mounts or when the window resizes
   useEffect(() => {
     const handleResize = () => {
       setItemsPerPage(calculateItemsPerPage());
     };
+
+    // Set items per page initially and add resize event listener
     handleResize();
     window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -88,7 +48,7 @@ const ReceiptTable: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     setSearchInput(term);
-    const filtered = filteredReceipts.filter(
+    const filtered = RECEIPT_DATA.filter(
       (receipt) =>
         receipt.location.toLowerCase().includes(term) ||
         receipt.date.includes(term) ||
