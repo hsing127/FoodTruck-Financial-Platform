@@ -27,7 +27,7 @@ const ForgotPasswordCodePage: React.FC = () => {
 
       const data = await response.json();
       const statusCode = data.statusCode;
-      console.log(JSON.stringify({data}));
+      // console.log(JSON.stringify({data}));
 
       if(statusCode === 200) {
         //Redirect if the code was verified successfully
