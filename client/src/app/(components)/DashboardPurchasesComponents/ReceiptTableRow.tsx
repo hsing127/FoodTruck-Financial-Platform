@@ -37,31 +37,29 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
   index,
   setIsAnimating,
 }) => {
-  // Toggle row expansion
-  const onRowClick = () => {
-    if (editingReceiptId !== receipt.receiptId) {
-      toggleRow(receipt.receiptId);
-    }
-  };
+  const isEditing = editingReceiptId === receipt.receiptId;
 
-  // Prevent event propagation
-  const preventEventPropagation = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
+  // Toggle row expansion if not editing
+  const onRowClick = () => !isEditing && toggleRow(receipt.receiptId);
 
-  // Common function for rendering input fields
-  const renderInputField = (name: string, value: string) => (
-    <td className="py-2 text-sm text-black">
-      <input
-        type="text"
-        name={name}
-        value={value}
-        onChange={handleInputChange}
-        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
-        onClick={preventEventPropagation}
-      />
-    </td>
-  );
+  // Prevent event propagation to keep row closed during edit or delete
+  const preventEventPropagation = (e: React.MouseEvent) => e.stopPropagation();
+
+  const renderInputOrText = (field: string, value: string) =>
+    isEditing ? (
+      <td className="py-2 text-sm text-black">
+        <input
+          type="text"
+          name={field}
+          value={value}
+          onChange={handleInputChange}
+          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+          onClick={preventEventPropagation}
+        />
+      </td>
+    ) : (
+      <td className="py-2 text-sm text-black">{value}</td>
+    );
 
   return (
     <>
@@ -92,13 +90,16 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
           {receipt.receiptId}
         </td>
 
-        {/* Conditional rendering for edit mode or normal mode */}
-        {editingReceiptId === receipt.receiptId ? (
-          <>
-            {["location", "date", "time", "cost"].map((field) =>
-              renderInputField(field, editedReceipt[field])
-            )}
-            <td className="pl-2 py-2 text-sm text-black">
+        {["location", "date", "time", "cost"].map((field) =>
+          renderInputOrText(
+            field,
+            isEditing ? editedReceipt[field] : receipt[field]
+          )
+        )}
+
+        <td className="pl-2 py-2 text-sm text-black">
+          {isEditing ? (
+            <>
               <button
                 className="mr-2 text-green-600"
                 onClick={(e) => {
@@ -117,16 +118,9 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
               >
                 <X size={18} />
               </button>
-            </td>
-          </>
-        ) : (
-          <>
-            {["location", "date", "time", "cost"].map((field) => (
-              <td key={field} className="py-2 text-sm text-black">
-                {receipt[field]}
-              </td>
-            ))}
-            <td className="pl-2 py-2 text-sm text-black">
+            </>
+          ) : (
+            <>
               <button
                 className="mr-2 text-[#8B5CF6] hover:text-[#b07ff0]"
                 onClick={(e) => {
@@ -145,12 +139,11 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
               >
                 <Trash2 size={18} />
               </button>
-            </td>
-          </>
-        )}
+            </>
+          )}
+        </td>
       </motion.tr>
 
-      {/* Expandable row for detailed receipt information */}
       {isRowExpanded(receipt.receiptId) && (
         <motion.tr
           initial={{ height: 0, opacity: 0 }}

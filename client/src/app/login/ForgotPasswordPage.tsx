@@ -10,10 +10,39 @@ const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (email.trim()) {
-      router.push("/login/forgotpasswordcode");
+      try {
+        //Make the API call to send the email
+        const response = await fetch("https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/forgot-password/send-code", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            body: JSON.stringify({ email }),
+          }),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to send reset email");
+        }
+
+        const data = await response.json();
+        const statusCode = data.statusCode;
+        // console.log(JSON.stringify({data}));
+
+        if(statusCode === 200) {
+          //Redirect if the email was sent successfully
+          router.push("/login/forgotpasswordcode");
+        }else {
+          alert("Invalid email");
+        }
+
+      } catch (error) {
+        alert("There was an error sending the email. Please try again.");
+        console.error("Error:", error);
+      }
     } else {
       alert("Please enter the email before submitting.");
     }
