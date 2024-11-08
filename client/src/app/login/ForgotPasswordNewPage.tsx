@@ -14,12 +14,40 @@ const ForgotPasswordNewPage: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validatePasswords(formData.password, formData.password2)) {
-      router.push("/dashboard/home");
-    } else {
-      alert("Passwords must match and cannot be empty.");
+      const newPassword = formData.password;
+      if(newPassword.trim()) {
+        try {
+        const response = await fetch("https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/forgot-password/reset-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            body: JSON.stringify({ newPassword }),
+          }),
+        });
+        if (!response.ok) {
+          throw new Error("Failed to send reset code");
+        }
+
+        const data = await response.json();
+        const statusCode = data.statusCode;
+        if(statusCode === 200) {
+          //Redirect if the code was verified successfully
+          router.push("/dashboard/home");
+        } else {
+          alert("Something went wrong");
+        }
+      } catch (error) {
+      alert("There was an error sending the password. Please try again.");
+      console.error("Error:", error);
+      }
+      } else {
+        alert("Passwords must match and cannot be empty.");
+      }
     }
   };
 
