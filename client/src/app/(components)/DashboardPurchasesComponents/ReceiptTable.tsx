@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import ReceiptTableRow from "./ReceiptTableRow";
 import SearchInput from "./SearchInput";
 import Pagination from "./Pagination";
-import { RECEIPT_DATA } from "@/app/(components)/DashboardPurchasesComponents/ReceiptData";
 import { Upload, Plus, Filter } from "lucide-react";
 
 // Constants
@@ -13,7 +12,8 @@ const MIN_ROWS = 6;
 
 const ReceiptTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [filteredReceipts, setFilteredReceipts] = useState(RECEIPT_DATA);
+  const [receipts, setReceipts] = useState<any[]>([]); // Full data fetched from API
+  const [filteredReceipts, setFilteredReceipts] = useState<any[]>([]);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [editingReceiptId, setEditingReceiptId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,6 +21,52 @@ const ReceiptTable: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // Fetch receipts data from AWS Lambda on component mount
+  useEffect(() => {
+    const fetchReceipts = async () => {
+      try {
+        const response = await fetch(
+          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/purchases",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: "ajwitt2@asu.edu" }),
+          }
+        );
+
+        const data = await response.json();
+
+        let purchasesData;
+        if (typeof data.body === "string") {
+          purchasesData = JSON.parse(data.body);
+        } else {
+          purchasesData = data.body;
+        }
+
+        // Assign localReceiptId sequentially to each purchase item and format date/time
+        const receiptsWithId = purchasesData.purchases.map((receipt: any, index: number) => {
+          const dateObj = new Date(receipt.date);
+          return {
+            ...receipt,
+            localReceiptId: index + 1, // Start at 1 and increment
+            date: dateObj.toLocaleDateString(), // Format date
+            time: dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) // Format time
+          };
+        });
+
+        setReceipts(receiptsWithId); // Store original data
+        setFilteredReceipts(receiptsWithId); // Initialize filtered data
+      } catch (error) {
+        console.error("Error fetching receipts:", error);
+      }
+    };
+
+    fetchReceipts();
+  }, []);
+
+  // Calculate number of items per page based on viewport height
   const calculateItemsPerPage = () => {
     const viewportHeight = window.innerHeight;
     const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
@@ -28,17 +74,13 @@ const ReceiptTable: React.FC = () => {
     return Math.max(calculatedRows, MIN_ROWS); // min 6 rows
   };
 
-  // Update items per page when the component mounts or when the window resizes
+  // Set items per page and add window resize listener
   useEffect(() => {
     const handleResize = () => {
       setItemsPerPage(calculateItemsPerPage());
     };
-
-    // Set items per page initially and add resize event listener
     handleResize();
     window.addEventListener("resize", handleResize);
-
-    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -48,13 +90,20 @@ const ReceiptTable: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     setSearchInput(term);
-    const filtered = RECEIPT_DATA.filter(
-      (receipt) =>
-        receipt.location.toLowerCase().includes(term) ||
-        receipt.date.includes(term) ||
-        receipt.cost.toLowerCase().includes(term)
-    );
-    setFilteredReceipts(filtered);
+
+    if (term === "") {
+      // Reset to original receipts if search is cleared
+      setFilteredReceipts(receipts);
+    } else {
+      const filtered = receipts.filter(
+        (receipt) =>
+          receipt.location.toLowerCase().includes(term) ||
+          receipt.date.includes(term) ||
+          receipt.cost.toLowerCase().includes(term)
+      );
+      setFilteredReceipts(filtered);
+    }
+
     setCurrentPage(1);
     setIsAnimating(true); // Trigger animation on search
   };
@@ -71,7 +120,7 @@ const ReceiptTable: React.FC = () => {
 
   // Handle edit button click
   const handleEditClick = (receipt: any) => {
-    setEditingReceiptId(receipt.receiptId);
+    setEditingReceiptId(receipt.localReceiptId);
     setEditedReceipt({ ...receipt });
   };
 
@@ -79,9 +128,17 @@ const ReceiptTable: React.FC = () => {
   const handleSaveClick = () => {
     setFilteredReceipts((prev) =>
       prev.map((receipt) =>
-        receipt.receiptId === editingReceiptId ? editedReceipt : receipt
+        receipt.localReceiptId === editingReceiptId ? editedReceipt : receipt
       )
     );
+
+    // Also update the full receipts list to keep it in sync
+    setReceipts((prev) =>
+      prev.map((receipt) =>
+        receipt.localReceiptId === editingReceiptId ? editedReceipt : receipt
+      )
+    );
+
     setEditingReceiptId(null);
     setEditedReceipt(null);
   };
@@ -102,9 +159,30 @@ const ReceiptTable: React.FC = () => {
   };
 
   // Handle delete button click
-  const handleDeleteClick = (receiptId: number) => {
+  const handleDeleteClick = (localReceiptId: number) => {
     setFilteredReceipts((prev) =>
-      prev.filter((receipt) => receipt.receiptId !== receiptId)
+      prev.filter((receipt) => receipt.localReceiptId !== localReceiptId)
+    );
+
+    // Also update the full receipts list to keep it in sync
+    setReceipts((prev) =>
+      prev.filter((receipt) => receipt.localReceiptId !== localReceiptId)
+    );
+  };
+
+  // Handle item deletion for ingredients
+  const handleItemDelete = (receiptId: number, itemIndex: number) => {
+    setFilteredReceipts((prev) =>
+      prev.map((receipt) =>
+        receipt.localReceiptId === receiptId
+          ? {
+              ...receipt,
+              details: receipt.details.filter(
+                (_: any, idx: number) => idx !== itemIndex
+              ),
+            }
+          : receipt
+      )
     );
   };
 
@@ -206,7 +284,7 @@ const ReceiptTable: React.FC = () => {
             >
               {currentReceipts.map((receipt, index) => (
                 <ReceiptTableRow
-                  key={receipt.receiptId}
+                  key={receipt.localReceiptId}
                   receipt={receipt}
                   isRowExpanded={isRowExpanded}
                   toggleRow={toggleRow}
@@ -217,6 +295,7 @@ const ReceiptTable: React.FC = () => {
                   handleInputChange={handleInputChange}
                   editedReceipt={editedReceipt}
                   handleDeleteClick={handleDeleteClick}
+                  onItemDelete={handleItemDelete} // Pass down handleItemDelete
                   index={index}
                   setIsAnimating={setIsAnimating}
                 />
