@@ -83,7 +83,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
         className="cursor-pointer"
       >
         {/* Receipt ID and Expander Icon */}
-        <td className="py-4 text-sm font-medium text-black flex items-center">
+        <td className="py-5 text-sm font-medium text-black flex items-center ">
           <motion.div
             initial={false}
             animate={{ rotate: isRowExpanded(receipt.localReceiptId) ? 90 : 0 }}
