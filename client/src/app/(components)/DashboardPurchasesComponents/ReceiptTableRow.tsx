@@ -83,7 +83,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
         className="cursor-pointer"
       >
         {/* Receipt ID and Expander Icon */}
-        <td className="py-3 text-sm font-medium text-black flex items-center">
+        <td className="py-4 text-sm font-medium text-black flex items-center">
           <motion.div
             initial={false}
             animate={{ rotate: isRowExpanded(receipt.localReceiptId) ? 90 : 0 }}
@@ -122,7 +122,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
         )}
 
         {/* Actions Column */}
-        <td className="pl-2 py-3 text-sm text-black">
+        <td className="pl-2 py-4 text-sm text-black">
           {isEditing ? (
             <>
               <button
@@ -177,7 +177,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <td colSpan={6} className="py-2 bg-gray-50 rounded-xl">
+          <td colSpan={6} className="py-2 rounded-xl">
             <ReceiptDetails
               details={receipt.details}
               onItemDelete={(itemIndex) => onItemDelete(receipt.localReceiptId, itemIndex)}
