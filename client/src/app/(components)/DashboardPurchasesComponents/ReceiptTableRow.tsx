@@ -37,10 +37,10 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
   index,
   setIsAnimating,
 }) => {
-  const isEditing = editingReceiptId === receipt.receiptId;
+  const isEditing = editingReceiptId === receipt.localReceiptId;
 
   // Toggle row expansion if not editing
-  const onRowClick = () => !isEditing && toggleRow(receipt.receiptId);
+  const onRowClick = () => !isEditing && toggleRow(receipt.localReceiptId);
 
   // Prevent event propagation to keep row closed during edit or delete
   const preventEventPropagation = (e: React.MouseEvent) => e.stopPropagation();
@@ -81,21 +81,20 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
         <td className="py-5 text-sm font-medium text-black flex items-center">
           <motion.div
             initial={false}
-            animate={{ rotate: isRowExpanded(receipt.receiptId) ? 90 : 0 }}
+            animate={{ rotate: isRowExpanded(receipt.localReceiptId) ? 90 : 0 }}
             transition={{ duration: 0.2 }}
             className="mr-2"
           >
             <ChevronRight size={18} />
           </motion.div>
-          {receipt.receiptId}
+          {receipt.localReceiptId} {/* Display the sequential ID */}
         </td>
 
-        {["location", "date", "time", "cost"].map((field) =>
-          renderInputOrText(
-            field,
-            isEditing ? editedReceipt[field] : receipt[field]
-          )
-        )}
+        {/* Display location, formatted date, formatted time, and cost */}
+        <td className="py-2 text-sm text-black">{receipt.location}</td>
+        <td className="py-2 text-sm text-black">{receipt.date}</td> {/* Formatted date */}
+        <td className="py-2 text-sm text-black">{receipt.time}</td> {/* Formatted time */}
+        <td className="py-2 text-sm text-black">{receipt.cost}</td>
 
         <td className="pl-2 py-2 text-sm text-black">
           {isEditing ? (
@@ -134,7 +133,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
                 className="text-red-400 hover:text-red-500"
                 onClick={(e) => {
                   preventEventPropagation(e);
-                  handleDeleteClick(receipt.receiptId);
+                  handleDeleteClick(receipt.localReceiptId);
                 }}
               >
                 <Trash2 size={18} />
@@ -144,7 +143,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
         </td>
       </motion.tr>
 
-      {isRowExpanded(receipt.receiptId) && (
+      {isRowExpanded(receipt.localReceiptId) && (
         <motion.tr
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
