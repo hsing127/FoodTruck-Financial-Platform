@@ -12,6 +12,7 @@ const MIN_ROWS = 6;
 
 const ReceiptTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
+  const [receipts, setReceipts] = useState<any[]>([]); // Full data fetched from API
   const [filteredReceipts, setFilteredReceipts] = useState<any[]>([]);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [editingReceiptId, setEditingReceiptId] = useState<number | null>(null);
@@ -55,7 +56,8 @@ const ReceiptTable: React.FC = () => {
           };
         });
 
-        setFilteredReceipts(receiptsWithId);
+        setReceipts(receiptsWithId); // Store original data
+        setFilteredReceipts(receiptsWithId); // Initialize filtered data
       } catch (error) {
         console.error("Error fetching receipts:", error);
       }
@@ -88,13 +90,20 @@ const ReceiptTable: React.FC = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     setSearchInput(term);
-    const filtered = filteredReceipts.filter(
-      (receipt) =>
-        receipt.location.toLowerCase().includes(term) ||
-        receipt.date.includes(term) ||
-        receipt.cost.toLowerCase().includes(term)
-    );
-    setFilteredReceipts(filtered);
+
+    if (term === "") {
+      // Reset to original receipts if search is cleared
+      setFilteredReceipts(receipts);
+    } else {
+      const filtered = receipts.filter(
+        (receipt) =>
+          receipt.location.toLowerCase().includes(term) ||
+          receipt.date.includes(term) ||
+          receipt.cost.toLowerCase().includes(term)
+      );
+      setFilteredReceipts(filtered);
+    }
+
     setCurrentPage(1);
     setIsAnimating(true); // Trigger animation on search
   };
@@ -111,7 +120,7 @@ const ReceiptTable: React.FC = () => {
 
   // Handle edit button click
   const handleEditClick = (receipt: any) => {
-    setEditingReceiptId(receipt.receiptId);
+    setEditingReceiptId(receipt.localReceiptId);
     setEditedReceipt({ ...receipt });
   };
 
@@ -119,9 +128,17 @@ const ReceiptTable: React.FC = () => {
   const handleSaveClick = () => {
     setFilteredReceipts((prev) =>
       prev.map((receipt) =>
-        receipt.receiptId === editingReceiptId ? editedReceipt : receipt
+        receipt.localReceiptId === editingReceiptId ? editedReceipt : receipt
       )
     );
+
+    // Also update the full receipts list to keep it in sync
+    setReceipts((prev) =>
+      prev.map((receipt) =>
+        receipt.localReceiptId === editingReceiptId ? editedReceipt : receipt
+      )
+    );
+
     setEditingReceiptId(null);
     setEditedReceipt(null);
   };
@@ -142,9 +159,30 @@ const ReceiptTable: React.FC = () => {
   };
 
   // Handle delete button click
-  const handleDeleteClick = (receiptId: number) => {
+  const handleDeleteClick = (localReceiptId: number) => {
     setFilteredReceipts((prev) =>
-      prev.filter((receipt) => receipt.receiptId !== receiptId)
+      prev.filter((receipt) => receipt.localReceiptId !== localReceiptId)
+    );
+
+    // Also update the full receipts list to keep it in sync
+    setReceipts((prev) =>
+      prev.filter((receipt) => receipt.localReceiptId !== localReceiptId)
+    );
+  };
+
+  // Handle item deletion for ingredients
+  const handleItemDelete = (receiptId: number, itemIndex: number) => {
+    setFilteredReceipts((prev) =>
+      prev.map((receipt) =>
+        receipt.localReceiptId === receiptId
+          ? {
+              ...receipt,
+              details: receipt.details.filter(
+                (_: any, idx: number) => idx !== itemIndex
+              ),
+            }
+          : receipt
+      )
     );
   };
 
@@ -246,7 +284,7 @@ const ReceiptTable: React.FC = () => {
             >
               {currentReceipts.map((receipt, index) => (
                 <ReceiptTableRow
-                  key={receipt.receiptId}
+                  key={receipt.localReceiptId}
                   receipt={receipt}
                   isRowExpanded={isRowExpanded}
                   toggleRow={toggleRow}
@@ -257,6 +295,7 @@ const ReceiptTable: React.FC = () => {
                   handleInputChange={handleInputChange}
                   editedReceipt={editedReceipt}
                   handleDeleteClick={handleDeleteClick}
+                  onItemDelete={handleItemDelete} // Pass down handleItemDelete
                   index={index}
                   setIsAnimating={setIsAnimating}
                 />
