@@ -8,10 +8,37 @@ import router from "next/router";
 const ForgotPasswordCodePage: React.FC = () => {
   const [verificationCode, setVerificationCode] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (verificationCode) {
-      router.push("/login/forgotpasswordnew");
+    if(verificationCode.trim()) {
+      try {
+      const response = await fetch("https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/forgot-password/verify-code", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          body: JSON.stringify({ verificationCode }),
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to send reset code");
+      }
+
+      const data = await response.json();
+      const statusCode = data.statusCode;
+      // console.log(JSON.stringify({data}));
+
+      if(statusCode === 200) {
+        //Redirect if the code was verified successfully
+        router.push("/login/forgotpasswordcode");
+      } else {
+        alert("Invalid code");
+      }
+    } catch (error) {
+        alert("There was an error sending the code. Please try again.");
+        console.error("Error:", error);
+    }
     } else {
       alert("Please enter the verification code.");
     }

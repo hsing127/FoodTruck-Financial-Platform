@@ -1,6 +1,8 @@
-// const { Client } = require('pg'); // For PostgreSQL
+// import pkg from 'pg';
 
-// exports.handler = async (event) => {
+// const { Client } = pkg;
+
+// const handler = async (event) => {
 //     const { email, resetCode } = JSON.parse(event.body);
 
 //     // Input validation
@@ -13,10 +15,13 @@
 
 //     // Connect to the RDS PostgreSQL database
 //     const client = new Client({
-//         host: process.env.RDS_HOST,
-//         user: process.env.RDS_USER,
-//         password: process.env.RDS_PASSWORD,
-//         database: process.env.RDS_DATABASE
+//         host: process.env.DB_HOST,
+//         user: process.env.DB_USER,
+//         password: process.env.DB_PASSWORD,
+//         database: process.env.DB_DATABASE,
+//         ssl: {
+//             rejectUnauthorized: false // Use true if you have a certificate
+//         },
 //     });
 
 //     try {
@@ -24,8 +29,8 @@
 
 //         // Check if the reset code is valid (not expired and not used)
 //         const query = `
-//             SELECT * FROM Code
-//             WHERE Email = $1 AND Code = $2 AND Used = false AND ExpireAt > NOW()
+//             SELECT * FROM "Code"
+//             WHERE "Email" = $1 AND "Code" = $2 AND "Used" = false AND "ExpireAt" > NOW()
 //         `;
 //         const values = [email, resetCode];
 //         const result = await client.query(query, values);
@@ -38,6 +43,13 @@
 //             };
 //         }
 
+//         const updateQuery = `
+//         UPDATE "Code"
+//         SET "Used" = true
+//         WHERE "Email" = $1 AND "Code" = $2
+//         `;
+//         await client.query(updateQuery, values);
+        
 //         // Success response (code is valid)
 //         return {
 //             statusCode: 200,
@@ -54,3 +66,4 @@
 //         await client.end();
 //     }
 // };
+// export { handler };
