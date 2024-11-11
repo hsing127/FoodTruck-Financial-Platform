@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { MENU_DATA } from "@/app/(components)/DashboardMenuComponents/MenuData";
-import Pagination from "../DashboardPurchasesComponents/Pagination";
-import SearchInput from "../DashboardPurchasesComponents/SearchInput";
-import MenuCard from "../DashboardMenuComponents/MenuCard";
-import { Plus, Filter } from "lucide-react";
+import Pagination from "..//Common/Pagination";
+import SearchInput from "../Common/SearchInput";
+import MenuCard from "./MenuCard";
 import MenuItemDetailsModal from "./MenuItemDetailsModal";
+import AddMenuItemModal from "../DashboardMenuComponents/AddMenuItemModel";
+import actions from "./Actions"; // Import the actions function
+import { Ingredient, MenuItem } from "../../types/types";
 
 const ROW_HEIGHT = 170;
 const BOTTOM_PADDING = 40;
@@ -13,16 +15,9 @@ const ROWS = 4;
 const ITEMS_PER_ROW = 3;
 const MIN_ROWS = 2;
 
-interface Ingredient {
-  ingredient: string;
-  quantity: number;
-  units: string;
-  price: string;
-}
-
 const MenuTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [filteredMenu, setFilteredMenu] = useState(MENU_DATA);
+  const [filteredMenu, setFilteredMenu] = useState<MenuItem[]>(MENU_DATA);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS * ITEMS_PER_ROW);
   const [isAnimating, setIsAnimating] = useState(true);
@@ -30,6 +25,17 @@ const MenuTable: React.FC = () => {
   const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>(
     []
   );
+  const [isAddMenuItemModalOpen, setIsAddMenuItemModalOpen] = useState(false);
+
+  // Functions to open and close the modals
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const openAddMenuItemModal = () => setIsAddMenuItemModalOpen(true);
+  const closeAddMenuItemModal = () => setIsAddMenuItemModalOpen(false);
+
+  // Get the actions with dependencies
+  const actionItems = actions({ openModal: openAddMenuItemModal });
 
   // Calculate items per page based on viewport height, with a minimum row count
   const calculateItemsPerPage = useCallback(() => {
@@ -61,18 +67,16 @@ const MenuTable: React.FC = () => {
 
   const handleMoreDetailsClick = (ingredients: Ingredient[]) => {
     setSelectedIngredients(ingredients);
-    setIsModalOpen(true);
+    openModal();
   };
 
   // Close the modal
-  const handleModalClose = () => setIsModalOpen(false);
+  const handleModalClose = () => closeModal();
 
-  // Pagination
+  // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
-  const currentItems = filteredMenu.slice(
-    indexOfLastItem - itemsPerPage,
-    indexOfLastItem
-  );
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredMenu.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredMenu.length / itemsPerPage);
 
   // Animation variants for staggered animation
@@ -85,6 +89,21 @@ const MenuTable: React.FC = () => {
   const handlePageChange = (page: number) => {
     setIsAnimating(true);
     setCurrentPage(page);
+  };
+
+  // Handlers for editing ingredients in the modal
+  const handleItemEdit = (index: number, updatedItem: Ingredient) => {
+    setSelectedIngredients((prev) =>
+      prev.map((item, idx) => (idx === index ? updatedItem : item))
+    );
+  };
+
+  const handleItemDelete = (index: number) => {
+    setSelectedIngredients((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
+  const handleItemAdd = (newItem: Ingredient) => {
+    setSelectedIngredients((prev) => [...prev, newItem]);
   };
 
   return (
@@ -102,20 +121,7 @@ const MenuTable: React.FC = () => {
         <SearchInput
           searchInput={searchInput}
           handleSearch={handleSearch}
-          actions={[
-            {
-              icon: <Plus size={20} />,
-              type: "addEntry",
-              title: "Add Menu Item",
-              items: ["Add Menu Item"],
-            },
-            {
-              icon: <Filter size={20} />,
-              type: "filter",
-              title: "Filter",
-              items: ["Filter by Date", "Filter by Cost"],
-            },
-          ]}
+          actions={actionItems} // Use the actionItems here
         />
       </div>
 
@@ -163,15 +169,16 @@ const MenuTable: React.FC = () => {
         onClose={handleModalClose}
         ingredients={selectedIngredients}
         onItemEdit={(index, updatedItem) => {
-          setSelectedIngredients((prev) =>
-            prev.map((item, idx) => (idx === index ? updatedItem : item))
-          );
-        }}
-        onItemDelete={(index) => {
-          setSelectedIngredients((prev) =>
-            prev.filter((_, idx) => idx !== index)
-          );
-        }}
+        onItemEdit={handleItemEdit}
+        onItemDelete={handleItemDelete}
+        onItemAdd={handleItemAdd}
+      />
+
+      {/* Add Menu Item Modal */}
+      <AddMenuItemModal
+        isOpen={isAddMenuItemModalOpen}
+        onClose={closeAddMenuItemModal}
+        // Pass any additional props needed for adding a menu item
       />
     </motion.div>
   );

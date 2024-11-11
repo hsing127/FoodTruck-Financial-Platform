@@ -180,7 +180,9 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
           <td colSpan={6} className="py-2 rounded-xl">
             <ReceiptDetails
               details={receipt.details}
-              onItemDelete={(itemIndex) => onItemDelete(receipt.localReceiptId, itemIndex)}
+              onItemDelete={(itemIndex) =>
+                onItemDelete(receipt.localReceiptId, itemIndex)
+              }
             />
           </td>
         </motion.tr>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Search, Upload, Plus, Filter } from "lucide-react";
+import { Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface SearchInputProps {
@@ -9,7 +9,7 @@ interface SearchInputProps {
     icon: React.ReactNode;
     type: string;
     title: string;
-    items: string[];
+    items: Array<{ label: string; onClick: () => void }>;
   }>;
 }
 
@@ -42,6 +42,12 @@ const SearchInput: React.FC<SearchInputProps> = ({
       setActiveDropdown((prev) => (prev === type ? null : type)),
     []
   );
+
+  // Handle item click
+  const handleItemClick = (onClick: () => void) => {
+    onClick(); // Execute the passed action
+    setActiveDropdown(null); // Close the dropdown after clicking
+  };
 
   // Animation variants
   const dropdownVariants = {
@@ -96,13 +102,14 @@ const SearchInput: React.FC<SearchInputProps> = ({
                   animate="visible"
                   exit="hidden"
                 >
-                  {items.map((item, index) => (
+                  {items.map(({ label, onClick }, index) => (
                     <motion.button
                       key={index}
                       className="w-full text-left text-sm p-2 hover:bg-[#8B5CF6] hover:rounded-lg"
                       variants={itemVariants}
+                      onClick={() => handleItemClick(onClick)}
                     >
-                      {item}
+                      {label}
                     </motion.button>
                   ))}
                 </motion.div>
