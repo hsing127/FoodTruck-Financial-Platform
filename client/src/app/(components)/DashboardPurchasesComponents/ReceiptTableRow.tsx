@@ -52,7 +52,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
         animate="visible"
         exit="hidden"
         transition={{
-          delay: index * 0.05,
+          delay: index * 0.03,
           duration: 0.3,
           onStart: () => setIsAnimating(true),
           onComplete: () => setIsAnimating(false),
