@@ -1,44 +1,52 @@
+// InventoryTable.tsx
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import InventoryTableRow from "./InventoryTableRow";
 import SearchInput from "../Common/SearchInput";
 import Pagination from "../Common/Pagination";
 import { Upload, Plus, Filter } from "lucide-react";
+import { InventoryItem } from "@/app/types/types";
 
 const ROW_HEIGHT = 60;
 const BOTTOM_PADDING = 40;
 
 const InventoryTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [filteredInventory, setFilteredInventory] = useState<any[]>([]);
-  const [editingInventoryName, setEditingInventoryName] = useState<string>("");
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
+  const [filteredInventory, setFilteredInventory] = useState<InventoryItem[]>(
+    []
+  );
   const [currentPage, setCurrentPage] = useState(1);
-  const [editedInventory, setEditedInventory] = useState<any>(null);
   const [itemsPerPage, setItemsPerPage] = useState(8);
 
   useEffect(() => {
     const fetchInventoryData = async () => {
       try {
-        const response = await fetch("https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/inventory", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          //Will be changed to reference JSON Tokening to populate unique inventory data per user
-          body: JSON.stringify({ email: "wenjiex1@asu.edu" }),
-        });
-        
+        const response = await fetch(
+          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/inventory",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // Will be changed to reference JSON Tokening to populate unique inventory data per user
+            body: JSON.stringify({ email: "wenjiex1@asu.edu" }),
+          }
+        );
+
         if (!response.ok) {
           throw new Error("Failed to fetch inventory data");
         }
-        
+
         const data = await response.json();
-  
+
         // Parse the 'body' field, which contains the actual inventory data as a JSON string
         const parsedBody = JSON.parse(data.body);
-  
+
         if (parsedBody.inventory && Array.isArray(parsedBody.inventory)) {
-          setFilteredInventory(parsedBody.inventory);
+          const items = parsedBody.inventory as InventoryItem[];
+          setInventoryItems(items);
+          setFilteredInventory(items);
         } else {
           console.error("Unexpected data format:", parsedBody);
         }
@@ -46,16 +54,15 @@ const InventoryTable: React.FC = () => {
         console.error("Error fetching inventory:", error);
       }
     };
-  
+
     fetchInventoryData();
   }, []);
-  
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     setSearchInput(term);
-    const filtered = filteredInventory.filter(
-      item =>
+    const filtered = inventoryItems.filter(
+      (item) =>
         item.Name.toLowerCase().includes(term) ||
         item.AmountUnits.toLowerCase().includes(term)
     );
@@ -63,42 +70,29 @@ const InventoryTable: React.FC = () => {
     setCurrentPage(1);
   };
 
-  // Edit button click handler
-  const handleEditClick = (inventory: any) => {
-    setEditingInventoryName(inventory.Name);
-    setEditedInventory({ ...inventory });
-  };
+  const handleItemEdit = (index: number, updatedItem: InventoryItem) => {
+    const itemToEdit = filteredInventory[index];
 
-  // Save button click handler
-  const handleSaveClick = () => {
-    setFilteredInventory(prev =>
-      prev.map((inventory) =>
-        inventory.Name === editingInventoryName ? editedInventory : inventory
-      )
-    );
-    setEditingInventoryName("");
-    setEditedInventory(null);
-  };
-
-  // Cancel button click handler
-  const handleCancelClick = () => {
-    setEditingInventoryName("");
-    setEditedInventory(null);
-  };
-
-  // Input change handler during editing
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setEditedInventory((prev: any) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // Delete button click handler
-  const handleDeleteClick = (inventoryName: string) => {
+    // Update filteredInventory
     setFilteredInventory((prev) =>
-      prev.filter((inventory) => inventory.Name !== inventoryName)
+      prev.map((item, idx) => (idx === index ? updatedItem : item))
+    );
+
+    // Update inventoryItems
+    setInventoryItems((prev) =>
+      prev.map((item) => (item.Name === itemToEdit.Name ? updatedItem : item))
+    );
+  };
+
+  const handleItemDelete = (index: number) => {
+    const itemToDelete = filteredInventory[index];
+
+    // Update filteredInventory
+    setFilteredInventory((prev) => prev.filter((_, idx) => idx !== index));
+
+    // Update inventoryItems
+    setInventoryItems((prev) =>
+      prev.filter((item) => item.Name !== itemToDelete.Name)
     );
   };
 
@@ -200,17 +194,13 @@ const InventoryTable: React.FC = () => {
 
               <tbody className="divide-y divide-white">
                 {/* Map through currentInventory and render each row */}
-                {currentInventory.map((inventory) => (
+                {currentInventory.map((item, idx) => (
                   <InventoryTableRow
-                    key={inventory.Name}
-                    inventory={inventory}
-                    editingInventoryName={editingInventoryName}
-                    handleEditClick={handleEditClick}
-                    handleSaveClick={handleSaveClick}
-                    handleCancelClick={handleCancelClick}
-                    handleInputChange={handleInputChange}
-                    editedInventory={editedInventory}
-                    handleDeleteClick={handleDeleteClick}
+                    key={`${item.Name}-${indexOfFirstInventory + idx}`}
+                    item={item}
+                    index={indexOfFirstInventory + idx}
+                    onItemEdit={handleItemEdit}
+                    onItemDelete={handleItemDelete}
                   />
                 ))}
               </tbody>

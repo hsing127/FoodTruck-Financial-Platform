@@ -28,3 +28,9 @@ export interface MenuItem {
   price: string;
   ingredients: Ingredient[];
 }
+
+export interface InventoryItem {
+  Name: string;
+  Amount: string;
+  AmountUnits: string;
+}
