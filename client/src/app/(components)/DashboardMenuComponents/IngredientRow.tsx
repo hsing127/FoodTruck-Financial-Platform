@@ -13,7 +13,7 @@ interface IngredientRowProps {
 }
 
 const rowVariants = {
-  hidden: { opacity: 0, y: 10 },
+  hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0 },
 };
 
@@ -39,10 +39,14 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
 
   return (
     <motion.tr
-      variants={rowVariants}
-      initial="hidden"
-      animate="visible"
-      exit="hidden"
+    variants={rowVariants}
+    initial="hidden"
+    animate="visible"
+    exit="hidden"
+    transition={{
+      delay: index * 0.1,
+      duration: 0.3,
+    }}
     >
       <EditableCell
         isEditing={isEditing}
