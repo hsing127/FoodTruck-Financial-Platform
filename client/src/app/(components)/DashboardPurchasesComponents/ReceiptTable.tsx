@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ReceiptTableRow from "./ReceiptTableRow";
-import SearchInput from "../Common/SearchInput";
-import Pagination from "../Common/Pagination";
+import SearchInput from "./SearchInput";
+import Pagination from "./Pagination";
 import { Upload, Plus, Filter } from "lucide-react";
 
 // Constants
@@ -46,20 +46,15 @@ const ReceiptTable: React.FC = () => {
         }
 
         // Assign localReceiptId sequentially to each purchase item and format date/time
-        const receiptsWithId = purchasesData.purchases.map(
-          (receipt: any, index: number) => {
-            const dateObj = new Date(receipt.date);
-            return {
-              ...receipt,
-              localReceiptId: index + 1001, // Start at 1 and increment
-              date: dateObj.toLocaleDateString(), // Format date
-              time: dateObj.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              }), // Format time
-            };
-          }
-        );
+        const receiptsWithId = purchasesData.purchases.map((receipt: any, index: number) => {
+          const dateObj = new Date(receipt.date);
+          return {
+            ...receipt,
+            localReceiptId: index + 1001, // Start at 1 and increment
+            date: dateObj.toLocaleDateString(), // Format date
+            time: dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) // Format time
+          };
+        });
 
         setReceipts(receiptsWithId); // Store original data
         setFilteredReceipts(receiptsWithId); // Initialize filtered data
@@ -215,8 +210,34 @@ const ReceiptTable: React.FC = () => {
           <SearchInput
             searchInput={searchInput}
             handleSearch={handleSearch}
-            actions={actions}
-            onAction={onAction}
+            actions={[
+              {
+                icon: <Upload size={20} />,
+                type: "upload",
+                title: "Upload File",
+                items: [
+                  "Upload Image",
+                  "Upload Document",
+                  "Upload Spreadsheet",
+                ],
+              },
+              {
+                icon: <Plus size={20} />,
+                type: "addEntry",
+                title: "Add Entry",
+                items: ["Add Manual Entry", "Add Expense"],
+              },
+              {
+                icon: <Filter size={20} />,
+                type: "filter",
+                title: "Filter",
+                items: [
+                  "Filter by Date",
+                  "Filter by Cost",
+                  "Filter by Location",
+                ],
+              },
+            ]}
           />
         </div>
       </div>

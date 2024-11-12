@@ -1,6 +1,5 @@
-// SearchInput.tsx
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Search } from "lucide-react";
+import { Search, Upload, Plus, Filter } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface SearchInputProps {
@@ -12,14 +11,12 @@ interface SearchInputProps {
     title: string;
     items: string[];
   }>;
-  onAction: (type: string, item: string) => void;
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
   searchInput,
   handleSearch,
   actions,
-  onAction,
 }) => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -104,7 +101,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
                       key={index}
                       className="w-full text-left text-sm p-2 hover:bg-[#8B5CF6] hover:rounded-lg"
                       variants={itemVariants}
-                      onClick={() => onAction(type, item)}
                     >
                       {item}
                     </motion.button>

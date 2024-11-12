@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { MENU_DATA } from "@/app/(components)/DashboardMenuComponents/MenuData";
-import Pagination from "../Common/Pagination";
-import SearchInput from "../Common/SearchInput";
+import Pagination from "../DashboardPurchasesComponents/Pagination";
+import SearchInput from "../DashboardPurchasesComponents/SearchInput";
 import MenuCard from "../DashboardMenuComponents/MenuCard";
 import { Plus, Filter } from "lucide-react";
 import MenuItemDetailsModal from "./MenuItemDetailsModal";

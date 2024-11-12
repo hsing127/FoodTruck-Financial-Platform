@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import InventoryTableRow from "./InventoryTableRow";
-import SearchInput from "../Common/SearchInput";
-import Pagination from "../Common/Pagination";
+import SearchInput from "../DashboardPurchasesComponents/SearchInput";
+import Pagination from "../DashboardPurchasesComponents/Pagination";
 import { Upload, Plus, Filter } from "lucide-react";
 
 const ROW_HEIGHT = 60;
