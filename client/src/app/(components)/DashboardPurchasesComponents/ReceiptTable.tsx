@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ReceiptTableRow from "./ReceiptTableRow";
-import SearchInput from "./SearchInput";
-import Pagination from "./Pagination";
+import SearchInput from "../Common/SearchInput";
+import Pagination from "../Common/Pagination";
 import { Upload, Plus, Filter } from "lucide-react";
 
 // Constants
