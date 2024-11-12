@@ -168,7 +168,6 @@ const MenuTable: React.FC = () => {
         isOpen={isModalOpen}
         onClose={handleModalClose}
         ingredients={selectedIngredients}
-        onItemEdit={(index, updatedItem) => {
         onItemEdit={handleItemEdit}
         onItemDelete={handleItemDelete}
         onItemAdd={handleItemAdd}
