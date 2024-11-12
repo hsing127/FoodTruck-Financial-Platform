@@ -1,0 +1,173 @@
+[
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-05T08:30:00Z",
+        "Location": "Costco",
+        "IngredientName": "Pulled Pork",
+        "Price": 80.00,
+        "Amount": 30,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-05T08:30:00Z",
+        "Location": "Costco",
+        "IngredientName": "BBQ Sauce",
+        "Price": 45.00,
+        "Amount": 3,
+        "AmountUnits": "L"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-05T08:30:00Z",
+        "Location": "Costco",
+        "IngredientName": "Avocado",
+        "Price": 75.45,
+        "Amount": 20,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-12T13:12:30Z",
+        "Location": "Safeway",
+        "IngredientName": "Tortillas",
+        "Price": 12.00,
+        "Amount": 100,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-12T13:12:30Z",
+        "Location": "Safeway",
+        "IngredientName": "Ground Beef",
+        "Price": 22.99,
+        "Amount": 25,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-12T13:12:30Z",
+        "Location": "Safeway",
+        "IngredientName": "Sriracha",
+        "Price": 19.00,
+        "Amount": 2,
+        "AmountUnits": "L"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-20T16:50:21Z",
+        "Location": "Sprouts",
+        "IngredientName": "Chicken Wings",
+        "Price": 18.00,
+        "Amount": 15,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-20T16:50:21Z",
+        "Location": "Sprouts",
+        "IngredientName": "Mango",
+        "Price": 69.22,
+        "Amount": 10,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-28T18:15:05Z",
+        "Location": "Sam's Club",
+        "IngredientName": "Cod Fillets",
+        "Price": 20.00,
+        "Amount": 20,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-28T18:15:05Z",
+        "Location": "Sam's Club",
+        "IngredientName": "Shrimp",
+        "Price": 92.34,
+        "Amount": 15,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-04T11:25:40Z",
+        "Location": "Albertsons",
+        "IngredientName": "Burger Buns",
+        "Price": 12.00,
+        "Amount": 50,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-04T11:25:40Z",
+        "Location": "Albertsons",
+        "IngredientName": "French Fries",
+        "Price": 20.00,
+        "Amount": 30,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-04T11:25:40Z",
+        "Location": "Albertsons",
+        "IngredientName": "Peanut Sauce",
+        "Price": 8.00,
+        "Amount": 1,
+        "AmountUnits": "L"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-04T11:25:40Z",
+        "Location": "Albertsons",
+        "IngredientName": "Salmon",
+        "Price": 18.89,
+        "Amount": 10,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-04T11:25:40Z",
+        "Location": "Albertsons",
+        "IngredientName": "Falafel Mix",
+        "Price": 9.00,
+        "Amount": 5,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-04T11:25:40Z",
+        "Location": "Albertsons",
+        "IngredientName": "Hummus",
+        "Price": 10.00,
+        "Amount": 2,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-04T11:25:40Z",
+        "Location": "Albertsons",
+        "IngredientName": "Lettuce",
+        "Price": 5.00,
+        "Amount": 5,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-04T11:25:40Z",
+        "Location": "Albertsons",
+        "IngredientName": "Tomato",
+        "Price": 12.00,
+        "Amount": 15,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-04T11:25:40Z",
+        "Location": "Albertsons",
+        "IngredientName": "Pickles",
+        "Price": 5.00,
+        "Amount": 2,
+        "AmountUnits": "lb"
+    }
+]

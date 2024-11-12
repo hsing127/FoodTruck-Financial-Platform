@@ -1,0 +1,261 @@
+[
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "BBQ Pulled Pork Sandwich",
+        "IngredientName": "Pulled Pork",
+        "Amount": 6,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "BBQ Pulled Pork Sandwich",
+        "IngredientName": "BBQ Sauce",
+        "Amount": 2,
+        "AmountUnits": "tbsp"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "BBQ Pulled Pork Sandwich",
+        "IngredientName": "Burger Buns",
+        "Amount": 1,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Vegetarian Tacos",
+        "IngredientName": "Avocado",
+        "Amount": 0.5,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Vegetarian Tacos",
+        "IngredientName": "Tortillas",
+        "Amount": 2,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Vegetarian Tacos",
+        "IngredientName": "Cilantro",
+        "Amount": 0.1,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Vegetarian Tacos",
+        "IngredientName": "Tomato",
+        "Amount": 1,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Beef Burrito Bowl",
+        "IngredientName": "Ground Beef",
+        "Amount": 6,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Beef Burrito Bowl",
+        "IngredientName": "Basmati Rice",
+        "Amount": 4,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Beef Burrito Bowl",
+        "IngredientName": "Black Pepper",
+        "Amount": 0.25,
+        "AmountUnits": "tsp"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Beef Burrito Bowl",
+        "IngredientName": "Cilantro",
+        "Amount": 0.1,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Honey Sriracha Wings",
+        "IngredientName": "Chicken Wings",
+        "Amount": 8,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Honey Sriracha Wings",
+        "IngredientName": "Sriracha",
+        "Amount": 1,
+        "AmountUnits": "tbsp"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Honey Sriracha Wings",
+        "IngredientName": "Black Pepper",
+        "Amount": 0.25,
+        "AmountUnits": "tsp"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Mango Salsa Fish Tacos",
+        "IngredientName": "Cod Fillets",
+        "Amount": 4,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Mango Salsa Fish Tacos",
+        "IngredientName": "Mango",
+        "Amount": 0.5,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Mango Salsa Fish Tacos",
+        "IngredientName": "Tortillas",
+        "Amount": 2,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Mango Salsa Fish Tacos",
+        "IngredientName": "Cilantro",
+        "Amount": 0.1,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Grilled Shrimp Po' Boy",
+        "IngredientName": "Shrimp",
+        "Amount": 6,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Grilled Shrimp Po' Boy",
+        "IngredientName": "Burger Buns",
+        "Amount": 1,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Grilled Shrimp Po' Boy",
+        "IngredientName": "Tomato",
+        "Amount": 0.5,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Grilled Shrimp Po' Boy",
+        "IngredientName": "Lettuce",
+        "Amount": 0.25,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Classic Cheeseburger with Fries",
+        "IngredientName": "Ground Beef",
+        "Amount": 6,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Classic Cheeseburger with Fries",
+        "IngredientName": "Burger Buns",
+        "Amount": 1,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Classic Cheeseburger with Fries",
+        "IngredientName": "French Fries",
+        "Amount": 4,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Classic Cheeseburger with Fries",
+        "IngredientName": "Tomato",
+        "Amount": 0.5,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Thai Peanut Chicken Wrap",
+        "IngredientName": "Chicken Breast",
+        "Amount": 4,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Thai Peanut Chicken Wrap",
+        "IngredientName": "Peanut Sauce",
+        "Amount": 1,
+        "AmountUnits": "tbsp"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Thai Peanut Chicken Wrap",
+        "IngredientName": "Tortillas",
+        "Amount": 1,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Thai Peanut Chicken Wrap",
+        "IngredientName": "Lettuce",
+        "Amount": 0.25,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Lemon Garlic Salmon Plate",
+        "IngredientName": "Salmon",
+        "Amount": 6,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Lemon Garlic Salmon Plate",
+        "IngredientName": "Garlic",
+        "Amount": 2,
+        "AmountUnits": "cloves"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Lemon Garlic Salmon Plate",
+        "IngredientName": "Black Pepper",
+        "Amount": 0.25,
+        "AmountUnits": "tsp"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Falafel and Hummus Wrap",
+        "IngredientName": "Falafel Mix",
+        "Amount": 4,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Falafel and Hummus Wrap",
+        "IngredientName": "Hummus",
+        "Amount": 1,
+        "AmountUnits": "oz"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Falafel and Hummus Wrap",
+        "IngredientName": "Tortillas",
+        "Amount": 1,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "MenuName": "Falafel and Hummus Wrap",
+        "IngredientName": "Lettuce",
+        "Amount": 0.25,
+        "AmountUnits": "oz"
+    }
+]

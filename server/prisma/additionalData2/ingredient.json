@@ -1,0 +1,116 @@
+[
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Pulled Pork",
+        "Amount": 30,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "BBQ Sauce",
+        "Amount": 3,
+        "AmountUnits": "L"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Avocado",
+        "Amount": 20,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Tortillas",
+        "Amount": 100,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Ground Beef",
+        "Amount": 25,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Sriracha",
+        "Amount": 2,
+        "AmountUnits": "L"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Chicken Wings",
+        "Amount": 15,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Mango",
+        "Amount": 10,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Cod Fillets",
+        "Amount": 20,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Shrimp",
+        "Amount": 15,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Burger Buns",
+        "Amount": 50,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "French Fries",
+        "Amount": 30,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Peanut Sauce",
+        "Amount": 1,
+        "AmountUnits": "L"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Salmon",
+        "Amount": 10,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Falafel Mix",
+        "Amount": 5,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Hummus",
+        "Amount": 2,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Lettuce",
+        "Amount": 5,
+        "AmountUnits": "lb"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Tomato",
+        "Amount": 15,
+        "AmountUnits": "pc"
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Pickles",
+        "Amount": 2,
+        "AmountUnits": "lb"
+    }
+]

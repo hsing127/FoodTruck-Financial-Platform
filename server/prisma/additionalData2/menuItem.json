@@ -1,0 +1,52 @@
+[
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "BBQ Pulled Pork Sandwich",
+        "Cost": 8.99
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Vegetarian Tacos with Avocado Crema",
+        "Cost": 7.25
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Beef Burrito Bowl",
+        "Cost": 10.49
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Honey Sriracha Wings",
+        "Cost": 9.75
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Mango Salsa Fish Tacos",
+        "Cost": 8.50
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Grilled Shrimp Po' Boy",
+        "Cost": 11.25
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Classic Cheeseburger with Fries",
+        "Cost": 8.75
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Thai Peanut Chicken Wrap",
+        "Cost": 8.25
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Lemon Garlic Salmon Plate",
+        "Cost": 12.99
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Name": "Falafel and Hummus Wrap",
+        "Cost": 7.99
+    }
+]

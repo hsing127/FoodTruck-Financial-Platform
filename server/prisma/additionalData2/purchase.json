@@ -1,0 +1,62 @@
+[
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-05T08:30:00Z",
+        "Location": "Costco",
+        "Cost": 200.45
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-12T13:12:30Z",
+        "Location": "Safeway",
+        "Cost": 53.99
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-20T16:50:21Z",
+        "Location": "Sprouts",
+        "Cost": 87.22
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-10-28T18:15:05Z",
+        "Location": "Sam's Club",
+        "Cost": 112.34
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-04T11:25:40Z",
+        "Location": "Albertsons",
+        "Cost": 74.89
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-06T14:43:20Z",
+        "Location": "Trader Joe's",
+        "Cost": 91.50
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-08T10:07:55Z",
+        "Location": "Whole Foods",
+        "Cost": 139.99
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-12T09:50:12Z",
+        "Location": "Kroger",
+        "Cost": 65.23
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-15T17:20:18Z",
+        "Location": "Aldi",
+        "Cost": 45.78
+    },
+    {
+        "Email": "ajwitt2@asu.edu",
+        "DateTime": "2024-11-18T13:33:42Z",
+        "Location": "Walmart",
+        "Cost": 103.56
+    }
+]
