@@ -29,8 +29,22 @@ const ReceiptDetailsRow: React.FC<ReceiptDetailsRowProps> = ({
 }) => {
   const currentItem = isEditing && editedItem ? editedItem : item;
 
+  const rowVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <tr>
+    <motion.tr
+      variants={rowVariants}
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+      transition={{
+        delay: index * 0.1,
+        duration: 0.3,
+      }}
+    >
       <EditableCell
         isEditing={isEditing}
         value={currentItem.ingredient}
@@ -75,7 +89,7 @@ const ReceiptDetailsRow: React.FC<ReceiptDetailsRowProps> = ({
           onItemDelete(index);
         }}
       />
-    </tr>
+    </motion.tr>
   );
 };
 
