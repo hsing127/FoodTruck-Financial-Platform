@@ -13,8 +13,6 @@ interface InventoryTableRowProps {
   onItemDelete: (index: number) => void;
 }
 
-const MotionTr = motion("tr");
-
 const rowVariants = {
   hidden: { opacity: 0, y: 10 },
   visible: { opacity: 1, y: 0 },
@@ -41,7 +39,7 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
   };
 
   return (
-    <MotionTr
+    <motion.tr
       variants={rowVariants}
       initial="hidden"
       animate="visible"
@@ -86,7 +84,7 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
           onItemDelete(index);
         }}
       />
-    </MotionTr>
+    </motion.tr>
   );
 };
 
