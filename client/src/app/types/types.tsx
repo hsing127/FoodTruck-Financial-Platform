@@ -13,3 +13,18 @@ export interface Receipt {
   cost: string;
   details: ReceiptItem[];
 }
+
+export interface Ingredient {
+  ingredient: string;
+  quantity: number;
+  units: string;
+  price: string;
+}
+
+export interface MenuItem {
+  id: number;
+  image: JSX.Element;
+  name: string;
+  price: string;
+  ingredients: Ingredient[];
+}

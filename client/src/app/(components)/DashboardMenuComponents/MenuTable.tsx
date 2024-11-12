@@ -6,6 +6,7 @@ import SearchInput from "../Common/SearchInput";
 import MenuCard from "../DashboardMenuComponents/MenuCard";
 import { Plus, Filter } from "lucide-react";
 import MenuItemDetailsModal from "./MenuItemDetailsModal";
+import { Ingredient, MenuItem } from "@/app/types/types";
 
 const ROW_HEIGHT = 170;
 const BOTTOM_PADDING = 40;
@@ -13,16 +14,9 @@ const ROWS = 4;
 const ITEMS_PER_ROW = 3;
 const MIN_ROWS = 2;
 
-interface Ingredient {
-  ingredient: string;
-  quantity: number;
-  units: string;
-  price: string;
-}
-
 const MenuTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [filteredMenu, setFilteredMenu] = useState(MENU_DATA);
+  const [filteredMenu, setFilteredMenu] = useState<MenuItem[]>(MENU_DATA);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS * ITEMS_PER_ROW);
   const [isAnimating, setIsAnimating] = useState(true);
@@ -161,17 +155,7 @@ const MenuTable: React.FC = () => {
       <MenuItemDetailsModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        ingredients={selectedIngredients}
-        onItemEdit={(index, updatedItem) => {
-          setSelectedIngredients((prev) =>
-            prev.map((item, idx) => (idx === index ? updatedItem : item))
-          );
-        }}
-        onItemDelete={(index) => {
-          setSelectedIngredients((prev) =>
-            prev.filter((_, idx) => idx !== index)
-          );
-        }}
+        initialIngredients={selectedIngredients}
       />
     </motion.div>
   );

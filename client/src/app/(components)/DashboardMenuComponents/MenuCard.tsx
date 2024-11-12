@@ -1,23 +1,9 @@
 import React from "react";
 import { ChevronRight } from "lucide-react";
+import { Ingredient, MenuItem } from "@/app/types/types";
 
-// Ingredient interface to define ingredient properties
-interface Ingredient {
-  ingredient: string;
-  quantity: number;
-  units: string;
-  price: string;
-}
-
-// Props interface for MenuCard component
 interface MenuCardProps {
-  item: {
-    id: number;
-    image: JSX.Element;
-    name: string;
-    price: string;
-    ingredients: Ingredient[];
-  };
+  item: MenuItem;
   handleMoreDetailsClick: (ingredients: Ingredient[]) => void;
 }
 

@@ -7,6 +7,7 @@ interface EditableCellProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   className?: string;
+  placeholder?: string; // Add this line
 }
 
 const EditableCell: React.FC<EditableCellProps> = ({
@@ -16,6 +17,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   onChange,
   type = "text",
   className = "",
+  placeholder,
 }) => (
   <td className={`py-2 text-sm text-black ${className}`}>
     {isEditing ? (
@@ -26,6 +28,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
         onChange={onChange}
         onClick={(e) => e.stopPropagation()} // Prevents row toggle
         className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+        placeholder={placeholder}
       />
     ) : (
       value
