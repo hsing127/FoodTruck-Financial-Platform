@@ -1,0 +1,36 @@
+import React from "react";
+
+interface EditableCellProps {
+  isEditing: boolean;
+  value: string | number;
+  name: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
+  className?: string;
+}
+
+const EditableCell: React.FC<EditableCellProps> = ({
+  isEditing,
+  value,
+  name,
+  onChange,
+  type = "text",
+  className = "",
+}) => (
+  <td className={`py-2 text-sm text-black ${className}`}>
+    {isEditing ? (
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        onClick={(e) => e.stopPropagation()} // Prevents row toggle
+        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+      />
+    ) : (
+      value
+    )}
+  </td>
+);
+
+export default EditableCell;

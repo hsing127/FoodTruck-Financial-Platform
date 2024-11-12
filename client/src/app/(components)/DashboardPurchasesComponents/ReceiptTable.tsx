@@ -4,6 +4,8 @@ import ReceiptTableRow from "./ReceiptTableRow";
 import SearchInput from "../Common/SearchInput";
 import Pagination from "../Common/Pagination";
 import { Upload, Plus, Filter } from "lucide-react";
+import { Receipt } from "@/app/types/types";
+import { useReceiptsData } from "./useReceiptsData";
 
 // Constants
 const ROW_HEIGHT = 60;
@@ -12,66 +14,22 @@ const MIN_ROWS = 6;
 
 const ReceiptTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [receipts, setReceipts] = useState<any[]>([]); // Full data fetched from API
-  const [filteredReceipts, setFilteredReceipts] = useState<any[]>([]);
+  const { receipts, setReceipts, loading } = useReceiptsData("ajwitt2@asu.edu");
+  const [filteredReceipts, setFilteredReceipts] = useState<Receipt[]>([]);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
-  const [editingReceiptId, setEditingReceiptId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [editedReceipt, setEditedReceipt] = useState<any>(null);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Fetch receipts data from AWS Lambda on component mount
   useEffect(() => {
-    const fetchReceipts = async () => {
-      try {
-        const response = await fetch(
-          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/purchases",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email: "ajwitt2@asu.edu" }),
-          }
-        );
+    setFilteredReceipts(receipts);
+  }, [receipts]);
 
-        const data = await response.json();
-
-        let purchasesData;
-        if (typeof data.body === "string") {
-          purchasesData = JSON.parse(data.body);
-        } else {
-          purchasesData = data.body;
-        }
-
-        // Assign localReceiptId sequentially to each purchase item and format date/time
-        const receiptsWithId = purchasesData.purchases.map((receipt: any, index: number) => {
-          const dateObj = new Date(receipt.date);
-          return {
-            ...receipt,
-            localReceiptId: index + 1001, // Start at 1 and increment
-            date: dateObj.toLocaleDateString(), // Format date
-            time: dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) // Format time
-          };
-        });
-
-        setReceipts(receiptsWithId); // Store original data
-        setFilteredReceipts(receiptsWithId); // Initialize filtered data
-      } catch (error) {
-        console.error("Error fetching receipts:", error);
-      }
-    };
-
-    fetchReceipts();
-  }, []);
-
-  // Calculate number of items per page based on viewport height
   const calculateItemsPerPage = () => {
     const viewportHeight = window.innerHeight;
     const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
     const calculatedRows = Math.floor(availableHeight / ROW_HEIGHT);
-    return Math.max(calculatedRows, MIN_ROWS); // min 6 rows
+    return Math.max(calculatedRows, MIN_ROWS);
   };
 
   // Set items per page and add window resize listener
@@ -105,7 +63,7 @@ const ReceiptTable: React.FC = () => {
     }
 
     setCurrentPage(1);
-    setIsAnimating(true); // Trigger animation on search
+    setIsAnimating(true);
   };
 
   // Toggle the row expansion state
@@ -118,52 +76,10 @@ const ReceiptTable: React.FC = () => {
   // Check if a row is expanded
   const isRowExpanded = (id: number) => expandedRows.includes(id);
 
-  // Handle edit button click
-  const handleEditClick = (receipt: any) => {
-    setEditingReceiptId(receipt.localReceiptId);
-    setEditedReceipt({ ...receipt });
-  };
-
-  // Handle save button click
-  const handleSaveClick = () => {
-    setFilteredReceipts((prev) =>
-      prev.map((receipt) =>
-        receipt.localReceiptId === editingReceiptId ? editedReceipt : receipt
-      )
-    );
-
-    // Also update the full receipts list to keep it in sync
-    setReceipts((prev) =>
-      prev.map((receipt) =>
-        receipt.localReceiptId === editingReceiptId ? editedReceipt : receipt
-      )
-    );
-
-    setEditingReceiptId(null);
-    setEditedReceipt(null);
-  };
-
-  // Handle cancel button click
-  const handleCancelClick = () => {
-    setEditingReceiptId(null);
-    setEditedReceipt(null);
-  };
-
-  // Handle input changes during editing
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setEditedReceipt((prev: any) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // Handle delete button click
   const handleDeleteClick = (localReceiptId: number) => {
     setFilteredReceipts((prev) =>
       prev.filter((receipt) => receipt.localReceiptId !== localReceiptId)
     );
-
     // Also update the full receipts list to keep it in sync
     setReceipts((prev) =>
       prev.filter((receipt) => receipt.localReceiptId !== localReceiptId)
@@ -177,9 +93,7 @@ const ReceiptTable: React.FC = () => {
         receipt.localReceiptId === receiptId
           ? {
               ...receipt,
-              details: receipt.details.filter(
-                (_: any, idx: number) => idx !== itemIndex
-              ),
+              details: receipt.details.filter((_, idx) => idx !== itemIndex),
             }
           : receipt
       )
@@ -288,16 +202,10 @@ const ReceiptTable: React.FC = () => {
                   receipt={receipt}
                   isRowExpanded={isRowExpanded}
                   toggleRow={toggleRow}
-                  editingReceiptId={editingReceiptId}
-                  handleEditClick={handleEditClick}
-                  handleSaveClick={handleSaveClick}
-                  handleCancelClick={handleCancelClick}
-                  handleInputChange={handleInputChange}
-                  editedReceipt={editedReceipt}
                   handleDeleteClick={handleDeleteClick}
-                  onItemDelete={handleItemDelete} // Pass down handleItemDelete
                   index={index}
                   setIsAnimating={setIsAnimating}
+                  onItemDelete={handleItemDelete}
                 />
               ))}
             </motion.tbody>
