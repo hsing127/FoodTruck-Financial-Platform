@@ -13,7 +13,7 @@ interface IngredientRowProps {
 }
 
 const rowVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
 };
 
