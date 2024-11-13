@@ -7,6 +7,7 @@ import MenuCard from "../DashboardMenuComponents/MenuCard";
 import { Plus, Filter } from "lucide-react";
 import MenuItemDetailsModal from "./MenuItemDetailsModal";
 import { Ingredient, MenuItem } from "@/app/types/types";
+import AddMenuItemModal from "./AddMenuItemModal";
 
 const ROW_HEIGHT = 170;
 const BOTTOM_PADDING = 40;
@@ -20,10 +21,19 @@ const MenuTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS * ITEMS_PER_ROW);
   const [isAnimating, setIsAnimating] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // For MenuItemDetailsModal
+  const [showAddMenuItemModal, setShowAddMenuItemModal] = useState(false); // For AddMenuItemModal
   const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>(
     []
   );
+
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(MENU_DATA); // Initialize with MENU_DATA
+
+  // Handle saving a new menu item
+  const handleSaveMenuItem = (menuItem: MenuItem) => {
+    setMenuItems((prevItems) => [...prevItems, menuItem]);
+    setFilteredMenu((prevMenu) => [...prevMenu, menuItem]);
+  };
 
   // Calculate items per page based on viewport height, with a minimum row count
   const calculateItemsPerPage = useCallback(() => {
@@ -43,25 +53,34 @@ const MenuTable: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [calculateItemsPerPage]);
 
-  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value.toLowerCase();
-    setSearchInput(term);
-    setFilteredMenu(
-      MENU_DATA.filter((item) => item.name.toLowerCase().includes(term))
-    );
-    setCurrentPage(1);
-    setIsAnimating(true);
-  }, []);
+  // Handle search input changes
+  const handleSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const term = e.target.value.toLowerCase();
+      setSearchInput(term);
+      if (term === "") {
+        setFilteredMenu(menuItems);
+      } else {
+        setFilteredMenu(
+          menuItems.filter((item) => item.name.toLowerCase().includes(term))
+        );
+      }
+      setCurrentPage(1);
+      setIsAnimating(true);
+    },
+    [menuItems]
+  );
 
+  // Handle clicking "More Details" on a menu item
   const handleMoreDetailsClick = (ingredients: Ingredient[]) => {
     setSelectedIngredients(ingredients);
     setIsModalOpen(true);
   };
 
-  // Close the modal
+  // Close the MenuItemDetailsModal
   const handleModalClose = () => setIsModalOpen(false);
 
-  // Pagination
+  // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
   const currentItems = filteredMenu.slice(
     indexOfLastItem - itemsPerPage,
@@ -79,6 +98,18 @@ const MenuTable: React.FC = () => {
   const handlePageChange = (page: number) => {
     setIsAnimating(true);
     setCurrentPage(page);
+  };
+
+  // Handle action items from SearchInput (e.g., Add Menu Item, Filter)
+  const handleActionItemClick = (actionType: string, item: string) => {
+    if (actionType === "addEntry" && item === "Add Menu Item") {
+      setShowAddMenuItemModal(true);
+    } else if (actionType === "filter") {
+      // Handle other filter actions as needed
+      console.log(`Filter action selected: ${item}`);
+    } else {
+      console.log(`Action: ${actionType}, Item: ${item}`);
+    }
   };
 
   return (
@@ -107,9 +138,17 @@ const MenuTable: React.FC = () => {
               icon: <Filter size={20} />,
               type: "filter",
               title: "Filter",
-              items: ["Filter by Date", "Filter by Cost"],
+              items: ["Filter by Category", "Filter by Price"],
             },
           ]}
+          onActionItemClick={handleActionItemClick}
+        />
+
+        {/* AddMenuItemModal */}
+        <AddMenuItemModal
+          isOpen={showAddMenuItemModal}
+          onClose={() => setShowAddMenuItemModal(false)}
+          onSave={handleSaveMenuItem}
         />
       </div>
 
@@ -124,7 +163,7 @@ const MenuTable: React.FC = () => {
             className="mb-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 flex-grow"
             initial="hidden"
             animate="show"
-            key={currentPage}
+            key={currentPage} // To trigger animation on page change
           >
             {currentItems.map((item, index) => (
               <motion.div

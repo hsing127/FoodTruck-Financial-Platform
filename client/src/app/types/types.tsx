@@ -1,3 +1,6 @@
+import { ReactElement } from "react";
+
+// Interface for individual receipt items (ingredients)
 export interface ReceiptItem {
   ingredient: string;
   quantity: number;
@@ -5,6 +8,7 @@ export interface ReceiptItem {
   price: string;
 }
 
+// Interface for a receipt
 export interface Receipt {
   localReceiptId: number;
   location: string;
@@ -14,6 +18,7 @@ export interface Receipt {
   details: ReceiptItem[];
 }
 
+// Interface for ingredients (used in MenuItem)
 export interface Ingredient {
   ingredient: string;
   quantity: number;
@@ -21,15 +26,18 @@ export interface Ingredient {
   price: string;
 }
 
+// Interface for menu items
 export interface MenuItem {
   id: number;
-  image: JSX.Element;
+  image: ReactElement;
   name: string;
   price: string;
   ingredients: Ingredient[];
 }
 
+// Interface for inventory items
 export interface InventoryItem {
+  id: number;
   Name: string;
   Amount: string;
   AmountUnits: string;

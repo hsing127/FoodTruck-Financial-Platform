@@ -11,12 +11,14 @@ interface SearchInputProps {
     title: string;
     items: string[];
   }>;
+  onActionItemClick?: (actionType: string, item: string) => void;
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
   searchInput,
   handleSearch,
   actions,
+  onActionItemClick,
 }) => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -101,6 +103,10 @@ const SearchInput: React.FC<SearchInputProps> = ({
                       key={index}
                       className="w-full text-left text-sm p-2 hover:bg-[#8B5CF6] hover:rounded-lg"
                       variants={itemVariants}
+                      onClick={() => {
+                        onActionItemClick?.(type, item);
+                        setActiveDropdown(null); // Close the dropdown after clicking
+                      }}
                     >
                       {item}
                     </motion.button>

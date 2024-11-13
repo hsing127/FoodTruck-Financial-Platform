@@ -1,4 +1,3 @@
-// InventoryTableRow.tsx
 import React from "react";
 import { motion } from "framer-motion";
 import EditableCell from "../Common/EditableCell";
