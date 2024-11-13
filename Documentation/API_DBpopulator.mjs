@@ -1,6 +1,4 @@
 /*
-Lambda function Code:
-
 import pkg from 'pg';
 const { Client } = pkg;
 
@@ -264,7 +262,8 @@ const insertUses = async (usesData) => {
 };
 
 const handler = async (event) => {
-    try {
+    try { //For information regarding how the input data should be formatted, refer to the test cases.
+        const table = event.table;
         const data = JSON.parse(event.body);
 
         if (!Array.isArray(data)) {
@@ -273,14 +272,32 @@ const handler = async (event) => {
                 body: JSON.stringify({ error: "Input data must be an array of ingredients" }),
             };
         }
-        //uncomment as needed.
-        //return await insertIngredients(data);
-        //return await insertPurchases(data);
-        //return await insertIncludes(data);
-        //return await insertMenuItem(data);
-        //return await insertSale(data);
-        //return await insertSold(data);
-        //return await insertUses(data);
+        //use  switch case instead to quickly determine which function to use
+        //function determines which tables to add data to.
+        switch (table) {
+            case "ingredient":
+                return await insertIngredients(data);
+              break;
+            case "purchase":
+                return await insertPurchases(data);
+              break;
+            case "includes":
+                return await insertIncludes(data);
+              break;
+            case "menuItem":
+                return await insertMenuItem(data);
+              break;
+            case "sale":
+                return await insertSale(data);
+              break;
+            case "sold":
+                return await insertSold(data);
+              break;
+            case "uses":
+                return await insertUses(data);
+              break;
+        }
+        
     } catch (error) {
         console.error("Unexpected error:", error);
         return {
@@ -293,33 +310,41 @@ const handler = async (event) => {
 // Use export for ES module syntax
 export { handler };
 
+
 Test Cases using the data:
 AddIngredient:
 {
+  "table":"ingredient",
   "body": "[{\"Email\": \"ajwitt2@asu.edu\", \"Name\": \"Chicken Breast\", \"Amount\": 40, \"AmountUnits\": \"lb\"}, {\"Email\": \"ajwitt2@asu.edu\", \"Name\": \"Garlic\", \"Amount\": 22, \"AmountUnits\": \"cloves\"}, {\"Email\": \"ajwitt2@asu.edu\", \"Name\": \"Olive Oil\", \"Amount\": 4, \"AmountUnits\": \"L\"}, {\"Email\": \"ajwitt2@asu.edu\", \"Name\": \"Paprika\", \"Amount\": 10, \"AmountUnits\": \"oz\"}, {\"Email\": \"ajwitt2@asu.edu\", \"Name\": \"Bell Pepper\", \"Amount\": 15, \"AmountUnits\": \"pc\"}, {\"Email\": \"ajwitt2@asu.edu\", \"Name\": \"Onion\", \"Amount\": 8, \"AmountUnits\": \"pc\"}, {\"Email\": \"ajwitt2@asu.edu\", \"Name\": \"Black Pepper\", \"Amount\": 5, \"AmountUnits\": \"oz\"}, {\"Email\": \"ajwitt2@asu.edu\", \"Name\": \"Basmati Rice\", \"Amount\": 25, \"AmountUnits\": \"lb\"}, {\"Email\": \"ajwitt2@asu.edu\", \"Name\": \"Cilantro\", \"Amount\": 1, \"AmountUnits\": \"lb\"}]"
 }
 AddPurchase:
 {
+  "table":"purchase",
   "body": "[{\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-01T10:23:45Z\", \"Location\": \"Walmart\", \"Cost\": 145.78}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-10T15:37:12Z\", \"Location\": \"HMart\", \"Cost\": 62.34}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-18T12:09:05Z\", \"Location\": \"Target\", \"Cost\": 78.56}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-25T14:45:30Z\", \"Location\": \"Trader Joe's\", \"Cost\": 92.19}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-11-02T09:17:44Z\", \"Location\": \"Whole Foods\", \"Cost\": 125.67}]"
 }
 AddIncludes:
 {
+  "table":"includes",
   "body": "[{\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-01T10:23:45Z\", \"Location\": \"Walmart\", \"IngredientName\": \"Chicken Breast\", \"Price\": 80.00, \"Amount\": 20, \"AmountUnits\": \"lb\"}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-01T10:23:45Z\", \"Location\": \"Walmart\", \"IngredientName\": \"Garlic\", \"Price\": 15.78, \"Amount\": 12, \"AmountUnits\": \"cloves\"}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-01T10:23:45Z\", \"Location\": \"Walmart\", \"IngredientName\": \"Olive Oil\", \"Price\": 50.00, \"Amount\": 2, \"AmountUnits\": \"L\"}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-10T15:37:12Z\", \"Location\": \"HMart\", \"IngredientName\": \"Paprika\", \"Price\": 20.34, \"Amount\": 10, \"AmountUnits\": \"oz\"}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-10T15:37:12Z\", \"Location\": \"HMart\", \"IngredientName\": \"Bell Pepper\", \"Price\": 42.00, \"Amount\": 15, \"AmountUnits\": \"pc\"}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-18T12:09:05Z\", \"Location\": \"Target\", \"IngredientName\": \"Onion\", \"Price\": 20.00, \"Amount\": 8, \"AmountUnits\": \"pc\"}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-18T12:09:05Z\", \"Location\": \"Target\", \"IngredientName\": \"Black Pepper\", \"Price\": 10.00, \"Amount\": 5, \"AmountUnits\": \"oz\"}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-18T12:09:05Z\", \"Location\": \"Target\", \"IngredientName\": \"Basmati Rice\", \"Price\": 48.56, \"Amount\": 25, \"AmountUnits\": \"lb\"}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-25T14:45:30Z\", \"Location\": \"Trader Joe's\", \"IngredientName\": \"Cilantro\", \"Price\": 12.19, \"Amount\": 1, \"AmountUnits\": \"lb\"}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-10-25T14:45:30Z\", \"Location\": \"Trader Joe's\", \"IngredientName\": \"Olive Oil\", \"Price\": 80.00, \"Amount\": 2, \"AmountUnits\": \"L\"}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-11-02T09:17:44Z\", \"Location\": \"Whole Foods\", \"IngredientName\": \"Chicken Breast\", \"Price\": 100.67, \"Amount\": 20, \"AmountUnits\": \"lb\"}, {\"Email\": \"ajwitt2@asu.edu\", \"DateTime\": \"2024-11-02T09:17:44Z\", \"Location\": \"Whole Foods\", \"IngredientName\": \"Garlic\", \"Price\": 25.00, \"Amount\": 10, \"AmountUnits\": \"cloves\"}]"
 }
 AddMenuItem:
 {
+  "table":"menuItem",
   "body": "[{\"Email\": \"ajwitt2@asu.edu\", \"Name\": \"Garlic Herb Chicken with Rice\", \"Cost\": 9.99}, {\"Email\": \"ajwitt2@asu.edu\", \"Name\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"Cost\": 7.49}]"
 }
 AddSale:
 {
+  "table":"sale",
   "body": "[{\"Email\": \"ajwitt2@asu.edu\", \"StartDate\": \"2024-10-25T09:00:00Z\", \"EndDate\": \"2024-10-25T17:00:00Z\", \"Revenue\": 1048.38}]"
 }
 AddSold:
 {
+  "table":"sold",
   "body": "[{\"Email\": \"ajwitt2@asu.edu\", \"StartDate\": \"2024-10-25T09:00:00Z\", \"EndDate\": \"2024-10-25T17:00:00Z\", \"Count\": 60, \"MenuName\": \"Garlic Herb Chicken with Rice\"}, {\"Email\": \"ajwitt2@asu.edu\", \"StartDate\": \"2024-10-25T09:00:00Z\", \"EndDate\": \"2024-10-25T17:00:00Z\", \"Count\": 60, \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\"}]"
 }
 AddUses:
 {
+  "table":"uses",
   "body": "[{\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Chicken Breast\", \"Amount\": 8, \"AmountUnits\": \"oz\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Garlic\", \"Amount\": 3, \"AmountUnits\": \"cloves\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Olive Oil\", \"Amount\": 1, \"AmountUnits\": \"tbsp\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Paprika\", \"Amount\": 1, \"AmountUnits\": \"tsp\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Black Pepper\", \"Amount\": 0.5, \"AmountUnits\": \"tsp\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Basmati Rice\", \"Amount\": 6, \"AmountUnits\": \"oz\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Cilantro\", \"Amount\": 0.25, \"AmountUnits\": \"oz\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Chicken Breast\", \"Amount\": 6, \"AmountUnits\": \"oz\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Bell Pepper\", \"Amount\": 2, \"AmountUnits\": \"pc\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Onion\", \"Amount\": 1, \"AmountUnits\": \"pc\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Garlic\", \"Amount\": 2, \"AmountUnits\": \"cloves\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Olive Oil\", \"Amount\": 1, \"AmountUnits\": \"tbsp\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Paprika\", \"Amount\": 1, \"AmountUnits\": \"tsp\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Black Pepper\", \"Amount\": 0.5, \"AmountUnits\": \"tsp\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Cilantro\", \"Amount\": 0.25, \"AmountUnits\": \"oz\"}]"
 }
 */
