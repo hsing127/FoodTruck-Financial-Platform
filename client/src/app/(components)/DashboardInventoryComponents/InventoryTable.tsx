@@ -1,4 +1,3 @@
-// InventoryTable.tsx
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import InventoryTableRow from "./InventoryTableRow";
@@ -6,9 +5,11 @@ import SearchInput from "../Common/SearchInput";
 import Pagination from "../Common/Pagination";
 import { Upload, Plus, Filter } from "lucide-react";
 import { InventoryItem } from "@/app/types/types";
+import AddInventoryItemModal from "./AddInventoryItemModal";
 
 const ROW_HEIGHT = 60;
 const BOTTOM_PADDING = 40;
+const MIN_ROWS = 6;
 
 const InventoryTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -17,8 +18,11 @@ const InventoryTable: React.FC = () => {
     []
   );
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(8);
+  const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
 
+  const [showAddInventoryModal, setShowAddInventoryModal] = useState(false);
+
+  // Fetch inventory data
   useEffect(() => {
     const fetchInventoryData = async () => {
       try {
@@ -29,7 +33,7 @@ const InventoryTable: React.FC = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            // Will be changed to reference JSON Tokening to populate unique inventory data per user
+            // Update email as needed
             body: JSON.stringify({ email: "wenjiex1@asu.edu" }),
           }
         );
@@ -58,55 +62,66 @@ const InventoryTable: React.FC = () => {
     fetchInventoryData();
   }, []);
 
+  // Handle search input changes
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     setSearchInput(term);
-    const filtered = inventoryItems.filter(
-      (item) =>
-        item.Name.toLowerCase().includes(term) ||
-        item.AmountUnits.toLowerCase().includes(term)
-    );
-    setFilteredInventory(filtered);
+
+    if (term === "") {
+      setFilteredInventory(inventoryItems);
+    } else {
+      const filtered = inventoryItems.filter(
+        (item) =>
+          item.Name.toLowerCase().includes(term) ||
+          item.Amount.toLowerCase().includes(term) ||
+          item.AmountUnits.toLowerCase().includes(term)
+      );
+      setFilteredInventory(filtered);
+    }
+
     setCurrentPage(1);
   };
 
-  const handleItemEdit = (index: number, updatedItem: InventoryItem) => {
-    const itemToEdit = filteredInventory[index];
+  // Handle adding a new inventory item
+  const handleAddInventoryItem = (item: InventoryItem) => {
+    setInventoryItems((prev) => [...prev, item]);
+    setFilteredInventory((prev) => [...prev, item]);
+    setShowAddInventoryModal(false);
+  };
 
-    // Update filteredInventory
+  // Handle editing an inventory item
+  const handleItemEdit = (id: number, updatedItem: InventoryItem) => {
+    setInventoryItems((prev) =>
+      prev.map((item) => (item.id === id ? updatedItem : item))
+    );
     setFilteredInventory((prev) =>
-      prev.map((item, idx) => (idx === index ? updatedItem : item))
-    );
-
-    // Update inventoryItems
-    setInventoryItems((prev) =>
-      prev.map((item) => (item.Name === itemToEdit.Name ? updatedItem : item))
+      prev.map((item) => (item.id === id ? updatedItem : item))
     );
   };
 
-  const handleItemDelete = (index: number) => {
-    const itemToDelete = filteredInventory[index];
-
-    // Update filteredInventory
-    setFilteredInventory((prev) => prev.filter((_, idx) => idx !== index));
-
-    // Update inventoryItems
-    setInventoryItems((prev) =>
-      prev.filter((item) => item.Name !== itemToDelete.Name)
-    );
+  // Handle deleting an inventory item
+  const handleItemDelete = (id: number) => {
+    setInventoryItems((prev) => prev.filter((item) => item.id !== id));
+    setFilteredInventory((prev) => prev.filter((item) => item.id !== id));
   };
 
+  // Calculate items per page based on viewport height
   const calculateItemsPerPage = () => {
     const viewportHeight = window.innerHeight;
     const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
-    return Math.max(1, Math.floor(availableHeight / ROW_HEIGHT));
+    return Math.max(MIN_ROWS, Math.floor(availableHeight / ROW_HEIGHT));
   };
 
+  // Set items per page and add window resize listener
   useEffect(() => {
-    const handleResize = () => setItemsPerPage(calculateItemsPerPage());
+    const handleResize = () => {
+      setItemsPerPage(calculateItemsPerPage());
+    };
     handleResize();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   // Pagination calculations
@@ -118,15 +133,28 @@ const InventoryTable: React.FC = () => {
   );
   const totalPages = Math.ceil(filteredInventory.length / itemsPerPage);
 
+  // Handle action item clicks from SearchInput
+  const handleActionItemClick = (actionType: string, item: string) => {
+    if (actionType === "addEntry" && item === "Add Inventory Item") {
+      setShowAddInventoryModal(true);
+    } else {
+      console.log(`Action: ${actionType}, Item: ${item}`);
+    }
+  };
+
   return (
     <motion.div
-      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full`}
+      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
+        inventoryItems.length > itemsPerPage
+          ? "overflow-hidden"
+          : "overflow-y-auto"
+      }`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
     >
       <div className="mb-4">
-        <h2 className="text-xl font-semibold text-black mb-2">Inventory:</h2>
+        <h2 className="text-xl font-semibold text-black mb-2">Inventory</h2>
 
         {/* Search Input */}
         <div className="w-full">
@@ -148,20 +176,28 @@ const InventoryTable: React.FC = () => {
                 icon: <Plus size={20} />,
                 type: "addEntry",
                 title: "Add Entry",
-                items: ["Add Manual Entry", "Add Expense"],
+                items: ["Add Inventory Item"],
               },
               {
                 icon: <Filter size={20} />,
                 type: "filter",
                 title: "Filter",
                 items: [
-                  "Filter by Date",
-                  "Filter by Cost",
-                  "Filter by Location",
+                  "Filter by Name",
+                  "Filter by Amount",
+                  "Filter by Units",
                 ],
               },
             ]}
+            onActionItemClick={handleActionItemClick}
           />
+          {showAddInventoryModal && (
+            <AddInventoryItemModal
+              isOpen={showAddInventoryModal}
+              onClose={() => setShowAddInventoryModal(false)}
+              onSave={handleAddInventoryItem}
+            />
+          )}
         </div>
       </div>
 
@@ -174,11 +210,11 @@ const InventoryTable: React.FC = () => {
         <>
           {/* Table to display inventory data */}
           <div className="flex-grow overflow-y-auto">
-            <table className="min-w-full divide-y divide-white">
+            <table className="min-w-full divide-y divide-gray-200">
               <thead>
                 <tr>
                   <th className="pl-7 text-left w-1/3 py-2 text-xs font-medium text-black uppercase tracking-wider">
-                    Ingredient Name
+                    Name
                   </th>
                   <th className="text-left w-1/3 text-xs font-medium text-black uppercase tracking-wider">
                     Amount
@@ -186,24 +222,34 @@ const InventoryTable: React.FC = () => {
                   <th className="text-left w-1/3 text-xs font-medium text-black uppercase tracking-wider">
                     Units
                   </th>
-                  <th className="pr-6 w-[100px] text-left text-xs font-medium text-black uppercase tracking-wider">
+                  <th className="w-[100px] text-left text-xs font-medium text-black uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-white">
-                {/* Map through currentInventory and render each row */}
+              <motion.tbody
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: {
+                    opacity: 1,
+                    transition: { staggerChildren: 0.07 },
+                  },
+                }}
+                key={currentPage}
+              >
                 {currentInventory.map((item, idx) => (
                   <InventoryTableRow
-                    key={`${item.Name}-${indexOfFirstInventory + idx}`}
+                    key={item.id} // Ensure 'id' is unique
                     item={item}
                     index={indexOfFirstInventory + idx}
                     onItemEdit={handleItemEdit}
                     onItemDelete={handleItemDelete}
                   />
                 ))}
-              </tbody>
+              </motion.tbody>
             </table>
           </div>
 

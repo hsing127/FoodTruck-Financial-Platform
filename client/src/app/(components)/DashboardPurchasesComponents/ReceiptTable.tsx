@@ -6,6 +6,7 @@ import Pagination from "../Common/Pagination";
 import { Upload, Plus, Filter } from "lucide-react";
 import { Receipt } from "@/app/types/types";
 import { useReceiptsData } from "./useReceiptsData";
+import AddReceiptEntryModal from "./AddReceiptEntryModal";
 
 // Constants
 const ROW_HEIGHT = 60;
@@ -20,6 +21,17 @@ const ReceiptTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Use only one state variable
+
+  // Function to open the modal
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     setFilteredReceipts(receipts);
@@ -100,6 +112,14 @@ const ReceiptTable: React.FC = () => {
     );
   };
 
+  const handleActionItemClick = (actionType: string, item: string) => {
+    if (actionType === "addEntry" && item === "Add Receipt Entry") {
+      openModal();
+    } else {
+      console.log(`Action: ${actionType}, Item: ${item}`);
+    }
+  };
+
   // Calculate pagination indices
   const indexOfLastReceipt = currentPage * itemsPerPage;
   const indexOfFirstReceipt = indexOfLastReceipt - itemsPerPage;
@@ -139,7 +159,7 @@ const ReceiptTable: React.FC = () => {
                 icon: <Plus size={20} />,
                 type: "addEntry",
                 title: "Add Entry",
-                items: ["Add Manual Entry", "Add Expense"],
+                items: ["Add Receipt Entry", "Add Expense"],
               },
               {
                 icon: <Filter size={20} />,
@@ -152,7 +172,11 @@ const ReceiptTable: React.FC = () => {
                 ],
               },
             ]}
+            onActionItemClick={handleActionItemClick}
           />
+
+          {/* Use isModalOpen to conditionally render the modal */}
+          <AddReceiptEntryModal isOpen={isModalOpen} onClose={closeModal} />
         </div>
       </div>
 
