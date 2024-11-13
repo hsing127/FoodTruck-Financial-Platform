@@ -216,7 +216,7 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
                 className="px-4 py-2 text-white font-medium rounded bg-[#8B5CF6] hover:bg-[#b07ff0]"
                 disabled={!newMenuItem.name || !newMenuItem.price}
               >
-                Save Menu Item
+                Add Menu Item
               </button>
               {/* Choose Image Button */}
               <div className="relative" ref={imageSelectorRef}>

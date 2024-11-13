@@ -280,7 +280,7 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
                 onClick={handleSaveReceipt}
                 className="px-4 py-2 text-white  font-medium rounded bg-[#8B5CF6] hover:bg-[#b07ff0]"
               >
-                Save Receipt
+                Add Receipt
               </button>
 
               {/* Add Ingredient Button on the Right */}

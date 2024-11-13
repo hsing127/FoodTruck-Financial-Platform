@@ -146,7 +146,7 @@ const AddInventoryItemModal: React.FC<AddInventoryItemModalProps> = ({
                 onClick={handleSave}
                 className="px-4 py-2 text-white font-medium rounded bg-[#8B5CF6] hover:bg-[#b07ff0]"
               >
-                Save Item
+                Add New Item
               </button>
             </div>
           </motion.div>
