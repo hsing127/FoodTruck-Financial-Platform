@@ -5,7 +5,7 @@ import SearchInput from "../Common/SearchInput";
 import Pagination from "../Common/Pagination";
 import { Upload, Plus, Filter } from "lucide-react";
 import { Receipt } from "@/app/types/types";
-import { useReceiptsData } from "./useReceiptsData";
+import { useReceiptsData } from "./ReceiptAPI";
 import AddReceiptEntryModal from "./AddReceiptEntryModal";
 
 // Constants
