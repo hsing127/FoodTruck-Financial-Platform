@@ -1,13 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  LucideIcon,
-  MoreHorizontal,
-  CircleChevronUp,
-  CircleChevronDown,
-} from "lucide-react";
+import { LucideIcon, CircleChevronUp, CircleChevronDown } from "lucide-react";
+import Dropdown from "@/app/(components)/Common/Dropdown";
 
-// props for dashcard
 interface DashCardSmallProps {
   name: string;
   icon: LucideIcon;
@@ -15,6 +10,7 @@ interface DashCardSmallProps {
   color?: string;
   withEllipse?: boolean;
   withToggleButtons?: boolean;
+  weeklyValue?: string | number;
   monthlyValue?: string | number;
   yearlyValue?: string | number;
   isTrendingUp?: boolean;
@@ -27,16 +23,42 @@ const DashCardSmall: React.FC<DashCardSmallProps> = ({
   color,
   withEllipse = false,
   withToggleButtons = false,
+  weeklyValue,
   monthlyValue,
   yearlyValue,
   isTrendingUp,
 }) => {
   const [currentValue, setCurrentValue] = useState(value);
-  const [activeButton, setActiveButton] = useState<"month" | "year">("month");
+  const [activeButton, setActiveButton] = useState<"week" | "month" | "year">(
+    "week"
+  );
 
-  const handleToggle = (type: "month" | "year") => {
+  // Handle toggle between week, month, and year
+  const handleToggle = (type: "week" | "month" | "year") => {
     setActiveButton(type);
-    setCurrentValue(type === "month" ? monthlyValue : yearlyValue);
+    switch (type) {
+      case "week":
+        setCurrentValue(weeklyValue);
+        break;
+      case "month":
+        setCurrentValue(monthlyValue);
+        break;
+      case "year":
+        setCurrentValue(yearlyValue);
+        break;
+      default:
+        setCurrentValue(value);
+    }
+  };
+
+  // Dropdown options
+  const dropdownOptions = ["week", "month", "year"];
+
+  // Handle selection from dropdown
+  const handleDropdownSelect = (option: string) => {
+    if (option === "week" || option === "month" || option === "year") {
+      handleToggle(option);
+    }
   };
 
   const backgroundColor = isTrendingUp ? "bg-[#8B5CF6]" : "bg-blue-400";
@@ -46,29 +68,31 @@ const DashCardSmall: React.FC<DashCardSmallProps> = ({
       className="w-full bg-white bg-opacity-50 backdrop-blur-md overflow-hidden shadow-lg rounded-xl border border-gray-300 relative"
       whileHover={{ y: -5, boxShadow: "0 10px 30px -12px black" }}
     >
-      {/* Conditional ellipse in the top-right corner */}
+      {/* Conditional ellipse with dropdown in the top-right corner */}
       {withEllipse && (
         <div className="absolute top-3 right-5 z-10">
-          <div className="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 transition duration-300 cursor-pointer">
-            <MoreHorizontal className="w-6 h-6 text-gray-700" />
-          </div>
+          <Dropdown
+            options={dropdownOptions}
+            selected={activeButton}
+            onSelect={handleDropdownSelect}
+          />
         </div>
       )}
 
-      {/* Conditional toggle buttons for month/year selection */}
+      {/* Conditional toggle buttons for week/month/year selection (optional) */}
       {withToggleButtons && (
-        <div className="absolute top-4 right-4 flex z-10">
-          {["month", "year"].map((type) => (
+        <div className="absolute top-4 right-4 flex z-10 space-x-2">
+          {["week", "month", "year"].map((type) => (
             <button
               key={type}
-              onClick={() => handleToggle(type as "month" | "year")}
-              className={`w-16 px-2 py-1 text-sm font-medium rounded-md transition duration-300 ${
+              onClick={() => handleToggle(type as "week" | "month" | "year")}
+              className={`px-2 py-1 text-sm font-medium rounded-md transition duration-300 ${
                 activeButton === type
                   ? "bg-[#8B5CF6] text-white"
                   : "bg-transparent text-black hover:bg-gray-200"
               }`}
             >
-              {type === "month" ? "Month" : "Year"}
+              {type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
           ))}
         </div>

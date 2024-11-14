@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/app/redux";
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import FoodItemsModal from "./FoodItemsModal";
 import {
   ResponsiveContainer,
@@ -11,29 +11,23 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
-import {
-  MoreHorizontal,
-  ChevronRight,
-  ChevronUp,
-  ChevronDown,
-} from "lucide-react";
+import { ChevronRight, ChevronUp, ChevronDown } from "lucide-react";
 import {
   weeklyVolumeData,
   monthlyVolumeData,
   yearlyVolumeData,
   foodItems,
 } from "./areaData";
+import Dropdown from "@/app/(components)/Common/Dropdown";
 
 const VolumeOverview = () => {
   const [chartHeight, setChartHeight] = useState("25vh");
   const [isChartVisible, setIsChartVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [timeframe, setTimeframe] = useState<"week" | "month" | "year">(
     "month"
   );
   const chartRef = useRef(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
   // Tooltip styling based on dark mode
@@ -47,12 +41,21 @@ const VolumeOverview = () => {
     },
   };
 
-  // handle window resize events
-  const handleResize = useCallback(() => {
-    setChartHeight(window.innerHeight < 900 ? "10vh" : "15vh");
+  // Handle window resize events
+  useEffect(() => {
+    const handleResize = () => {
+      setChartHeight(window.innerHeight < 900 ? "10vh" : "15vh");
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
-  // observer to watch if chart is visible
+  // Observer to watch if chart is visible
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -67,43 +70,10 @@ const VolumeOverview = () => {
     const currentRef = chartRef.current;
     if (currentRef) observer.observe(currentRef);
 
-    // Add a event listener to handle window resizing
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
     return () => {
-      window.removeEventListener("resize", handleResize);
       if (currentRef) observer.unobserve(currentRef);
     };
-  }, [handleResize]);
-
-  // Toggle dropdown visibility
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
-  };
-
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement | null;
-
-      // Close dropdown only if clicked outside of dropdown and button
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(target) &&
-        !target?.closest(".dropdown-toggle")
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    if (isDropdownOpen) {
-      document.addEventListener("mouseup", handleOutsideClick);
-    }
-
-    return () => {
-      document.removeEventListener("mouseup", handleOutsideClick);
-    };
-  }, [isDropdownOpen]);
+  }, []);
 
   // Determine data based on selected timeframe
   const getChartData = () => {
@@ -119,17 +89,6 @@ const VolumeOverview = () => {
     }
   };
 
-  // Dropdown animation variants
-  const dropdownVariants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.05 },
-    }),
-    exit: { opacity: 0, y: -10 },
-  };
-
   return (
     <motion.div
       className="p-5 w-full bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-300 relative"
@@ -138,54 +97,19 @@ const VolumeOverview = () => {
       transition={{ delay: 0.2 }}
       ref={chartRef}
     >
-      {/* Options button */}
+      {/* Dropdown in the top-right corner */}
       <div className="absolute top-4 right-5">
-        <div className="relative">
-          <button
-            className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer dropdown-toggle"
-            onClick={toggleDropdown}
-          >
-            <MoreHorizontal className="w-6 h-6 text-gray-700" />
-          </button>
-
-          <AnimatePresence>
-            {isDropdownOpen && (
-              <motion.div
-                ref={dropdownRef}
-                className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg overflow-hidden z-10"
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-              >
-                {["week", "month", "year"].map((option, index) => (
-                  <motion.button
-                    key={option}
-                    onClick={() => {
-                      setTimeframe(option as "week" | "month" | "year");
-                      setIsDropdownOpen(false);
-                    }}
-                    className={`w-full px-4 py-2 text-sm text-left hover:bg-[#8B5CF6] ${
-                      timeframe === option
-                        ? "bg-[#8B5CF6] text-white font-semibold"
-                        : ""
-                    }`}
-                    custom={index}
-                    variants={dropdownVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                  >
-                    {option.charAt(0).toUpperCase() + option.slice(1)}
-                  </motion.button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        <Dropdown
+          options={["week", "month", "year"]}
+          selected={timeframe}
+          onSelect={(option) =>
+            setTimeframe(option as "week" | "month" | "year")
+          }
+        />
       </div>
 
       {/* Title section */}
-      <div className="mb-4">
+      <div className="mb-5">
         <h2 className="text-lg font-semibold text-gray-900">Popular Foods</h2>
       </div>
 
@@ -203,7 +127,7 @@ const VolumeOverview = () => {
         </div>
 
         {/* Chart container */}
-        <div className="w-full mt-8" style={{ height: chartHeight }}>
+        <div className="w-full mt-7" style={{ height: chartHeight }}>
           {isChartVisible && (
             <ResponsiveContainer>
               <AreaChart data={getChartData()}>

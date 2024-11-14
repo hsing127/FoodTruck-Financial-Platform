@@ -42,3 +42,10 @@ export interface InventoryItem {
   Amount: string;
   AmountUnits: string;
 }
+
+// Interface for individual notifications
+export interface Notification {
+  id: number;
+  title: string;
+  description: string;
+}

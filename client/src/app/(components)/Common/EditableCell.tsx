@@ -7,7 +7,7 @@ interface EditableCellProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   className?: string;
-  placeholder?: string; // Add this line
+  placeholder?: string;
 }
 
 const EditableCell: React.FC<EditableCellProps> = ({
