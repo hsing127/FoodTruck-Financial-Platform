@@ -21,7 +21,7 @@ import {
 import Dropdown from "@/app/(components)/Common/Dropdown";
 import { fadeInUpVariants, hoverVariants } from "../Common/Animations";
 
-const Areahart: React.FC = () => {
+const DashAreaChart: React.FC = () => {
   const [chartHeight, setChartHeight] = useState("25vh");
   const [isChartVisible, setIsChartVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -230,4 +230,4 @@ const Areahart: React.FC = () => {
   );
 };
 
-export default AreaChart;
+export default DashAreaChart;
