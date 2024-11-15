@@ -5,7 +5,7 @@ import Pagination from "../Common/Pagination";
 import SearchInput from "../Common/SearchInput";
 import MenuCard from "../DashboardMenuComponents/MenuCard";
 import { Plus, Filter } from "lucide-react";
-import MenuItemDetailsModal from "./MenuItemDetailsModal";
+import ViewMenuIngredientsModal from "./ViewMenuIngredientsModal";
 import { Ingredient, MenuItem } from "@/app/types/types";
 import AddMenuItemModal from "./AddMenuItemModal";
 
@@ -191,7 +191,7 @@ const MenuTable: React.FC = () => {
       )}
 
       {/* Menu Item Details Modal */}
-      <MenuItemDetailsModal
+      <ViewMenuIngredientsModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
         initialIngredients={selectedIngredients}

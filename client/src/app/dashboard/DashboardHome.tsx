@@ -19,7 +19,7 @@ export const DashboardHome: React.FC = () => {
           {/* First row of dashboard cards */}
           <motion.div
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4 mt-4"
-            initial={{ opacity: 0, y: 20 }} 
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
           >
@@ -42,10 +42,14 @@ export const DashboardHome: React.FC = () => {
               <DashCardSmall
                 name="Products"
                 icon={ShoppingCart}
-                value="1,200"
+                value="500"
                 color="bg-gray-100"
-                withEllipse={true} 
-                isTrendingUp={false} 
+                withEllipse={true}
+                withToggleButtons={false}
+                weeklyValue="500"
+                monthlyValue="1,200"
+                yearlyValue="14,400"
+                isTrendingUp={false}
               />
             </div>
 
@@ -62,7 +66,7 @@ export const DashboardHome: React.FC = () => {
                 icon={Landmark}
                 value="$550"
                 color="bg-gray-100"
-                isYellow={true} 
+                isYellow={true}
               />
             </div>
           </motion.div>
@@ -81,7 +85,7 @@ export const DashboardHome: React.FC = () => {
           {/* Third row with bar chart */}
           <motion.div
             className="grid grid-cols-1 gap-4 lg:col-span-3"
-            initial={{ opacity: 0, y: 20 }} 
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.4 }}
           >

@@ -1,8 +1,6 @@
-import "@/app/globals.css";
-import React, { useState, useEffect, useRef } from "react";
 import { useAppSelector } from "@/app/redux";
-import { Menu } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import React, { useEffect, useState, useRef } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -12,6 +10,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
+import Dropdown from "@/app/(components)/Common/Dropdown";
 import {
   weeklySalesData,
   monthlySalesData,
@@ -22,53 +21,38 @@ const SalesOverview: React.FC = () => {
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
   const [isChartVisible, setIsChartVisible] = useState(false);
   const [view, setView] = useState<"week" | "month" | "year">("month");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Toggle dropdown menu
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
+  // Tooltip styling based on dark mode
+  const tooltipStyles = {
+    contentStyle: {
+      backgroundColor: isDarkMode ? "rgba(17, 24, 39, 0.9)" : "#ffffff",
+      borderColor: isDarkMode ? "#6B7280" : "#000000",
+    },
+    itemStyle: {
+      color: isDarkMode ? "#ffffff" : "#000000",
+    },
   };
 
-  // Handle view change and close dropdown
-  const handleViewChange = (newView: "week" | "month" | "year") => {
-    setView(newView);
-    setIsDropdownOpen(false);
-  };
-
-  // Close dropdown on outside click
+  // Handle window resize events (if needed)
   useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement | null;
-
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(target) &&
-        !target?.closest(".dropdown-toggle")
-      ) {
-        setIsDropdownOpen(false);
-      }
+    const handleResize = () => {
+      // Implement any responsive logic if needed
     };
 
-    if (isDropdownOpen) {
-      document.addEventListener("mouseup", handleOutsideClick);
-    } else {
-      document.removeEventListener("mouseup", handleOutsideClick);
-    }
+    window.addEventListener("resize", handleResize);
+    handleResize();
 
     return () => {
-      document.removeEventListener("mouseup", handleOutsideClick);
+      window.removeEventListener("resize", handleResize);
     };
-  }, [isDropdownOpen]);
+  }, []);
 
-  //chart visibility when in viewport
-  // Chart visibility when in viewport
+  // Observer to watch if chart is visible
   useEffect(() => {
-    const currentRef = chartRef.current;
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
+      ([entry]) => {
+        if (entry.isIntersecting) {
           setIsChartVisible(true);
           observer.disconnect();
         }
@@ -76,6 +60,7 @@ const SalesOverview: React.FC = () => {
       { threshold: 0.1 }
     );
 
+    const currentRef = chartRef.current;
     if (currentRef) observer.observe(currentRef);
 
     return () => {
@@ -83,35 +68,7 @@ const SalesOverview: React.FC = () => {
     };
   }, []);
 
-  //styles based on dark mode
-  // Styles based on dark mode
-  const styles = {
-    tooltip: {
-      content: {
-        backgroundColor: isDarkMode ? "rgba(17, 24, 39, 0.9)" : "#ffffff",
-        borderColor: isDarkMode ? "#6B7280" : "#000000",
-      },
-      item: {
-        color: isDarkMode ? "#ffffff" : "#000000",
-      },
-    },
-    axisLineColor: isDarkMode ? "#ffffff" : "#000000",
-  };
-
-  // Animation variants for staggered dropdown options
-  const dropdownVariants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.1,
-      },
-    }),
-    exit: { opacity: 0, y: -10 },
-  };
-
-  // Determine the data and labels based on the selected view
+  // Determine data based on selected view
   const getData = () => {
     switch (view) {
       case "week":
@@ -126,61 +83,24 @@ const SalesOverview: React.FC = () => {
   };
 
   const getXAxisDataKey = () => {
-    return view === "week" ? "day" : view === "month" ? "month" : "year";
+    return view === "week" ? "day" : view === "year" ? "year" : "month";
   };
 
   return (
     <motion.div
-      className="p-5 w-full bg-white bg-opacity-50 backdrop-blur-md overflow-hidden shadow-lg rounded-xl border border-gray-300 relative"
+      className="p-5 w-full bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-300 relative"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
       ref={chartRef}
     >
-      {/* Menu icon and dropdown */}
+      {/* Dropdown in the top-right corner */}
       <div className="absolute top-4 right-6">
-        <div className="relative">
-          <button
-            className="p-2 rounded-xl hover:bg-gray-200 transition duration-300 cursor-pointer dropdown-toggle"
-            onClick={toggleDropdown}
-          >
-            <Menu className="w-6 h-6 text-gray-700 cursor-pointer" />
-          </button>
-
-          {/* Dropdown menu with staggered animation */}
-          <AnimatePresence>
-            {isDropdownOpen && (
-              <motion.div
-                ref={dropdownRef}
-                className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg overflow-hidden z-10"
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-              >
-                {["week", "month", "year"].map((option, index) => (
-                  <motion.button
-                    key={option}
-                    onClick={() =>
-                      handleViewChange(option as "week" | "month" | "year")
-                    }
-                    className={`w-full px-4 py-2 text-sm text-left hover:bg-[#8B5CF6] ${
-                      view === option
-                        ? "bg-[#8B5CF6] text-white font-semibold"
-                        : ""
-                    }`}
-                    custom={index}
-                    variants={dropdownVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                  >
-                    {option.charAt(0).toUpperCase() + option.slice(1)}
-                  </motion.button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        <Dropdown
+          options={["week", "month", "year"]}
+          selected={view}
+          onSelect={(option) => setView(option as "week" | "month" | "year")}
+        />
       </div>
 
       <h2 className="text-lg font-medium mb-4 text-black">Sales Overview</h2>
@@ -193,12 +113,13 @@ const SalesOverview: React.FC = () => {
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
               <XAxis
                 dataKey={getXAxisDataKey()}
-                stroke={styles.axisLineColor}
+                stroke={isDarkMode ? "#ffffff" : "#000000"}
               />
-              <YAxis stroke={styles.axisLineColor} />
+              <YAxis stroke={isDarkMode ? "#ffffff" : "#000000"} />
               <Tooltip
-                contentStyle={styles.tooltip.content}
-                itemStyle={styles.tooltip.item}
+                contentStyle={tooltipStyles.contentStyle}
+                itemStyle={tooltipStyles.itemStyle}
+                cursor={false}
               />
               <Line
                 type="monotone"

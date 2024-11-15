@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, RefreshCcw, X } from "lucide-react";
 import EditableCell from "../Common/EditableCell";
-import IngredientRow from "./IngredientRow";
+import IngredientRow from "./AddReceiptIngredientRow";
 import { Receipt } from "@/app/types/types";
 
 interface AddManualEntryModalProps {
