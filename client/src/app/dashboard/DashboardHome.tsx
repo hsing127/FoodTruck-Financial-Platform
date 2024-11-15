@@ -3,7 +3,7 @@ import React from "react";
 import DashboardLayout from "../dashboard/DashboardWrapper";
 import DashCardSmall from "../(components)/DashboardHomeComponents/DashCardSmall";
 import DashCardLong from "../(components)/DashboardHomeComponents/DashCardLong";
-import DistributionChart from "../(components)/DashboardHomeComponents/AreaChart";
+import DistributionChart from "../(components)/DashboardHomeComponents/DashAreaChart";
 import SalesOverview from "../(components)/DashboardHomeComponents/SalesOverview";
 import DashBarChart from "../(components)/DashboardHomeComponents/DashBarChart";
 
