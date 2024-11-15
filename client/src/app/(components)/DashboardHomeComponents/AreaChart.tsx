@@ -21,7 +21,7 @@ import {
 import Dropdown from "@/app/(components)/Common/Dropdown";
 import { fadeInUpVariants, hoverVariants } from "../Common/Animations";
 
-const VolumeOverview: React.FC = () => {
+const Areahart: React.FC = () => {
   const [chartHeight, setChartHeight] = useState("25vh");
   const [isChartVisible, setIsChartVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -230,4 +230,4 @@ const VolumeOverview: React.FC = () => {
   );
 };
 
-export default VolumeOverview;
+export default AreaChart;
