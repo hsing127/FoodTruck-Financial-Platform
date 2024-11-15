@@ -3,7 +3,9 @@
 // const { Client } = pkg;
 
 // const handler = async (event) => {
-//     const { email, resetCode } = JSON.parse(event.body);
+//     // const { email, resetCode } = JSON.parse(event.body);
+//     const email = event.email;
+//     const resetCode = event.resetCode;
 
 //     // Input validation
 //     if (!email || !resetCode) {

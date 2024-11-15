@@ -20,9 +20,7 @@ const ForgotPasswordPage: React.FC = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            body: JSON.stringify({ email }),
-          }),
+          body: JSON.stringify({ email }),
         });
         if (!response.ok) {
           throw new Error("Failed to send reset email");

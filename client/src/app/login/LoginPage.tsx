@@ -28,12 +28,9 @@ const LoginPage: React.FC = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            body: JSON.stringify({ email, password }),
-          }),
+          body: JSON.stringify({email, password}),
         }
       );
-
       const data = await response.json();
       const statusCode = data.statusCode || response.status;
 

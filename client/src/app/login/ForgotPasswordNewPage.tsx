@@ -25,9 +25,7 @@ const ForgotPasswordNewPage: React.FC = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            body: JSON.stringify({ newPassword }),
-          }),
+          body: JSON.stringify({ newPassword }),
         });
         if (!response.ok) {
           throw new Error("Failed to send reset code");
