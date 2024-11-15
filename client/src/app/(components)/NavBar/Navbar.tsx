@@ -10,6 +10,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import NotificationsModal from "./NotificationsModal";
 import { notifications } from "@/app/(components)/NavBar/NotificationData";
 import UploadLogic, { UploadLogicHandle } from "../Common/UploadLogic";
+import {
+  dropdownVariants,
+  fadeInUpVariants,
+  hoverVariants,
+} from "../Common/Animations";
 
 const NavBar = () => {
   const dispatch = useAppDispatch();
@@ -142,30 +147,22 @@ const NavBar = () => {
             {isUploadDropdownOpen && (
               <motion.div
                 className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-2 w-40 z-10"
-                variants={{
-                  hidden: { opacity: 0, y: -10 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: {
-                      duration: 0.2,
-                      staggerChildren: 0.1,
-                    },
-                  },
-                }}
+                variants={dropdownVariants}
                 initial="hidden"
                 animate="visible"
-                exit="hidden"
+                exit="exit"
               >
                 {["Upload Image", "Upload Document", "Upload Spreadsheet"].map(
                   (item, index) => (
                     <motion.button
                       key={index}
                       className="w-full text-left text-sm p-2 hover:bg-[#8B5CF6] hover:rounded-lg text-gray-800"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
                       onClick={() => handleUploadItemClick(item)}
+                      variants={fadeInUpVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="hidden"
+                      transition={{ duration: 0.3 }}
                     >
                       {item}
                     </motion.button>
@@ -207,26 +204,21 @@ const NavBar = () => {
             {isNotificationsOpen && (
               <motion.div
                 className="absolute -right-1 mt-2 ml-4 w-80 bg-white backdrop-blur-md shadow-lg rounded-xl p-4 border border-gray-200 z-20"
-                variants={{
-                  hidden: { opacity: 0, y: -10 },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: {
-                      duration: 0.2,
-                      staggerChildren: 0.1,
-                    },
-                  },
-                }}
+                variants={dropdownVariants}
                 initial="hidden"
                 animate="visible"
-                exit="hidden"
+                exit="exit"
               >
                 <div className="space-y-2">
                   {notifications.slice(0, 4).map((notification) => (
-                    <div
+                    <motion.div
                       key={notification.id}
                       className="p-2 bg-gray-100 bg-opacity-25 rounded-lg shadow-sm"
+                      variants={fadeInUpVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="hidden"
+                      layout
                     >
                       <h4 className="font-medium text-black">
                         {notification.title}
@@ -234,18 +226,21 @@ const NavBar = () => {
                       <p className="text-sm text-gray-700">
                         {notification.description}
                       </p>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
-                <button
+                <motion.button
                   onClick={() => {
                     setIsNotificationsOpen(false);
                     setIsNotificationsModalOpen(true);
                   }}
                   className="mt-4 w-full py-2 bg-[#8B5CF6] hover:bg-[#b07ff0] text-white rounded-lg"
+                  variants={hoverVariants}
+                  whileHover="hover"
+                  whileTap={{ scale: 0.95 }}
                 >
                   View All
-                </button>
+                </motion.button>
               </motion.div>
             )}
           </AnimatePresence>

@@ -1,25 +1,22 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import EditableCell from '../Common/EditableCell';
-import ActionButtons from '../Common/ActionButtons';
-import { Ingredient } from '@/app/types/types';
-import { useEditable } from "@/app/hooks/useEditable"
+import React from "react";
+import EditableCell from "../Common/EditableCell";
+import { X } from "lucide-react";
+import { Ingredient } from "@/app/types/types";
+import { motion } from "framer-motion";
+import { useEditable } from "@/app/hooks/useEditable";
+import ActionButtons from "../Common/ActionButtons";
+import { ingredientRowVariants } from "../Common/Animations";
 
 interface IngredientRowProps {
-  ingredient: Ingredient;
   index: number;
+  ingredient: Ingredient;
   onItemEdit: (index: number, updatedItem: Ingredient) => void;
   onItemDelete: (index: number) => void;
 }
 
-const rowVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
-
 const IngredientRow: React.FC<IngredientRowProps> = ({
-  ingredient,
   index,
+  ingredient,
   onItemEdit,
   onItemDelete,
 }) => {
@@ -39,14 +36,12 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
 
   return (
     <motion.tr
-    variants={rowVariants}
-    initial="hidden"
-    animate="visible"
-    exit="hidden"
-    transition={{
-      delay: index * 0.1,
-      duration: 0.3,
-    }}
+      className="bg-white"
+      variants={ingredientRowVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      layout
     >
       <EditableCell
         isEditing={isEditing}

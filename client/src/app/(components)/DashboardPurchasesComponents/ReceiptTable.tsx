@@ -9,6 +9,7 @@ import { useReceiptsData } from "./ReceiptAPI";
 import AddReceiptEntryModal from "./AddReceiptEntryModal";
 import UploadLogic, { UploadLogicHandle } from "../Common/UploadLogic";
 import useSortLogic from "../Common/SortingLogic";
+import { tableVariants } from "../Common/Animations";
 
 // Constants
 const ROW_HEIGHT = 60;
@@ -308,12 +309,9 @@ const ReceiptTable: React.FC = () => {
             </thead>
 
             <motion.tbody
+              variants={tableVariants}
               initial="hidden"
               animate="visible"
-              variants={{
-                hidden: { opacity: 0 },
-                visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
-              }}
               onAnimationComplete={() => setIsAnimating(false)}
               key={currentPage}
             >

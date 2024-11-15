@@ -4,16 +4,22 @@ import {
   RefreshCcw,
   X,
   Image as ImageIcon,
-  Pizza,
-  IceCream,
-  Coffee,
-  Sandwich,
-  Salad,
   Plus,
+  Coffee,
+  IceCream,
+  Pizza,
+  Salad,
+  Sandwich,
 } from "lucide-react";
 import EditableCell from "../Common/EditableCell";
-import MenuItemIngredientRow from "./AddMenuItemIngredientRow";
 import { MenuItem, Ingredient } from "@/app/types/types";
+import {
+  backdropVariants,
+  imageSelectorVariants,
+  modalVariants,
+  tableVariants,
+} from "../Common/Animations";
+import MenuItemIngredientRow from "./AddMenuItemIngredientRow";
 
 interface AddMenuItemModalProps {
   isOpen: boolean;
@@ -29,27 +35,6 @@ const availableIcons = [
   { name: "Sandwich", component: <Sandwich size={44} /> },
   { name: "Salad", component: <Salad size={44} /> },
 ];
-
-const backdropVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-  exit: { opacity: 0 },
-};
-
-const modalVariants = {
-  hidden: { scale: 0.95, opacity: 0 },
-  visible: { scale: 1, opacity: 1, transition: { duration: 0.3 } },
-  exit: { scale: 0.95, opacity: 0, transition: { duration: 0.3 } },
-};
-
-const tableVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.05,
-    },
-  },
-};
 
 const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
   isOpen,
@@ -263,7 +248,7 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
                     >
                       <RefreshCcw size={20} />
                     </button>
-                  </td>{" "}
+                  </td>
                 </motion.tr>
               </tbody>
             </motion.table>
@@ -320,7 +305,7 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
             </AnimatePresence>
 
             <div className="flex justify-between mt-6 items-center">
-              {/* Left Side: Add Receipt */}
+              {/* Left Side: Add Menu Item */}
               <div className="flex space-x-2">
                 <button
                   onClick={handleSaveMenuItem}
@@ -350,14 +335,15 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
                   <Plus size={20} className="mr-1" /> Add Ingredient
                 </button>
 
-                {/* Image Selector Modal */}
+                {/* Image Selector Dropdown */}
                 <AnimatePresence>
                   {isImageSelectorOpen && (
                     <motion.div
                       className="absolute bottom-full mb-2 bg-white border border-gray-200 rounded-lg shadow-lg grid grid-cols-5 z-50 w-48"
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
+                      variants={imageSelectorVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
                     >
                       {availableIcons.map((icon) => (
                         <button

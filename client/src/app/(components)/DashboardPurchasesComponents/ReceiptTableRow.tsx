@@ -7,6 +7,11 @@ import { useEditable } from "@/app/hooks/useEditable";
 import ActionButtons from "../Common/ActionButtons";
 import EditableCell from "../Common/EditableCell";
 import ReceiptDetails from "./ReceiptDetails";
+import {
+  rowVariants,
+  tableRowTransition,
+  chevronVariants,
+} from "@/app/(components)/Common/Animations";
 
 // Define types for props
 interface ReceiptTableRowProps {
@@ -18,12 +23,6 @@ interface ReceiptTableRowProps {
   setIsAnimating: (isAnimating: boolean) => void;
   onItemDelete: (receiptId: number, itemIndex: number) => void;
 }
-
-// Animation variants
-const rowVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0 },
-};
 
 const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
   receipt,
@@ -53,7 +52,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
         exit="hidden"
         transition={{
           delay: index * 0.03,
-          duration: 0.3,
+          ...tableRowTransition,
           onStart: () => setIsAnimating(true),
           onComplete: () => setIsAnimating(false),
         }}
@@ -62,8 +61,10 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
         {/* Receipt ID and Expander Icon */}
         <td className="py-5 text-sm font-medium text-black flex items-center ">
           <motion.div
-            initial={false}
-            animate={{ rotate: isRowExpanded(receipt.localReceiptId) ? 90 : 0 }}
+            variants={chevronVariants}
+            animate={
+              isRowExpanded(receipt.localReceiptId) ? "rotated" : "default"
+            }
             transition={{ duration: 0.2 }}
             className="mr-2"
           >

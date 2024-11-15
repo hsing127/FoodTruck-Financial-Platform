@@ -2,6 +2,8 @@ import React from "react";
 import EditableCell from "../Common/EditableCell";
 import { Ingredient } from "@/app/types/types";
 import { X } from "lucide-react";
+import { motion } from "framer-motion";
+import { ingredientRowVariants } from "../Common/Animations";
 
 interface MenuItemIngredientRowProps {
   ingredient: Ingredient;
@@ -26,7 +28,14 @@ const MenuItemIngredientRow: React.FC<MenuItemIngredientRowProps> = ({
   };
 
   return (
-    <tr className="bg-white">
+    <motion.tr
+      className="bg-white"
+      variants={ingredientRowVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      layout
+    >
       <EditableCell
         isEditing={true}
         value={ingredient.ingredient}
@@ -65,7 +74,7 @@ const MenuItemIngredientRow: React.FC<MenuItemIngredientRowProps> = ({
           <X size={20} />
         </button>
       </td>
-    </tr>
+    </motion.tr>
   );
 };
 

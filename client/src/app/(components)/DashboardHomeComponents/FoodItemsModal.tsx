@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
 import { X, ChevronUp, ChevronDown } from "lucide-react";
+import { fadeInUpVariants, fadeInDownVariants } from "../Common/Animations";
 
 interface FoodItem {
   name: string;
@@ -48,10 +49,10 @@ const FoodItemsModal: React.FC<FoodItemsModalProps> = ({
   return ReactDOM.createPortal(
     <motion.div
       className="fixed inset-0 bg-gray-100 bg-opacity-50 flex items-center justify-center z-50"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
+      variants={fadeInUpVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
     >
       <motion.div
         ref={modalRef}
@@ -60,16 +61,17 @@ const FoodItemsModal: React.FC<FoodItemsModalProps> = ({
           maxHeight: `${Math.min(items.length * 75, 80)}vh`, // Dynamic height based on items
           overflowY: "auto",
         }}
-        initial={{ y: 50 }}
-        animate={{ y: 0 }}
-        exit={{ y: 50 }}
-        transition={{ duration: 0.3 }}
+        variants={fadeInDownVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
       >
         {/* Close button */}
         <div className="flex justify-end">
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-200 rounded-full"
+            aria-label="Close Modal"
           >
             <X className="w-5 h-5 text-gray-700" />
           </button>
@@ -81,11 +83,22 @@ const FoodItemsModal: React.FC<FoodItemsModalProps> = ({
         </h2>
 
         {/* Food items list */}
-        <div className="space-y-2">
+        <motion.div
+          className="space-y-2"
+          variants={fadeInUpVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+        >
           {items.map((item, index) => (
-            <div
+            <motion.div
               key={index}
               className="flex justify-between items-center py-2 px-4 bg-white bg-opacity-50 rounded-lg"
+              variants={fadeInUpVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              layout
             >
               <div>
                 <p className="font-medium text-gray-700">{item.name}</p>
@@ -107,9 +120,9 @@ const FoodItemsModal: React.FC<FoodItemsModalProps> = ({
                   <ChevronDown className="w-4 h-4 text-red-500" />
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </motion.div>
     </motion.div>,
     document.body

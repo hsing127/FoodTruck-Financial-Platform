@@ -9,6 +9,7 @@ import ViewMenuIngredientsModal from "./ViewMenuIngredientsModal";
 import { Ingredient, MenuItem } from "@/app/types/types";
 import AddMenuItemModal from "./AddMenuItemModal";
 import useSortLogic from "../Common/SortingLogic";
+import { itemVariants, tableVariants } from "../Common/Animations";
 
 const ROW_HEIGHT = 170;
 const BOTTOM_PADDING = 40;
@@ -30,7 +31,7 @@ const MenuTable: React.FC = () => {
 
   const [menuItems, setMenuItems] = useState<MenuItem[]>(MENU_DATA); // Initialize with MENU_DATA
 
-  //custom useSortLogic hook
+  // Custom useSortLogic hook
   const { sortField, sortOrder, setSortFieldAndOrder, sortData } =
     useSortLogic<MenuItem>();
 
@@ -115,12 +116,6 @@ const MenuTable: React.FC = () => {
   const currentItems = filteredMenu.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredMenu.length / itemsPerPage);
 
-  // Animation variants for staggered animation
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 },
-  };
-
   // Handle page change with animation
   const handlePageChange = (page: number) => {
     setIsAnimating(true);
@@ -163,7 +158,7 @@ const MenuTable: React.FC = () => {
       setCurrentPage(1);
       setIsAnimating(true);
     }
-  }, [sortField, sortOrder, sortData]);
+  }, [sortField, sortOrder, sortData, filteredMenu]);
 
   // Debugging: Log state changes
   useEffect(() => {
@@ -235,8 +230,9 @@ const MenuTable: React.FC = () => {
         <>
           <motion.div
             className="mb-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 flex-grow"
+            variants={tableVariants}
             initial="hidden"
-            animate="show"
+            animate="visible"
             key={currentPage} // To trigger animation on page change
           >
             {currentItems.map((item, index) => (

@@ -16,6 +16,7 @@ import {
   monthlySalesData,
   yearlySalesData,
 } from "./salesData";
+import { fadeInUpVariants } from "../Common/Animations";
 
 const SalesOverview: React.FC = () => {
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
@@ -89,8 +90,9 @@ const SalesOverview: React.FC = () => {
   return (
     <motion.div
       className="p-5 w-full bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-300 relative"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      variants={fadeInUpVariants}
+      initial="hidden"
+      animate="visible"
       transition={{ delay: 0.2 }}
       ref={chartRef}
     >
