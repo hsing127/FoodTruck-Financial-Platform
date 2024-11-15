@@ -1,46 +1,38 @@
 // import pkg from 'pg';
 // import nodemailer from 'nodemailer';
+
 // const { Client } = pkg;
 
-// const handler = async (event) => {
-//     const { email } = JSON.parse(event.body);
-//     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+// // Configure nodemailer transporter
+// const transporter = nodemailer.createTransport({
+//     host: 'smtp.gmail.com',
+//     port: 587,
+//     secure: false,
+//     auth: {
+//         user: process.env.EMAIL_USER,
+//         pass: process.env.EMAIL_PASS,
+//     },
+// });
 
+// const handler = async (event) => {
+//     // const { email } = JSON.parse(event.body);
+//     const email = event.email;
 //     // Input validation
 //     if (!email) {
-//         throw new Error("Email is required.");
-//     } else if (email.length > 50 || !emailRegex.test(email)) {
-//         throw new Error("Email must be less than or equal to 50 characters and in a valid format.");
+//         return {
+//             statusCode: 400,
+//             body: JSON.stringify({ error: "Email is required" }),
+//         };
 //     }
 
-//     const forbiddenChars = [
-//         "'", '"', ';', '\\', '--', '/*', '*/', '=', '(', ')', '>', '<'
-//     ];
-
-//     // Check for forbidden characters in email
-//     for (let char of forbiddenChars) {
-//         if (email.includes(char)) {
-//             throw new Error("Email should not include forbidden characters: ' \" \\ ; -- /* */ = ( ) < >.");
-//         }
-//     }
-
-//     // Set up database client
+//     // Connect to the RDS PostgreSQL database
 //     const client = new Client({
-//         host: process.env.RDS_HOST,
-//         user: process.env.RDS_USER,
-//         password: process.env.RDS_PASSWORD,
-//         database: process.env.RDS_DATABASE,
-//         ssl: { rejectUnauthorized: false },
-//     });
-
-//     // Set up email transporter
-//     const transporter = nodemailer.createTransport({
-//         host: 'smtp.gmail.com',
-//         port: 587,
-//         secure: false,
-//         auth: {
-//             user: process.env.EMAIL_USER,
-//             pass: process.env.EMAIL_PASS,
+//         host: process.env.DB_HOST,
+//         user: process.env.DB_USER,
+//         password: process.env.DB_PASSWORD,
+//         database: process.env.DB_DATABASE,
+//         ssl: {
+//             rejectUnauthorized: false // Use true if you have a certificate
 //         },
 //     });
 
@@ -52,7 +44,10 @@
 //         const userResult = await client.query(userQuery, [email]);
 
 //         if (userResult.rows.length === 0) {
-//             throw new Error("Email not registered.");
+//             return {
+//                 statusCode: 404,
+//                 body: JSON.stringify({ error: "Email not registered" }),
+//             };
 //         }
 
 //         // Generate a random 6-digit code
@@ -68,38 +63,30 @@
 //         `;
 //         await client.query(insertCodeQuery, [email, code, expirationDate]);
 
-//         // Prepare email options
+//         // Send the code via email
 //         const mailOptions = {
 //             from: process.env.EMAIL_USER,
 //             to: email,
-//             subject: 'Password Reset Code',
+//             subject: 'Password Reset Code - FoodTruck',
 //             text: `Your password reset code is: ${code}. It expires in 5 minutes.`,
 //         };
 
-//         // Send the reset code via email
-//         try {
-//             const info = await transporter.sendMail(mailOptions);
-//             console.log('Email sent:', info.response);
+//         await transporter.sendMail(mailOptions);
 
-//             // Success response
-//             return {
-//                 statusCode: 200,
-//                 body: JSON.stringify({ message: "Reset code sent successfully" }),
-//             };
-//         } catch (error) {
-//             console.error('Error sending email:', error);
-//             throw new Error("Error sending email.");
-//         }
+//         // Success response
+//         return {
+//             statusCode: 200,
+//             body: JSON.stringify({ message: "Reset code sent successfully" }),
+//         };
 
 //     } catch (err) {
-//         console.error("Database error:", err.message);
+//         console.error(err);
 //         return {
-//             statusCode: 400,
-//             body: JSON.stringify({ error: err.message }),
+//             statusCode: 500,
+//             body: JSON.stringify({ error: "Server error" }),
 //         };
 //     } finally {
-//         await client.end(); // Ensure the database connection is closed
+//         await client.end();
 //     }
 // };
-
 // export { handler };
