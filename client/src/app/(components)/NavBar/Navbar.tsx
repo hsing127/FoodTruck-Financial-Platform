@@ -9,6 +9,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationsModal from "./NotificationsModal";
 import { notifications } from "@/app/(components)/NavBar/NotificationData";
+import UploadLogic, { UploadLogicHandle } from "../Common/UploadLogic";
 
 const NavBar = () => {
   const dispatch = useAppDispatch();
@@ -23,7 +24,10 @@ const NavBar = () => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isNotificationsModalOpen, setIsNotificationsModalOpen] =
     useState(false);
-  const notificationsRef = useRef<HTMLDivElement>(null); // New ref for notifications
+  const notificationsRef = useRef<HTMLDivElement>(null);
+
+  // Ref for UploadLogic
+  const uploadLogicRef = useRef<UploadLogicHandle>(null);
 
   // Handle theme toggle between light and dark modes
   const handleThemeToggle = () => {
@@ -76,8 +80,31 @@ const NavBar = () => {
     setIsNotificationsOpen((prev) => !prev);
   };
 
+  // Handle action item clicks for upload dropdown
+  const handleUploadItemClick = (item: string) => {
+    switch (item) {
+      case "Upload Image":
+        uploadLogicRef.current?.triggerImageUpload();
+        break;
+      case "Upload Document":
+        uploadLogicRef.current?.triggerDocumentUpload();
+        break;
+      case "Upload Spreadsheet":
+        uploadLogicRef.current?.triggerSpreadsheetUpload();
+        break;
+      default:
+        console.log(`Unknown upload item: ${item}`);
+    }
+    setIsUploadDropdownOpen(false); // Close dropdown after selection
+  };
+
+  // Handle file uploads from UploadLogic
+  const handleFileUpload = (fileType: string, file: File) => {
+    console.log(`Uploaded ${fileType}:`, file);
+  };
+
   return (
-    <div className="z-10 flex justify-between items-center w-full bg-white h-[80px] px-4 mb-[-16px]">
+    <div className="z-10 flex justify-between items-center w-full bg-white h-[80px] px-4 mb-[-16px] shadow-md">
       {/* Left side - Search input */}
       <div className="flex items-center gap-2">
         <div className="relative flex items-center w-[300px] bg-gray-100 rounded-lg px-3 py-2">
@@ -138,7 +165,7 @@ const NavBar = () => {
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
-                      onClick={() => setIsUploadDropdownOpen(false)}
+                      onClick={() => handleUploadItemClick(item)}
                     >
                       {item}
                     </motion.button>
@@ -224,6 +251,9 @@ const NavBar = () => {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* UploadLogic handles the file uploads */}
+      <UploadLogic ref={uploadLogicRef} onFileUpload={handleFileUpload} />
 
       {/* Centralized Notifications Modal */}
       <NotificationsModal

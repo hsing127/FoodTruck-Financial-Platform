@@ -4,10 +4,11 @@ import { MENU_DATA } from "@/app/(components)/DashboardMenuComponents/MenuData";
 import Pagination from "../Common/Pagination";
 import SearchInput from "../Common/SearchInput";
 import MenuCard from "../DashboardMenuComponents/MenuCard";
-import { Plus, Filter } from "lucide-react";
+import { Plus, ArrowUp, ArrowDown, Filter } from "lucide-react";
 import ViewMenuIngredientsModal from "./ViewMenuIngredientsModal";
 import { Ingredient, MenuItem } from "@/app/types/types";
 import AddMenuItemModal from "./AddMenuItemModal";
+import useSortLogic from "../Common/SortingLogic";
 
 const ROW_HEIGHT = 170;
 const BOTTOM_PADDING = 40;
@@ -29,10 +30,27 @@ const MenuTable: React.FC = () => {
 
   const [menuItems, setMenuItems] = useState<MenuItem[]>(MENU_DATA); // Initialize with MENU_DATA
 
+  //custom useSortLogic hook
+  const { sortField, sortOrder, setSortFieldAndOrder, sortData } =
+    useSortLogic<MenuItem>();
+
   // Handle saving a new menu item
   const handleSaveMenuItem = (menuItem: MenuItem) => {
-    setMenuItems((prevItems) => [...prevItems, menuItem]);
-    setFilteredMenu((prevMenu) => [...prevMenu, menuItem]);
+    const updatedMenu = [...menuItems, menuItem];
+    setMenuItems(updatedMenu);
+
+    // Apply current search and sort to the updated menu
+    let filtered = updatedMenu;
+    if (searchInput !== "") {
+      filtered = updatedMenu.filter((item) =>
+        item.name.toLowerCase().includes(searchInput)
+      );
+    }
+
+    const sortedFiltered = sortData(filtered);
+    setFilteredMenu(sortedFiltered);
+    setCurrentPage(1);
+    setIsAnimating(true);
   };
 
   // Calculate items per page based on viewport height, with a minimum row count
@@ -47,28 +65,39 @@ const MenuTable: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const handleResize = () => setItemsPerPage(calculateItemsPerPage());
+    const handleResize = () => {
+      const newItemsPerPage = calculateItemsPerPage();
+      setItemsPerPage(newItemsPerPage);
+
+      const newTotalPages = Math.ceil(filteredMenu.length / newItemsPerPage);
+      if (currentPage > newTotalPages) {
+        setCurrentPage(newTotalPages > 0 ? newTotalPages : 1);
+      }
+    };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [calculateItemsPerPage]);
+  }, [calculateItemsPerPage, filteredMenu.length, currentPage]);
 
   // Handle search input changes
   const handleSearch = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const term = e.target.value.toLowerCase();
       setSearchInput(term);
-      if (term === "") {
-        setFilteredMenu(menuItems);
-      } else {
-        setFilteredMenu(
-          menuItems.filter((item) => item.name.toLowerCase().includes(term))
+      let filtered = menuItems;
+
+      if (term !== "") {
+        filtered = menuItems.filter((item) =>
+          item.name.toLowerCase().includes(term)
         );
       }
+
+      const sortedFiltered = sortData(filtered);
+      setFilteredMenu(sortedFiltered);
       setCurrentPage(1);
       setIsAnimating(true);
     },
-    [menuItems]
+    [menuItems, sortData]
   );
 
   // Handle clicking "More Details" on a menu item
@@ -82,10 +111,8 @@ const MenuTable: React.FC = () => {
 
   // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
-  const currentItems = filteredMenu.slice(
-    indexOfLastItem - itemsPerPage,
-    indexOfLastItem
-  );
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredMenu.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredMenu.length / itemsPerPage);
 
   // Animation variants for staggered animation
@@ -100,17 +127,52 @@ const MenuTable: React.FC = () => {
     setCurrentPage(page);
   };
 
-  // Handle action items from SearchInput (e.g., Add Menu Item, Filter)
+  // Handle action items from SearchInput
   const handleActionItemClick = (actionType: string, item: string) => {
     if (actionType === "addEntry" && item === "Add Menu Item") {
       setShowAddMenuItemModal(true);
-    } else if (actionType === "filter") {
-      // Handle other filter actions as needed
-      console.log(`Filter action selected: ${item}`);
+    } else if (actionType === "sort") {
+      let field: "name" | "price" | "ingredients" | null = null;
+      switch (item) {
+        case "Sort by Name":
+          field = "name";
+          break;
+        case "Sort by Price":
+          field = "price";
+          break;
+        case "Sort by Ingredients":
+          field = "ingredients";
+          break;
+        default:
+          console.log(`Unknown sort item: ${item}`);
+      }
+
+      if (field) {
+        setSortFieldAndOrder(field);
+      }
     } else {
       console.log(`Action: ${actionType}, Item: ${item}`);
     }
   };
+
+  // Apply sorting whenever sortField or sortOrder changes
+  useEffect(() => {
+    if (sortField) {
+      const sorted = sortData(filteredMenu);
+      setFilteredMenu(sorted);
+      setCurrentPage(1);
+      setIsAnimating(true);
+    }
+  }, [sortField, sortOrder, sortData]);
+
+  // Debugging: Log state changes
+  useEffect(() => {
+    console.log("Sort Field:", sortField);
+    console.log("Sort Order:", sortOrder);
+    console.log("Filtered Menu Length:", filteredMenu.length);
+    console.log("Current Page:", currentPage);
+    console.log("Total Pages:", totalPages);
+  }, [sortField, sortOrder, filteredMenu.length, currentPage, totalPages]);
 
   return (
     <motion.div
@@ -121,36 +183,48 @@ const MenuTable: React.FC = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
     >
-      {/* Page Title and Search Input */}
-      <div>
-        <h2 className="text-xl font-semibold text-black mb-2">Menu Items</h2>
-        <SearchInput
-          searchInput={searchInput}
-          handleSearch={handleSearch}
-          actions={[
-            {
-              icon: <Plus size={20} />,
-              type: "addEntry",
-              title: "Add Menu Item",
-              items: ["Add Menu Item"],
-            },
-            {
-              icon: <Filter size={20} />,
-              type: "filter",
-              title: "Filter",
-              items: ["Filter by Category", "Filter by Price"],
-            },
-          ]}
-          onActionItemClick={handleActionItemClick}
-        />
-
-        {/* AddMenuItemModal */}
-        <AddMenuItemModal
-          isOpen={showAddMenuItemModal}
-          onClose={() => setShowAddMenuItemModal(false)}
-          onSave={handleSaveMenuItem}
-        />
+      {/* Page Title and Sort Indicator */}
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-xl font-semibold text-black">Menu Items</h2>
+        {sortField && (
+          <span className="pt-2 flex items-center text-sm text-black">
+            Sorted by {sortField.charAt(0).toUpperCase() + sortField.slice(1)}
+            {sortOrder === "asc" ? (
+              <ArrowUp size={16} className="ml-1" />
+            ) : (
+              <ArrowDown size={16} className="ml-1" />
+            )}
+          </span>
+        )}
       </div>
+
+      {/* Search Input */}
+      <SearchInput
+        searchInput={searchInput}
+        handleSearch={handleSearch}
+        actions={[
+          {
+            icon: <Plus size={20} />,
+            type: "addEntry",
+            title: "Add Menu Item",
+            items: ["Add Menu Item"],
+          },
+          {
+            icon: <Filter size={20} />,
+            type: "sort",
+            title: "Sort",
+            items: ["Sort by Name", "Sort by Price", "Sort by Ingredients"],
+          },
+        ]}
+        onActionItemClick={handleActionItemClick}
+      />
+
+      {/* AddMenuItemModal */}
+      <AddMenuItemModal
+        isOpen={showAddMenuItemModal}
+        onClose={() => setShowAddMenuItemModal(false)}
+        onSave={handleSaveMenuItem}
+      />
 
       {/* Conditionally Render No Items Message or Grid of Menu Cards */}
       {filteredMenu.length === 0 ? (
