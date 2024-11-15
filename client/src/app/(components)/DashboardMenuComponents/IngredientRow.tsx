@@ -1,6 +1,5 @@
 import React from "react";
 import EditableCell from "../Common/EditableCell";
-import { X } from "lucide-react";
 import { Ingredient } from "@/app/types/types";
 import { motion } from "framer-motion";
 import { useEditable } from "@/app/hooks/useEditable";
