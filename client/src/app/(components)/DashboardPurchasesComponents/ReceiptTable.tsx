@@ -186,7 +186,7 @@ const ReceiptTable: React.FC = () => {
       setCurrentPage(1);
       setIsAnimating(true);
     }
-  }, [sortField, sortOrder]);
+  }, [sortField, sortOrder, filteredReceipts, sortData]);  
 
   return (
     <motion.div

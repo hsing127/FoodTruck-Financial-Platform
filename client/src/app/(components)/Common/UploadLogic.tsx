@@ -73,4 +73,5 @@ const UploadLogic = forwardRef<UploadLogicHandle, UploadLogicProps>(
   }
 );
 
+UploadLogic.displayName = "UploadLogic";
 export default UploadLogic;
