@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import EditableCell from "../Common/EditableCell";
 import ActionButtons from "../Common/ActionButtons";
 import { ReceiptItem } from "@/app/types/types";
+import { ingredientRowVariants } from "../Common/Animations";
 
 interface ReceiptDetailsRowProps {
   item: ReceiptItem;
@@ -29,14 +30,9 @@ const ReceiptDetailsRow: React.FC<ReceiptDetailsRowProps> = ({
 }) => {
   const currentItem = isEditing && editedItem ? editedItem : item;
 
-  const rowVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 },
-  };
-
   return (
     <motion.tr
-      variants={rowVariants}
+      variants={ingredientRowVariants}
       initial="hidden"
       animate="visible"
       exit="hidden"

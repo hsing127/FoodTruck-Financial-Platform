@@ -27,7 +27,6 @@ const DashCardLong: React.FC<DashCardLongProps> = ({
     ? "bg-[#8B5CF6]"
     : "bg-blue-400";
 
-
   return (
     <motion.div
       className="w-full bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-300 relative overflow-hidden"

@@ -4,6 +4,7 @@ import { Plus, Save, X } from "lucide-react";
 import IngredientRow from "./IngredientRow";
 import EditableCell from "../Common/EditableCell";
 import { Ingredient } from "@/app/types/types";
+import { tableVariants } from "../Common/Animations";
 
 interface IngredientTableProps {
   ingredients: Ingredient[];
@@ -37,7 +38,7 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
 
   return (
     <div>
-      <motion.table className="w-full mt-4">
+      <motion.table className="w-full mt-4" variants={tableVariants}>
         <thead>
           <tr>
             <th className="w-1/4 text-left text-sm font-medium text-black">
@@ -68,7 +69,13 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
             />
           ))}
           {newItem && (
-            <tr className="bg-white">
+            <motion.tr
+              className="bg-white"
+              variants={tableVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+            >
               <EditableCell
                 isEditing={true}
                 value={newItem.ingredient || ""}
@@ -112,7 +119,7 @@ const IngredientTable: React.FC<IngredientTableProps> = ({
                   <X size={20} />
                 </button>
               </td>
-            </tr>
+            </motion.tr>
           )}
         </tbody>
       </motion.table>

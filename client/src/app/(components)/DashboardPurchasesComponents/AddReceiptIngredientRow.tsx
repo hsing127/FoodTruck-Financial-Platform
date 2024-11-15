@@ -3,8 +3,9 @@ import EditableCell from "../Common/EditableCell";
 import { X } from "lucide-react";
 import { ReceiptItem } from "@/app/types/types";
 import { motion } from "framer-motion";
+import { ingredientRowVariants } from "../Common/Animations";
 
-interface IngredientRowProps {
+interface AddReceiptIngredientRowProps {
   index: number;
   ingredient: ReceiptItem;
   handleIngredientChange: (
@@ -14,13 +15,7 @@ interface IngredientRowProps {
   handleDeleteIngredient: (index: number) => void;
 }
 
-const rowVariants = {
-  hidden: { opacity: 0, y: -10 },
-  visible: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: 10 },
-};
-
-const IngredientRow: React.FC<IngredientRowProps> = ({
+const AddReceiptIngredientRow: React.FC<AddReceiptIngredientRowProps> = ({
   index,
   ingredient,
   handleIngredientChange,
@@ -29,7 +24,7 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
   return (
     <motion.tr
       className="bg-white"
-      variants={rowVariants}
+      variants={ingredientRowVariants}
       initial="hidden"
       animate="visible"
       exit="exit"
@@ -82,4 +77,4 @@ const IngredientRow: React.FC<IngredientRowProps> = ({
   );
 };
 
-export default IngredientRow;
+export default AddReceiptIngredientRow;

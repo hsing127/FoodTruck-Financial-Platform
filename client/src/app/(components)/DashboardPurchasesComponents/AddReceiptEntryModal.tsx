@@ -2,34 +2,18 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, RefreshCcw, X } from "lucide-react";
 import EditableCell from "../Common/EditableCell";
-import IngredientRow from "./AddReceiptIngredientRow";
 import { Receipt } from "@/app/types/types";
+import {
+  backdropVariants,
+  modalVariants,
+  tableVariants,
+} from "../Common/Animations";
+import IngredientRow from "./AddReceiptIngredientRow";
 
 interface AddManualEntryModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const backdropVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-  exit: { opacity: 0 },
-};
-
-const modalVariants = {
-  hidden: { scale: 0.95, opacity: 0 },
-  visible: { scale: 1, opacity: 1, transition: { duration: 0.3 } },
-  exit: { scale: 0.95, opacity: 0, transition: { duration: 0.3 } },
-};
-
-const tableVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.05,
-    },
-  },
-};
 
 const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
   isOpen,
@@ -278,7 +262,7 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
               {/* Save Receipt Button on the Left */}
               <button
                 onClick={handleSaveReceipt}
-                className="px-4 py-2 text-white  font-medium rounded bg-[#8B5CF6] hover:bg-[#b07ff0]"
+                className="px-4 py-2 text-white font-medium rounded bg-[#8B5CF6] hover:bg-[#b07ff0]"
               >
                 Add Receipt
               </button>

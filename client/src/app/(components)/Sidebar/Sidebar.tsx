@@ -19,7 +19,6 @@ import {
   PackageSearch,
   SlidersHorizontal,
   Sun,
-  User,
 } from "lucide-react";
 
 interface SidebarLinkProps {

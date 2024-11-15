@@ -19,15 +19,16 @@ import {
   foodItems,
 } from "./areaData";
 import Dropdown from "@/app/(components)/Common/Dropdown";
+import { fadeInUpVariants, hoverVariants } from "../Common/Animations";
 
-const VolumeOverview = () => {
+const DashAreaChart: React.FC = () => {
   const [chartHeight, setChartHeight] = useState("25vh");
   const [isChartVisible, setIsChartVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [timeframe, setTimeframe] = useState<"week" | "month" | "year">(
     "month"
   );
-  const chartRef = useRef(null);
+  const chartRef = useRef<HTMLDivElement>(null);
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
   // Tooltip styling based on dark mode
@@ -92,8 +93,9 @@ const VolumeOverview = () => {
   return (
     <motion.div
       className="p-5 w-full bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-300 relative"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      variants={fadeInUpVariants}
+      initial="hidden"
+      animate="visible"
       transition={{ delay: 0.2 }}
       ref={chartRef}
     >
@@ -114,7 +116,13 @@ const VolumeOverview = () => {
       </div>
 
       {/* Sales info section */}
-      <div className="relative p-4 bg-[#e5d5f6] rounded-lg shadow-inner">
+      <motion.div
+        className="relative p-4 bg-[#e5d5f6] rounded-lg shadow-inner"
+        variants={fadeInUpVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.3 }}
+      >
         <div className="absolute top-2 left-4">
           <h2 className="text-lg font-semibold text-customBlack">
             Pizza Sales
@@ -162,42 +170,44 @@ const VolumeOverview = () => {
             </ResponsiveContainer>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Food items list */}
       <div className="mt-6">
-        {foodItems.slice(0, 3).map((item, index) => (
-          <motion.div
-            key={index}
-            className="flex justify-between items-center py-2 px-4 bg-white bg-opacity-50 rounded-lg mb-2"
-            whileHover={{
-              y: -5,
-              boxShadow: "0 10px 30px -12px rgba(0, 0, 0, 0.5)",
-            }}
-            transition={{ duration: 0.3 }}
-          >
-            <div>
-              <p className="font-medium text-gray-700">{item.name}</p>
-              <p
-                className={`text-xs ${
-                  item.isProfit ? "text-green-500" : "text-red-500"
-                }`}
-              >
-                {item.profit}
-              </p>
-            </div>
-            <div className="flex items-center">
-              <p className="text-right font-medium text-gray-900 mr-2">
-                {item.price}
-              </p>
-              {item.isProfit ? (
-                <ChevronUp className="w-4 h-4 text-green-500" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-red-500" />
-              )}
-            </div>
-          </motion.div>
-        ))}
+        <AnimatePresence>
+          {foodItems.slice(0, 3).map((item, index) => (
+            <motion.div
+              key={index}
+              className="flex justify-between items-center py-2 px-4 bg-white bg-opacity-50 rounded-lg mb-2"
+              variants={hoverVariants}
+              whileHover="hover"
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+            >
+              <div>
+                <p className="font-medium text-gray-700">{item.name}</p>
+                <p
+                  className={`text-xs ${
+                    item.isProfit ? "text-green-500" : "text-red-500"
+                  }`}
+                >
+                  {item.profit}
+                </p>
+              </div>
+              <div className="flex items-center">
+                <p className="text-right font-medium text-gray-900 mr-2">
+                  {item.price}
+                </p>
+                {item.isProfit ? (
+                  <ChevronUp className="w-4 h-4 text-green-500" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-red-500" />
+                )}
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
 
         {/* View all button */}
         <div className="text-center mt-4">
@@ -220,4 +230,4 @@ const VolumeOverview = () => {
   );
 };
 
-export default VolumeOverview;
+export default DashAreaChart;

@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import ReceiptTableRow from "./ReceiptTableRow";
 import SearchInput from "../Common/SearchInput";
 import Pagination from "../Common/Pagination";
-import { Upload, Plus, Filter } from "lucide-react";
+import { Upload, Plus, Filter, ArrowUp, ArrowDown } from "lucide-react";
 import { Receipt } from "@/app/types/types";
 import { useReceiptsData } from "./ReceiptAPI";
 import AddReceiptEntryModal from "./AddReceiptEntryModal";
+import UploadLogic, { UploadLogicHandle } from "../Common/UploadLogic";
+import useSortLogic from "../Common/SortingLogic";
+import { tableVariants } from "../Common/Animations";
 
 // Constants
 const ROW_HEIGHT = 60;
@@ -21,7 +24,14 @@ const ReceiptTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Use only one state variable
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Use the custom useSortLogic hook
+  const { sortField, sortOrder, setSortFieldAndOrder, sortData } =
+    useSortLogic<Receipt>();
+
+  // Ref for UploadLogic
+  const uploadLogicRef = useRef<UploadLogicHandle>(null);
 
   // Function to open the modal
   const openModal = () => {
@@ -61,19 +71,19 @@ const ReceiptTable: React.FC = () => {
     const term = e.target.value.toLowerCase();
     setSearchInput(term);
 
-    if (term === "") {
-      // Reset to original receipts if search is cleared
-      setFilteredReceipts(receipts);
-    } else {
-      const filtered = receipts.filter(
+    let filtered = receipts;
+
+    if (term !== "") {
+      filtered = receipts.filter(
         (receipt) =>
           receipt.location.toLowerCase().includes(term) ||
           receipt.date.includes(term) ||
           receipt.cost.toLowerCase().includes(term)
       );
-      setFilteredReceipts(filtered);
     }
 
+    // Update filtered receipts without sorting here
+    setFilteredReceipts(filtered);
     setCurrentPage(1);
     setIsAnimating(true);
   };
@@ -112,12 +122,51 @@ const ReceiptTable: React.FC = () => {
     );
   };
 
+  // Handle action item clicks
   const handleActionItemClick = (actionType: string, item: string) => {
     if (actionType === "addEntry" && item === "Add Receipt Entry") {
       openModal();
+    } else if (actionType === "upload") {
+      switch (item) {
+        case "Upload Image":
+          uploadLogicRef.current?.triggerImageUpload();
+          break;
+        case "Upload Document":
+          uploadLogicRef.current?.triggerDocumentUpload();
+          break;
+        case "Upload Spreadsheet":
+          uploadLogicRef.current?.triggerSpreadsheetUpload();
+          break;
+        default:
+          console.log(`Unknown upload item: ${item}`);
+      }
+    } else if (actionType === "filter") {
+      let field: "date" | "cost" | "location" | null = null;
+      switch (item) {
+        case "Filter by Date":
+          field = "date";
+          break;
+        case "Filter by Cost":
+          field = "cost";
+          break;
+        case "Filter by Location":
+          field = "location";
+          break;
+        default:
+          console.log(`Unknown filter item: ${item}`);
+      }
+
+      if (field) {
+        setSortFieldAndOrder(field);
+      }
     } else {
       console.log(`Action: ${actionType}, Item: ${item}`);
     }
+  };
+
+  // Handle file uploads from UploadLogic
+  const handleFileUpload = (fileType: string, file: File) => {
+    console.log(`Uploaded ${fileType}:`, file);
   };
 
   // Calculate pagination indices
@@ -128,6 +177,16 @@ const ReceiptTable: React.FC = () => {
     indexOfLastReceipt
   );
   const totalPages = Math.ceil(filteredReceipts.length / itemsPerPage);
+
+  // useEffect to handle sorting whenever sortField or sortOrder changes
+  useEffect(() => {
+    if (sortField) {
+      const sorted = sortData(filteredReceipts);
+      setFilteredReceipts(sorted);
+      setCurrentPage(1);
+      setIsAnimating(true);
+    }
+  }, [sortField, sortOrder, filteredReceipts, sortData]);  
 
   return (
     <motion.div
@@ -148,7 +207,7 @@ const ReceiptTable: React.FC = () => {
               {
                 icon: <Upload size={20} />,
                 type: "upload",
-                title: "Upload File",
+                title: "Upload",
                 items: [
                   "Upload Image",
                   "Upload Document",
@@ -159,7 +218,7 @@ const ReceiptTable: React.FC = () => {
                 icon: <Plus size={20} />,
                 type: "addEntry",
                 title: "Add Entry",
-                items: ["Add Receipt Entry", "Add Expense"],
+                items: ["Add Receipt Entry"],
               },
               {
                 icon: <Filter size={20} />,
@@ -175,6 +234,9 @@ const ReceiptTable: React.FC = () => {
             onActionItemClick={handleActionItemClick}
           />
 
+          {/* UploadLogic handles all file uploads */}
+          <UploadLogic ref={uploadLogicRef} onFileUpload={handleFileUpload} />
+
           {/* Use isModalOpen to conditionally render the modal */}
           <AddReceiptEntryModal isOpen={isModalOpen} onClose={closeModal} />
         </div>
@@ -189,20 +251,56 @@ const ReceiptTable: React.FC = () => {
           <table className="min-w-full divide-y divide-white">
             <thead>
               <tr>
-                <th className="pl-7 text-left w-1/5 py-2 text-xs font-medium text-black uppercase tracking-wider">
-                  Receipt ID
+                <th className="pl-7 text-left w-1/5 py-2 text-xs font-medium text-black uppercase tracking-wider cursor-pointer">
+                  Receipt ID{" "}
                 </th>
-                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
-                  Location
+                <th
+                  className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider cursor-pointer"
+                  onClick={() =>
+                    handleActionItemClick("filter", "Filter by Location")
+                  }
+                >
+                  Location{" "}
+                  {sortField === "location" ? (
+                    sortOrder === "asc" ? (
+                      <ArrowUp size={16} className="inline-block ml-1" />
+                    ) : (
+                      <ArrowDown size={16} className="inline-block ml-1" />
+                    )
+                  ) : null}
                 </th>
-                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
-                  Date
+                <th
+                  className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider cursor-pointer"
+                  onClick={() =>
+                    handleActionItemClick("filter", "Filter by Date")
+                  }
+                >
+                  Date{" "}
+                  {sortField === "date" ? (
+                    sortOrder === "asc" ? (
+                      <ArrowUp size={16} className="inline-block ml-1" />
+                    ) : (
+                      <ArrowDown size={16} className="inline-block ml-1" />
+                    )
+                  ) : null}
                 </th>
                 <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
                   Time
                 </th>
-                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
-                  Cost
+                <th
+                  className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider cursor-pointer"
+                  onClick={() =>
+                    handleActionItemClick("filter", "Filter by Cost")
+                  }
+                >
+                  Cost{" "}
+                  {sortField === "cost" ? (
+                    sortOrder === "asc" ? (
+                      <ArrowUp size={16} className="inline-block ml-1" />
+                    ) : (
+                      <ArrowDown size={16} className="inline-block ml-1" />
+                    )
+                  ) : null}
                 </th>
                 <th className="w-[100px] text-left text-xs font-medium text-black uppercase tracking-wider">
                   Actions
@@ -211,12 +309,9 @@ const ReceiptTable: React.FC = () => {
             </thead>
 
             <motion.tbody
+              variants={tableVariants}
               initial="hidden"
               animate="visible"
-              variants={{
-                hidden: { opacity: 0 },
-                visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
-              }}
               onAnimationComplete={() => setIsAnimating(false)}
               key={currentPage}
             >
