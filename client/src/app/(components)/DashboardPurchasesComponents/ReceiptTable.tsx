@@ -210,7 +210,7 @@ const ReceiptTable: React.FC = () => {
   const sortedReceipts = useMemo(() => {
     if (!sortField) return filteredReceipts;
     return sortData(filteredReceipts);
-  }, [filteredReceipts, sortField, sortOrder, sortData]);
+  }, [filteredReceipts, sortField, sortData]);
 
   // Calculate pagination indices
   const indexOfLastReceipt = currentPage * itemsPerPage;
