@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { motion } from "framer-motion";
 import ReceiptTableRow from "./ReceiptTableRow";
 import SearchInput from "../Common/SearchInput";
@@ -16,10 +22,19 @@ const ROW_HEIGHT = 60;
 const BOTTOM_PADDING = 40;
 const MIN_ROWS = 6;
 
+// Action Types
+enum ActionType {
+  UPLOAD = "upload",
+  ADD_ENTRY = "addEntry",
+  FILTER = "filter",
+}
+
+// Filter Fields
+type FilterField = "date" | "cost" | "location";
+
 const ReceiptTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
   const { receipts, setReceipts, loading } = useReceiptsData("ajwitt2@asu.edu");
-  const [filteredReceipts, setFilteredReceipts] = useState<Receipt[]>([]);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
@@ -34,25 +49,21 @@ const ReceiptTable: React.FC = () => {
   const uploadLogicRef = useRef<UploadLogicHandle>(null);
 
   // Function to open the modal
-  const openModal = () => {
+  const openModal = useCallback(() => {
     setIsModalOpen(true);
-  };
+  }, []);
 
   // Function to close the modal
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
-  };
+  }, []);
 
-  useEffect(() => {
-    setFilteredReceipts(receipts);
-  }, [receipts]);
-
-  const calculateItemsPerPage = () => {
+  const calculateItemsPerPage = useCallback(() => {
     const viewportHeight = window.innerHeight;
     const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
     const calculatedRows = Math.floor(availableHeight / ROW_HEIGHT);
     return Math.max(calculatedRows, MIN_ROWS);
-  };
+  }, []);
 
   // Set items per page and add window resize listener
   useEffect(() => {
@@ -64,133 +75,163 @@ const ReceiptTable: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [calculateItemsPerPage]);
 
   // Handle search input changes
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value.toLowerCase();
-    setSearchInput(term);
-
-    let filtered = receipts;
-
-    if (term !== "") {
-      filtered = receipts.filter(
-        (receipt) =>
-          receipt.location.toLowerCase().includes(term) ||
-          receipt.date.includes(term) ||
-          receipt.cost.toLowerCase().includes(term)
-      );
-    }
-
-    // Update filtered receipts without sorting here
-    setFilteredReceipts(filtered);
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value.toLowerCase());
     setCurrentPage(1);
-    setIsAnimating(true);
-  };
+  }, []);
 
   // Toggle the row expansion state
-  const toggleRow = (id: number) => {
+  const toggleRow = useCallback((id: number) => {
     setExpandedRows((prev) =>
       prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
     );
-  };
+  }, []);
 
   // Check if a row is expanded
-  const isRowExpanded = (id: number) => expandedRows.includes(id);
+  const isRowExpanded = useCallback(
+    (id: number) => expandedRows.includes(id),
+    [expandedRows]
+  );
 
-  const handleDeleteClick = (localReceiptId: number) => {
-    setFilteredReceipts((prev) =>
-      prev.filter((receipt) => receipt.localReceiptId !== localReceiptId)
-    );
-    // Also update the full receipts list to keep it in sync
-    setReceipts((prev) =>
-      prev.filter((receipt) => receipt.localReceiptId !== localReceiptId)
-    );
-  };
+  const handleDeleteClick = useCallback(
+    (localReceiptId: number) => {
+      setReceipts((prev) =>
+        prev.filter((receipt) => receipt.localReceiptId !== localReceiptId)
+      );
+    },
+    [setReceipts]
+  );
 
   // Handle item deletion for ingredients
-  const handleItemDelete = (receiptId: number, itemIndex: number) => {
-    setFilteredReceipts((prev) =>
-      prev.map((receipt) =>
-        receipt.localReceiptId === receiptId
-          ? {
-              ...receipt,
-              details: receipt.details.filter((_, idx) => idx !== itemIndex),
-            }
-          : receipt
-      )
-    );
-  };
+  const handleItemDelete = useCallback(
+    (receiptId: number, itemIndex: number) => {
+      setReceipts((prev) =>
+        prev.map((receipt) =>
+          receipt.localReceiptId === receiptId
+            ? {
+                ...receipt,
+                details: receipt.details.filter((_, idx) => idx !== itemIndex),
+              }
+            : receipt
+        )
+      );
+    },
+    [setReceipts]
+  );
 
   // Handle action item clicks
-  const handleActionItemClick = (actionType: string, item: string) => {
-    if (actionType === "addEntry" && item === "Add Receipt Entry") {
-      openModal();
-    } else if (actionType === "upload") {
-      switch (item) {
-        case "Upload Image":
-          uploadLogicRef.current?.triggerImageUpload();
+  const handleActionItemClick = useCallback(
+    (actionType: string, item: string) => {
+      let enumActionType: ActionType | null = null;
+
+      switch (actionType) {
+        case "upload":
+          enumActionType = ActionType.UPLOAD;
           break;
-        case "Upload Document":
-          uploadLogicRef.current?.triggerDocumentUpload();
+        case "addEntry":
+          enumActionType = ActionType.ADD_ENTRY;
           break;
-        case "Upload Spreadsheet":
-          uploadLogicRef.current?.triggerSpreadsheetUpload();
-          break;
-        default:
-          console.log(`Unknown upload item: ${item}`);
-      }
-    } else if (actionType === "filter") {
-      let field: "date" | "cost" | "location" | null = null;
-      switch (item) {
-        case "Filter by Date":
-          field = "date";
-          break;
-        case "Filter by Cost":
-          field = "cost";
-          break;
-        case "Filter by Location":
-          field = "location";
+        case "filter":
+          enumActionType = ActionType.FILTER;
           break;
         default:
-          console.log(`Unknown filter item: ${item}`);
+          console.warn(`Unknown action type: ${actionType}`);
       }
 
-      if (field) {
-        setSortFieldAndOrder(field);
+      if (!enumActionType) return;
+
+      if (
+        enumActionType === ActionType.ADD_ENTRY &&
+        item === "Add Receipt Entry"
+      ) {
+        openModal();
+      } else if (enumActionType === ActionType.UPLOAD) {
+        switch (item) {
+          case "Upload Image":
+            uploadLogicRef.current?.triggerImageUpload();
+            break;
+          case "Upload Document":
+            uploadLogicRef.current?.triggerDocumentUpload();
+            break;
+          case "Upload Spreadsheet":
+            uploadLogicRef.current?.triggerSpreadsheetUpload();
+            break;
+          default:
+            console.warn(`Unknown upload item: ${item}`);
+        }
+      } else if (enumActionType === ActionType.FILTER) {
+        let field: FilterField | null = null;
+        switch (item) {
+          case "Filter by Date":
+            field = "date";
+            break;
+          case "Filter by Cost":
+            field = "cost";
+            break;
+          case "Filter by Location":
+            field = "location";
+            break;
+          default:
+            console.warn(`Unknown filter item: ${item}`);
+        }
+
+        if (field) {
+          setSortFieldAndOrder(field);
+        }
+      } else {
+        console.warn(`Unhandled action: ${enumActionType}, Item: ${item}`);
       }
-    } else {
-      console.log(`Action: ${actionType}, Item: ${item}`);
-    }
-  };
+    },
+    [openModal, setSortFieldAndOrder]
+  );
 
   // Handle file uploads from UploadLogic
-  const handleFileUpload = (fileType: string, file: File) => {
+  const handleFileUpload = useCallback((fileType: string, file: File) => {
     console.log(`Uploaded ${fileType}:`, file);
-  };
+    // Implement actual upload logic here
+  }, []);
+
+  // Derive filtered receipts based on search input
+  const filteredReceipts = useMemo(() => {
+    if (!searchInput) return receipts;
+
+    return receipts.filter(
+      (receipt) =>
+        receipt.location.toLowerCase().includes(searchInput) ||
+        receipt.date.toLowerCase().includes(searchInput) ||
+        receipt.cost.toLowerCase().includes(searchInput)
+    );
+  }, [receipts, searchInput]);
+
+  // Derive sorted receipts based on sortField and sortOrder
+  const sortedReceipts = useMemo(() => {
+    if (!sortField) return filteredReceipts;
+    return sortData(filteredReceipts);
+  }, [filteredReceipts, sortField, sortOrder, sortData]);
 
   // Calculate pagination indices
   const indexOfLastReceipt = currentPage * itemsPerPage;
   const indexOfFirstReceipt = indexOfLastReceipt - itemsPerPage;
-  const currentReceipts = filteredReceipts.slice(
-    indexOfFirstReceipt,
-    indexOfLastReceipt
+  const currentReceipts = useMemo(
+    () => sortedReceipts.slice(indexOfFirstReceipt, indexOfLastReceipt),
+    [sortedReceipts, indexOfFirstReceipt, indexOfLastReceipt]
   );
-  const totalPages = Math.ceil(filteredReceipts.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedReceipts.length / itemsPerPage);
 
-  // useEffect to handle sorting whenever sortField or sortOrder changes
+  // Reset animations when sortedReceipts change
   useEffect(() => {
     if (sortField) {
-      const sorted = sortData(filteredReceipts);
-      setFilteredReceipts(sorted);
       setCurrentPage(1);
       setIsAnimating(true);
     }
-  }, [sortField, sortOrder, filteredReceipts, sortData]);
+  }, [sortField, sortOrder, sortData]);
 
   return (
     <motion.div
-      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
+      className={`pb-${BOTTOM_PADDING}px bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
         isAnimating ? "overflow-hidden" : "overflow-y-auto"
       }`}
       initial={{ opacity: 0, y: 20 }}
@@ -206,7 +247,7 @@ const ReceiptTable: React.FC = () => {
             actions={[
               {
                 icon: <Upload size={20} />,
-                type: "upload",
+                type: ActionType.UPLOAD,
                 title: "Upload",
                 items: [
                   "Upload Image",
@@ -216,13 +257,13 @@ const ReceiptTable: React.FC = () => {
               },
               {
                 icon: <Plus size={20} />,
-                type: "addEntry",
+                type: ActionType.ADD_ENTRY,
                 title: "Add Entry",
                 items: ["Add Receipt Entry"],
               },
               {
                 icon: <Filter size={20} />,
-                type: "filter",
+                type: ActionType.FILTER,
                 title: "Filter",
                 items: [
                   "Filter by Date",
@@ -242,7 +283,7 @@ const ReceiptTable: React.FC = () => {
         </div>
       </div>
 
-      {filteredReceipts.length === 0 ? (
+      {sortedReceipts.length === 0 ? (
         <p className="text-center text-gray-600 mt-8">
           You have not uploaded or added any receipt data.
         </p>
@@ -251,56 +292,62 @@ const ReceiptTable: React.FC = () => {
           <table className="min-w-full divide-y divide-white">
             <thead>
               <tr>
-                <th className="pl-7 text-left w-1/5 py-2 text-xs font-medium text-black uppercase tracking-wider cursor-pointer">
-                  Receipt ID{" "}
+                <th className="pl-7 text-left w-1/5 py-2 text-xs font-medium text-black uppercase tracking-wider">
+                  Receipt ID
                 </th>
-                <th
-                  className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider cursor-pointer"
-                  onClick={() =>
-                    handleActionItemClick("filter", "Filter by Location")
-                  }
-                >
-                  Location{" "}
-                  {sortField === "location" ? (
-                    sortOrder === "asc" ? (
-                      <ArrowUp size={16} className="inline-block ml-1" />
-                    ) : (
-                      <ArrowDown size={16} className="inline-block ml-1" />
-                    )
-                  ) : null}
+                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
+                  <button
+                    className="flex items-center w-full text-left cursor-pointer"
+                    onClick={() =>
+                      handleActionItemClick(
+                        ActionType.FILTER,
+                        "Filter by Location"
+                      )
+                    }
+                  >
+                    Location
+                    {sortField === "location" &&
+                      (sortOrder === "asc" ? (
+                        <ArrowUp size={16} className="ml-1" />
+                      ) : (
+                        <ArrowDown size={16} className="ml-1" />
+                      ))}
+                  </button>
                 </th>
-                <th
-                  className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider cursor-pointer"
-                  onClick={() =>
-                    handleActionItemClick("filter", "Filter by Date")
-                  }
-                >
-                  Date{" "}
-                  {sortField === "date" ? (
-                    sortOrder === "asc" ? (
-                      <ArrowUp size={16} className="inline-block ml-1" />
-                    ) : (
-                      <ArrowDown size={16} className="inline-block ml-1" />
-                    )
-                  ) : null}
+                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
+                  <button
+                    className="flex items-center w-full text-left cursor-pointer"
+                    onClick={() =>
+                      handleActionItemClick(ActionType.FILTER, "Filter by Date")
+                    }
+                  >
+                    Date
+                    {sortField === "date" &&
+                      (sortOrder === "asc" ? (
+                        <ArrowUp size={16} className="ml-1" />
+                      ) : (
+                        <ArrowDown size={16} className="ml-1" />
+                      ))}
+                  </button>
                 </th>
                 <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
                   Time
                 </th>
-                <th
-                  className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider cursor-pointer"
-                  onClick={() =>
-                    handleActionItemClick("filter", "Filter by Cost")
-                  }
-                >
-                  Cost{" "}
-                  {sortField === "cost" ? (
-                    sortOrder === "asc" ? (
-                      <ArrowUp size={16} className="inline-block ml-1" />
-                    ) : (
-                      <ArrowDown size={16} className="inline-block ml-1" />
-                    )
-                  ) : null}
+                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
+                  <button
+                    className="flex items-center w-full text-left cursor-pointer"
+                    onClick={() =>
+                      handleActionItemClick(ActionType.FILTER, "Filter by Cost")
+                    }
+                  >
+                    Cost
+                    {sortField === "cost" &&
+                      (sortOrder === "asc" ? (
+                        <ArrowUp size={16} className="ml-1" />
+                      ) : (
+                        <ArrowDown size={16} className="ml-1" />
+                      ))}
+                  </button>
                 </th>
                 <th className="w-[100px] text-left text-xs font-medium text-black uppercase tracking-wider">
                   Actions
@@ -313,7 +360,6 @@ const ReceiptTable: React.FC = () => {
               initial="hidden"
               animate="visible"
               onAnimationComplete={() => setIsAnimating(false)}
-              key={currentPage}
             >
               {currentReceipts.map((receipt, index) => (
                 <ReceiptTableRow
