@@ -8,7 +8,7 @@ const handler = async (event) => {
         database: process.env.DB_DATABASE,
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
-        ssl: {rejectUnauthorized: false},
+        ssl: { rejectUnauthorized: false },
     };
 
     const email = event.email;
@@ -40,7 +40,7 @@ const handler = async (event) => {
             WHERE 
                 m."Email" = $1;
         `;
-        
+
         const res = await client.query(query, [email]);
 
         //Format the results
