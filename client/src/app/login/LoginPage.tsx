@@ -28,7 +28,7 @@ const LoginPage: React.FC = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({email, password}),
+          body: JSON.stringify({ email, password }),
         }
       );
       const data = await response.json();
@@ -84,7 +84,7 @@ const LoginPage: React.FC = () => {
         </div>
 
         {errorMessage && (
-          <p className="text-red-500 text-sm mb-4">{errorMessage}</p>
+          <div className="text-customRed text-sm mb-4">{errorMessage}</div>
         )}
 
         <SubmitButton text="Login" />
