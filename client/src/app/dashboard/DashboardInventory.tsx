@@ -2,7 +2,15 @@ import "@/app/globals.css";
 import React from "react";
 import DashboardLayout from "./DashboardWrapper";
 import { motion } from "framer-motion";
-import { Banknote, ShoppingCart, FileText, Store } from "lucide-react";
+import {
+  Banknote,
+  ShoppingCart,
+  FileText,
+  Store,
+  AlertCircle,
+  Box,
+  DollarSign,
+} from "lucide-react";
 import InventoryTable from "../(components)/DashboardInventoryComponents/InventoryTable";
 import DashCardLong from "../(components)/DashboardHomeComponents/DashCardLong";
 
@@ -14,20 +22,38 @@ export const DashboardInventory: React.FC = () => {
           <div className="pt-2 mx-auto ">
             {/* First row of dashboard cards */}
             <motion.div
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 mb-4 mt-4"
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4 mt-4"
               initial={{ opacity: 0, y: 20 }} // Animation for appearance
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
             >
-              {/* Receipt Dashboard Cards */}
-              <div className="col-span-1 lg:col-span-1 space-y-[20px] sm:space-y-0 sm:grid sm:grid-cols-2 sm:col-span-2 lg:grid-cols-4 gap-4">
-                <DashCardLong
-                  name="Total Inventory Items"
-                  icon={FileText}
-                  value="5"
-                  color="bg-gray-100"
-                />
-              </div>
+              {/* Inventory Dashboard Cards */}
+              <DashCardLong
+                name="Total Inventory Items"
+                icon={FileText}
+                value="5"
+                color="bg-gray-100"
+              />
+              <DashCardLong
+                name="Low Stock Items"
+                icon={AlertCircle}
+                value="2"
+                color="bg-gray-100"
+                isPurple={true}
+              />
+              <DashCardLong
+                name="Out of Stock Items"
+                icon={Box}
+                value="1"
+                color="bg-gray-100"
+              />
+              <DashCardLong
+                name="Total Inventory Value"
+                icon={DollarSign}
+                value="$10,000"
+                color="bg-gray-100"
+                isPurple={true}
+              />
             </motion.div>
           </div>
           <InventoryTable />
