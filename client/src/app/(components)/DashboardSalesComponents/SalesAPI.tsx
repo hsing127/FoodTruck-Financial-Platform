@@ -20,7 +20,6 @@ export const useSalesData = (email: string) => {
         );
 
         const data = await response.json();
-        console.log(data)
         let salesData;
         if (typeof data.body === "string") {
           salesData = JSON.parse(data.body);
