@@ -29,9 +29,13 @@ const fetchSalesWithDetailsByEmail = async (email) => {
         const salesWithDetails = await Promise.all(
             salesResult.rows.map(async (sale) => {
                 const soldQuery = `
-                    SELECT "MenuName" as MenuName, "Count" as Count
-                    FROM "Sold"
-                    WHERE "Email" = $1 AND "StartDate" = $2 AND "EndDate" = $3
+                SELECT s."MenuName" as menuItemName, 
+                    s."Count" as Count, 
+                    (m."Cost" * s."Count") as itemRevenue
+                FROM "Sold" s
+                JOIN "MenuItem" m
+                ON s."MenuName" = m."Name"
+                WHERE s."Email" = $1 AND s."StartDate" = $2 AND s."EndDate" = $3;
                 `;
                 const soldResult = await client.query(soldQuery, [email, sale.StartDate, sale.EndDate]);
 
@@ -40,7 +44,7 @@ const fetchSalesWithDetailsByEmail = async (email) => {
                     receiptId: `${sale.StartDate}-${sale.EndDate}`, // Generate a unique ID for front-end use
                     StartDate: sale.StartDate,
                     EndDate: sale.EndDate,
-                    Revenue: `$${sale.Revenue}`, // Use Cost as it is, without formatting
+                    revenue: `$${sale.Revenue}`, // Use Cost as it is, without formatting
                     details: soldResult.rows, // Attach the details array from the Sold table
                 };
             })

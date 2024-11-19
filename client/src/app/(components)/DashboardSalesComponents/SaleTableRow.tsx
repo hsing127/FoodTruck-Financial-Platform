@@ -82,20 +82,8 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
         />
         <EditableCell
           isEditing={isEditing}
-          value={isEditing ? editedItem.startTime : sale.startTime}
-          name="startTime"
-          onChange={handleInputChange}
-        />
-        <EditableCell
-          isEditing={isEditing}
           value={isEditing ? editedItem.endDate : sale.endDate}
           name="endDate"
-          onChange={handleInputChange}
-        />
-        <EditableCell
-          isEditing={isEditing}
-          value={isEditing ? editedItem.endTime : sale.endTime}
-          name="endTime"
           onChange={handleInputChange}
         />
         <EditableCell

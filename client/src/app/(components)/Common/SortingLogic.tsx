@@ -8,6 +8,9 @@ type SortField =
   | "name"
   | "price"
   | "ingredients"
+  | "startDate"
+  | "endDate"
+  | "revenue"
   | null;
 type SortOrder = "asc" | "desc";
 

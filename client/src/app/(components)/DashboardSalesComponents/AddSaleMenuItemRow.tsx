@@ -32,7 +32,7 @@ const AddSaleMenuItemRow: React.FC<AddSaleMenuItemRowProps> = ({
     >
       <EditableCell
         isEditing={true}
-        value={menuItem.menuItemName}
+        value={menuItem.menuitemname}
         name="menuItem"
         onChange={(e) => handleMenuItemChange(index, e)}
         placeholder="MenuItem"

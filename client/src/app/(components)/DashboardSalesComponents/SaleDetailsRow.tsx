@@ -43,7 +43,7 @@ const SaleDetailsRow: React.FC<SaleDetailsRowProps> = ({
     >
       <EditableCell
         isEditing={isEditing}
-        value={currentItem.menuItemName}
+        value={currentItem.menuitemname}
         name="menuItem"
         onChange={handleInputChange}
       />
@@ -53,7 +53,10 @@ const SaleDetailsRow: React.FC<SaleDetailsRowProps> = ({
         name="quantity"
         onChange={handleInputChange}
         type="number"
-      />
+          />
+          <td className="py-5 text-sm font-medium text-black flex items-center ">
+          {currentItem.itemrevenue}
+          </td>
       <ActionButtons
         isEditing={isEditing}
         onEdit={(e) => {

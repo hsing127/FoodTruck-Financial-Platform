@@ -23,9 +23,7 @@ const AddSaleEntryModal: React.FC<AddManualEntryModalProps> = ({
   const initialSale: Sale = {
     localSaleId: Date.now(),
     startDate: "",
-    startTime: "",
     endDate: "",
-    endTime: "",
     revenue: "",
     details: [],
   };
@@ -70,7 +68,7 @@ const AddSaleEntryModal: React.FC<AddManualEntryModalProps> = ({
       ...prevSale,
       details: [
         ...prevSale.details,
-        { menuItemName: "", count: 0},
+        { menuitemname: "", count: 0, itemrevenue:0},
       ],
     }));
   };
@@ -142,19 +140,13 @@ const AddSaleEntryModal: React.FC<AddManualEntryModalProps> = ({
             >
               <thead>
                 <tr>
-                  <th className="w-1/5 text-left text-sm font-medium text-black">
+                  <th className="w-1/3 text-left text-sm font-medium text-black">
                     Start Date
                   </th>
-                  <th className="w-1/5 text-left text-sm font-medium text-black">
-                    Start Time
-                  </th>
-                  <th className="w-1/5 text-left text-sm font-medium text-black">
+                  <th className="w-1/3 text-left text-sm font-medium text-black">
                     End Date
                   </th>
-                  <th className="w-1/5 text-left text-sm font-medium text-black">
-                    End Time
-                  </th>
-                  <th className="w-1/4 text-left text-sm font-medium text-black">
+                  <th className="w-1/3 text-left text-sm font-medium text-black">
                     Revenue
                   </th>
                 </tr>
@@ -177,27 +169,11 @@ const AddSaleEntryModal: React.FC<AddManualEntryModalProps> = ({
                   />
                   <EditableCell
                     isEditing={true}
-                    value={newSale.startTime}
-                    name="time"
-                    onChange={handleSaleInputChange}
-                    type="time"
-                    placeholder="Time"
-                  />
-                  <EditableCell
-                    isEditing={true}
                     value={newSale.endDate}
                     name="date"
                     onChange={handleSaleInputChange}
                     type="date"
                     placeholder="Date"
-                  />
-                  <EditableCell
-                    isEditing={true}
-                    value={newSale.endTime}
-                    name="time"
-                    onChange={handleSaleInputChange}
-                    type="time"
-                    placeholder="Time"
                   />
                   <EditableCell
                     isEditing={true}

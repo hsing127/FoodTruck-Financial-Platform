@@ -9,7 +9,7 @@ export const useSalesData = (email: string) => {
     const fetchSales = async () => {
       try {
         const response = await fetch(
-          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/purchases",
+          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/sales",
           {
             method: "POST",
             headers: {
@@ -20,26 +20,24 @@ export const useSalesData = (email: string) => {
         );
 
         const data = await response.json();
-
-        let purchasesData;
+        console.log(data)
+        let salesData;
         if (typeof data.body === "string") {
-          purchasesData = JSON.parse(data.body);
+          salesData = JSON.parse(data.body);
         } else {
-          purchasesData = data.body;
+          salesData = data.body;
         }
 
-        // Assign localSaleId sequentially to each purchase item and format date/time
-        const salesWithId = purchasesData.purchases.map(
+        // Assign localSaleId sequentially to each sale item and format date
+        const salesWithId = salesData.sales.map(
           (sale: any, index: number) => {
-            const dateObj = new Date(sale.date);
+                const startDateObj = new Date(sale.StartDate);
+                const endDateObj = new Date(sale.EndDate);
             return {
               ...sale,
               localSaleId: index + 1001, // Start at 1001 and increment
-              date: dateObj.toLocaleDateString(), // Format date
-              time: dateObj.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              }), // Format time
+              startDate: startDateObj.toLocaleDateString(), // Format date
+              endDate: endDateObj.toLocaleDateString(), // Format date
             };
           }
         );
