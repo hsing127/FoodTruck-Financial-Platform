@@ -65,6 +65,7 @@ const config: Config = {
       colors: {
         customBlack: "#000000", // Define a true black
         customWhite: "#FFFFFF", // Define a true white
+        customRed: "#ef4444", // Define a true white
       },
       container: {
         padding: "1rem",
