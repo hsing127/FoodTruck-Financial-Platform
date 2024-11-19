@@ -1,13 +1,16 @@
 import "@/app/globals.css";
 import React, { useState } from "react";
+import { useRouter } from "next/router"; // Updated import for router
 import { validatePasswords } from "@/app/(components)/LoginComponents/validateForm";
 import FormLayout from "@/app/(components)/LoginComponents/formLayout";
 import FormInput from "@/app/(components)/LoginComponents/formInput";
 import SubmitButton from "@/app/(components)/LoginComponents/submitButton";
-import router from "next/router";
 
 const ForgotPasswordNewPage: React.FC = () => {
   const [formData, setFormData] = useState({ password: "", password2: "" });
+  const [error, setError] = useState<string | null>(null); // Added error state
+  const [loading, setLoading] = useState(false); // Added loading state
+  const router = useRouter(); // Initialized router
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -16,42 +19,63 @@ const ForgotPasswordNewPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null); // Reset error state on new submit
+
     if (validatePasswords(formData.password, formData.password2)) {
       const newPassword = formData.password;
-      if(newPassword.trim()) {
+      if (newPassword.trim()) {
+        setLoading(true); // Start loading
         try {
-        const response = await fetch("https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/forgot-password/reset-password", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ newPassword }),
-        });
-        if (!response.ok) {
-          throw new Error("Failed to send reset code");
-        }
+          const response = await fetch(
+            "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/forgot-password/reset-password",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ newPassword }),
+            }
+          );
 
-        const data = await response.json();
-        const statusCode = data.statusCode;
-        if(statusCode === 200) {
-          //Redirect if the code was verified successfully
-          router.push("/dashboard/home");
-        } else {
-          alert("Something went wrong");
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to reset password");
+          }
+
+          const data = await response.json();
+          const statusCode = data.statusCode;
+
+          if (statusCode === 200) {
+            // Redirect after a short delay to allow the user to read the success message
+            setTimeout(() => {
+              router.push("/dashboard/home");
+            }, 2000);
+          } else {
+            setError("Something went wrong. Please try again.");
+          }
+        } catch (error: any) {
+          setError(
+            error.message ||
+              "There was an error resetting your password. Please try again."
+          );
+          console.error("Error:", error);
+        } finally {
+          setLoading(false); // End loading
         }
-      } catch (error) {
-      alert("There was an error sending the password. Please try again.");
-      console.error("Error:", error);
-      }
       } else {
-        alert("Passwords must match and cannot be empty.");
+        setError("Passwords must match and cannot be empty.");
       }
+    } else {
+      setError("Passwords do not match.");
     }
   };
 
   return (
-    <FormLayout title="New Password" description="Enter a new password below to change your current password.">
-      <form onSubmit={handleSubmit}>
+    <FormLayout
+      title="New Password"
+      description="Enter a new password below to change your current password."
+    >
+      <form onSubmit={handleSubmit} className="w-full max-w-sm mx-auto">
         <FormInput
           type="password"
           name="password"
@@ -66,7 +90,12 @@ const ForgotPasswordNewPage: React.FC = () => {
           value={formData.password2}
           onChange={handleChange}
         />
-        <SubmitButton text="Confirm" />
+        {error && (
+          <div role="alert" className="mb-4 text-customRed text-sm">
+            {error}
+          </div>
+        )}
+        <SubmitButton text={loading ? "Submitting..." : "Confirm"} />
       </form>
     </FormLayout>
   );
