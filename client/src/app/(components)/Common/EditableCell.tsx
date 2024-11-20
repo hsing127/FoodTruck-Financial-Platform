@@ -19,7 +19,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   className = "",
   placeholder,
 }) => (
-  <td className={name ==='menuItem'? 'pl-8 py-2 text-sm text-black ${className}':`py-2 text-sm text-black ${className}`}>
+  <td className={`py-2 text-sm text-black ${className}`}>
     {isEditing ? (
       <input
         type={type}
