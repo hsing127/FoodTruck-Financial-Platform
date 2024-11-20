@@ -6,18 +6,19 @@ import React, {
   useCallback,
 } from "react";
 import { motion } from "framer-motion";
-import InventoryTableRow from "./InventoryTableRow";
+import SaleTableRow from "./SaleTableRow";
 import SearchInput from "../Common/SearchInput";
 import Pagination from "../Common/Pagination";
 import { Upload, Plus, Filter, ArrowUp, ArrowDown } from "lucide-react";
-import { InventoryItem } from "@/app/types/types";
-import AddInventoryItemModal from "./AddInventoryItemModal";
-import { useInventoryData } from "./InventoryApi";
+import { Sale } from "@/app/types/types";
+import { useSalesData } from "./SalesAPI";
+import AddSaleEntryModal from "./AddSaleEntryModal";
 import UploadLogic, { UploadLogicHandle } from "../Common/UploadLogic";
 import useSortLogic from "../Common/SortingLogic";
+import { tableVariants } from "../Common/Animations";
 
 // Constants
-const ROW_HEIGHT = 56;
+const ROW_HEIGHT = 60;
 const BOTTOM_PADDING = 40;
 const MIN_ROWS = 6;
 
@@ -29,20 +30,20 @@ enum ActionType {
 }
 
 // Filter Fields
-type FilterField = "Name" | "Amount" | "AmountUnits";
+type FilterField = "startDate" | "endDate" | "revenue";
 
-const InventoryTable: React.FC = () => {
+const SaleTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
-  const { inventory, setInventory, loading, error } =
-    useInventoryData("ajwitt2@asu.edu");
+  const { sales, setSales } = useSalesData("ajwitt2@asu.edu");
+  const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Use the custom useSortLogic hook with InventoryItem
+  // Use the custom useSortLogic hook
   const { sortField, sortOrder, setSortFieldAndOrder, sortData } =
-    useSortLogic<InventoryItem>();
+    useSortLogic<Sale>();
 
   // Ref for UploadLogic
   const uploadLogicRef = useRef<UploadLogicHandle>(null);
@@ -82,42 +83,48 @@ const InventoryTable: React.FC = () => {
     setCurrentPage(1);
   }, []);
 
-  // Handle adding a new inventory item
-  const handleAddInventoryItem = useCallback(
-    (item: InventoryItem) => {
-      setInventory((prev) => [...prev, item]);
-      setCurrentPage(1);
-      closeModal();
-    },
-    [setInventory, closeModal]
+  // Toggle the row expansion state
+  const toggleRow = useCallback((id: number) => {
+    setExpandedRows((prev) =>
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+    );
+  }, []);
+
+  // Check if a row is expanded
+  const isRowExpanded = useCallback(
+    (id: number) => expandedRows.includes(id),
+    [expandedRows]
   );
 
-  // Handle editing an inventory item
-  const handleItemEdit = useCallback(
-    (id: number, updatedItem: InventoryItem) => {
-      setInventory((prev) =>
-        prev.map((item) => (item.id === id ? updatedItem : item))
+  const handleDeleteClick = useCallback(
+    (localSaleId: number) => {
+      setSales((prev) =>
+        prev.filter((sale) => sale.localSaleId !== localSaleId)
       );
     },
-    [setInventory]
+    [setSales]
   );
 
-  // Handle deleting an inventory item
-  const handleDeleteClick = useCallback(
-    (id: number) => {
-      setInventory((prev) => {
-        const updatedInventory = prev.filter((item) => item.id !== id);
-        return updatedInventory;
-      });
+  // Handle item deletion for ingredients
+  const handleItemDelete = useCallback(
+    (saleId: number, itemIndex: number) => {
+      setSales((prev) =>
+        prev.map((sale) =>
+          sale.localSaleId === saleId
+            ? {
+                ...sale,
+                details: sale.details.filter((_, idx) => idx !== itemIndex),
+              }
+            : sale
+        )
+      );
     },
-    [setInventory]
+    [setSales]
   );
 
-  // Handle action item clicks from SearchInput
+  // Handle action item clicks
   const handleActionItemClick = useCallback(
     (actionType: string, item: string) => {
-      console.log(`Action Type: ${actionType}, Item: ${item}`); // Debug log
-
       let enumActionType: ActionType | null = null;
 
       switch (actionType) {
@@ -134,13 +141,11 @@ const InventoryTable: React.FC = () => {
           console.warn(`Unknown action type: ${actionType}`);
       }
 
-      console.log(`Enum Action Type: ${enumActionType}`); // Debug log
-
       if (!enumActionType) return;
 
       if (
         enumActionType === ActionType.ADD_ENTRY &&
-        item === "Add Inventory Item"
+        item === "Add Sale Entry"
       ) {
         openModal();
       } else if (enumActionType === ActionType.UPLOAD) {
@@ -160,20 +165,18 @@ const InventoryTable: React.FC = () => {
       } else if (enumActionType === ActionType.FILTER) {
         let field: FilterField | null = null;
         switch (item) {
-          case "Filter by Name":
-            field = "Name"; // Correct mapping
+          case "Filter by StartDate":
+            field = "startDate";
             break;
-          case "Filter by Amount":
-            field = "Amount";
+          case "Filter by EndDate":
+            field = "endDate";
             break;
-          case "Filter by Units":
-            field = "AmountUnits";
+          case "Filter by Revenue":
+            field = "revenue";
             break;
           default:
             console.warn(`Unknown filter item: ${item}`);
         }
-
-        console.log(`Sort Field: ${field}`); // Debug log
 
         if (field) {
           setSortFieldAndOrder(field);
@@ -191,36 +194,34 @@ const InventoryTable: React.FC = () => {
     // Implement actual upload logic here
   }, []);
 
-  // Derive filtered inventory based on search input
-  const filteredInventory = useMemo(() => {
-    if (!searchInput) return inventory;
+  // Derive filtered sales based on search input
+  const filteredSales = useMemo(() => {
+    if (!searchInput) return sales;
 
-    return inventory.filter(
-      (item) =>
-        item.Name.toLowerCase().includes(searchInput) ||
-        item.Amount.toLowerCase().includes(searchInput) ||
-        item.AmountUnits.toLowerCase().includes(searchInput)
+    return sales.filter(
+      (sale) =>
+        sale.startDate.toLowerCase().includes(searchInput) ||
+        sale.endDate.toLowerCase().includes(searchInput) ||
+        sale.revenue.toLowerCase().includes(searchInput)
     );
-  }, [inventory, searchInput]);
+  }, [sales, searchInput]);
 
-  // Derive sorted inventory based on sortField and sortOrder
-  const sortedInventory = useMemo(() => {
-    if (!sortField) return filteredInventory;
-    const sorted = sortData(filteredInventory);
-    console.log("Sorted Inventory:", sorted); // Debug log
-    return sorted;
-  }, [filteredInventory, sortField, sortData]);
+  // Derive sorted sales based on sortField and sortOrder
+  const sortedSales = useMemo(() => {
+    if (!sortField) return filteredSales;
+    return sortData(filteredSales);
+  }, [filteredSales, sortField, sortData]);
 
-  // Pagination calculations
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentInventory = useMemo(
-    () => sortedInventory.slice(indexOfFirstItem, indexOfLastItem),
-    [sortedInventory, indexOfFirstItem, indexOfLastItem]
+  // Calculate pagination indices
+  const indexOfLastSale = currentPage * itemsPerPage;
+  const indexOfFirstSale = indexOfLastSale - itemsPerPage;
+  const currentSales = useMemo(
+    () => sortedSales.slice(indexOfFirstSale, indexOfLastSale),
+    [sortedSales, indexOfFirstSale, indexOfLastSale]
   );
-  const totalPages = Math.ceil(sortedInventory.length / itemsPerPage);
+  const totalPages = Math.ceil(sortedSales.length / itemsPerPage);
 
-  // Reset animations when sortedInventory changes
+  // Reset animations when sortedSales change
   useEffect(() => {
     if (sortField) {
       setCurrentPage(1);
@@ -238,9 +239,7 @@ const InventoryTable: React.FC = () => {
       transition={{ duration: 1 }}
     >
       <div className="mb-4">
-        <h2 className="text-xl font-semibold text-black mb-2">Inventory</h2>
-
-        {/* Search Input */}
+        <h2 className="text-xl font-semibold text-black mb-2">Sale List</h2>
         <div className="w-full">
           <SearchInput
             searchInput={searchInput}
@@ -249,7 +248,7 @@ const InventoryTable: React.FC = () => {
               {
                 icon: <Upload size={20} />,
                 type: ActionType.UPLOAD,
-                title: "Upload File",
+                title: "Upload",
                 items: [
                   "Upload Image",
                   "Upload Document",
@@ -260,16 +259,16 @@ const InventoryTable: React.FC = () => {
                 icon: <Plus size={20} />,
                 type: ActionType.ADD_ENTRY,
                 title: "Add Entry",
-                items: ["Add Inventory Item"],
+                items: ["Add Sale Entry"],
               },
               {
                 icon: <Filter size={20} />,
                 type: ActionType.FILTER,
                 title: "Filter",
                 items: [
-                  "Filter by Name",
-                  "Filter by Amount",
-                  "Filter by Units",
+                  "Filter by StartDate",
+                  "Filter by EndDate",
+                  "Filter by Revenue",
                 ],
               },
             ]}
@@ -279,53 +278,35 @@ const InventoryTable: React.FC = () => {
           {/* UploadLogic handles all file uploads */}
           <UploadLogic ref={uploadLogicRef} onFileUpload={handleFileUpload} />
 
-          <AddInventoryItemModal
-            isOpen={isModalOpen}
-            onClose={closeModal}
-            onSave={handleAddInventoryItem}
-          />
+          {/* Use isModalOpen to conditionally render the modal */}
+          <AddSaleEntryModal isOpen={isModalOpen} onClose={closeModal} />
         </div>
       </div>
 
-      {/* Conditionally Render No Items Message or Inventory Table */}
-      {sortedInventory.length === 0 ? (
+      {sortedSales.length === 0 ? (
         <p className="text-center text-gray-600 mt-8">
-          No inventory items found. Add or upload items to get started.
+          You have not uploaded or added any sale data.
         </p>
       ) : (
         <>
-          {/* Table to display inventory data */}
-          <table className="min-w-full divide-y divide-gray-200">
+          <table className="min-w-full divide-y divide-white">
             <thead>
               <tr>
-                <th className="text-left w-1/3 py-2 text-xs font-medium text-black uppercase tracking-wider">
-                  <button
-                    className="flex items-center w-full text-left cursor-pointer"
-                    onClick={() =>
-                      handleActionItemClick(ActionType.FILTER, "Filter by Name")
-                    }
-                  >
-                    Name
-                    {sortField === "Name" &&
-                      (sortOrder === "asc" ? (
-                        <ArrowUp size={16} className="ml-1" />
-                      ) : (
-                        <ArrowDown size={16} className="ml-1" />
-                      ))}
-                  </button>
+                <th className="pl-7 text-left w-1/4 py-2 text-xs font-medium text-black uppercase tracking-wider">
+                  Sale ID
                 </th>
-                <th className="text-left w-1/3 text-xs font-medium text-black uppercase tracking-wider">
+                <th className="text-left w-1/4 text-xs font-medium text-black uppercase tracking-wider">
                   <button
                     className="flex items-center w-full text-left cursor-pointer"
                     onClick={() =>
                       handleActionItemClick(
                         ActionType.FILTER,
-                        "Filter by Amount"
+                        "Filter by StartDate"
                       )
                     }
                   >
-                    Amount
-                    {sortField === "Amount" &&
+                    Start Date
+                    {sortField === "startDate" &&
                       (sortOrder === "asc" ? (
                         <ArrowUp size={16} className="ml-1" />
                       ) : (
@@ -333,18 +314,18 @@ const InventoryTable: React.FC = () => {
                       ))}
                   </button>
                 </th>
-                <th className="text-left w-1/3 text-xs font-medium text-black uppercase tracking-wider">
+                <th className="text-left w-1/4 text-xs font-medium text-black uppercase tracking-wider">
                   <button
                     className="flex items-center w-full text-left cursor-pointer"
                     onClick={() =>
                       handleActionItemClick(
                         ActionType.FILTER,
-                        "Filter by Units"
+                        "Filter by EndDate"
                       )
                     }
                   >
-                    Units
-                    {sortField === "AmountUnits" &&
+                    End Date
+                    {sortField === "endDate" &&
                       (sortOrder === "asc" ? (
                         <ArrowUp size={16} className="ml-1" />
                       ) : (
@@ -352,7 +333,25 @@ const InventoryTable: React.FC = () => {
                       ))}
                   </button>
                 </th>
-
+                <th className="text-left w-1/4 text-xs font-medium text-black uppercase tracking-wider">
+                  <button
+                    className="flex items-center w-full text-left cursor-pointer"
+                    onClick={() =>
+                      handleActionItemClick(
+                        ActionType.FILTER,
+                        "Filter by Revenue"
+                      )
+                    }
+                  >
+                    Revenue
+                    {sortField === "revenue" &&
+                      (sortOrder === "asc" ? (
+                        <ArrowUp size={16} className="ml-1" />
+                      ) : (
+                        <ArrowDown size={16} className="ml-1" />
+                      ))}
+                  </button>
+                </th>
                 <th className="w-[100px] text-left text-xs font-medium text-black uppercase tracking-wider">
                   Actions
                 </th>
@@ -360,32 +359,26 @@ const InventoryTable: React.FC = () => {
             </thead>
 
             <motion.tbody
+              variants={tableVariants}
               initial="hidden"
               animate="visible"
               onAnimationComplete={() => setIsAnimating(false)}
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: { staggerChildren: 0.07 },
-                },
-              }}
-              key={currentPage}
             >
-              {currentInventory.map((item, idx) => (
-                <InventoryTableRow
-                  key={item.id}
-                  item={item}
-                  index={indexOfFirstItem + idx}
-                  onItemEdit={handleItemEdit}
-                  onItemDelete={handleDeleteClick}
+              {currentSales.map((sale, index) => (
+                <SaleTableRow
+                  key={sale.localSaleId}
+                  sale={sale}
+                  isRowExpanded={isRowExpanded}
+                  toggleRow={toggleRow}
+                  handleDeleteClick={handleDeleteClick}
+                  index={index}
                   setIsAnimating={setIsAnimating}
+                  onItemDelete={handleItemDelete}
                 />
               ))}
             </motion.tbody>
           </table>
 
-          {/* Pagination */}
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -397,4 +390,4 @@ const InventoryTable: React.FC = () => {
   );
 };
 
-export default InventoryTable;
+export default SaleTable;
