@@ -104,7 +104,7 @@ const Sidebar = React.memo(() => {
         href: "/dashboard/purchases",
         icon: CircleDollarSign,
         label: "Purchases",
-          },
+      },
       {
         href: "/dashboard/sales",
         icon: Handshake,

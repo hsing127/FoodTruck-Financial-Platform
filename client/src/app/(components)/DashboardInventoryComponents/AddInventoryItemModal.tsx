@@ -36,7 +36,9 @@ const AddInventoryItemModal: React.FC<AddInventoryItemModalProps> = ({
   };
 
   const [newItem, setNewItem] = useState<InventoryItem>(initialItem);
-  const [submittedItem, setSubmittedItem] = useState<InventoryItem | null>(null); // New state to track the submitted item
+  const [submittedItem, setSubmittedItem] = useState<InventoryItem | null>(
+    null
+  ); // New state to track the submitted item
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

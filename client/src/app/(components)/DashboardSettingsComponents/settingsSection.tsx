@@ -12,9 +12,13 @@ interface SettingsSectionProps {
   settings: Setting[];
 }
 
-const SettingsSection: React.FC<SettingsSectionProps> = ({ title, settings }) => (
+const SettingsSection: React.FC<SettingsSectionProps> = ({
+  title,
+  settings,
+}) => (
   <div className="text-gray-700">
-    {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>} {/* Render title only if provided */}
+    {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}{" "}
+    {/* Render title only if provided */}
     {settings.map(({ label, isEnabled, onToggle }) => (
       <div key={label} className="flex items-center justify-between mb-4">
         <span>{label}</span>

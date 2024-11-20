@@ -1,8 +1,8 @@
 import React from "react";
 
 interface PaginationProps {
-  currentPage: number; 
-  totalPages: number; 
+  currentPage: number;
+  totalPages: number;
   paginate: (pageNumber: number) => void; // Function to handle page changes
 }
 

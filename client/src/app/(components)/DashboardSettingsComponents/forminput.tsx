@@ -23,7 +23,7 @@ const FormInput: React.FC<FormInputProps> = ({
       value={value}
       onChange={onChange}
       className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
-      />
+    />
   </div>
 );
 
