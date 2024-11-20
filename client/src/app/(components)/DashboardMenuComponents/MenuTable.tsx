@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { MENU_DATA } from "@/app/(components)/DashboardMenuComponents/MenuData";
+import { useMenuData } from "./MenuAPI";
 import Pagination from "../Common/Pagination";
 import SearchInput from "../Common/SearchInput";
 import MenuCard from "../DashboardMenuComponents/MenuCard";
@@ -19,7 +20,7 @@ const MIN_ROWS = 2;
 
 const MenuTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [filteredMenu, setFilteredMenu] = useState<MenuItem[]>(MENU_DATA);
+  const [filteredMenu, setFilteredMenu] = useMenuData("ajwitt2@asu.edu");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS * ITEMS_PER_ROW);
   const [isAnimating, setIsAnimating] = useState(true);
@@ -29,7 +30,7 @@ const MenuTable: React.FC = () => {
     []
   );
 
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(MENU_DATA); // Initialize with MENU_DATA
+const [menuItems, setMenuItems] = useMenuData("ajwitt2@asu.edu");
 
   // Custom useSortLogic hook
   const { sortField, sortOrder, setSortFieldAndOrder, sortData } =
@@ -37,6 +38,8 @@ const MenuTable: React.FC = () => {
 
   // Handle saving a new menu item
   const handleSaveMenuItem = (menuItem: MenuItem) => {
+    
+
     const updatedMenu = [...menuItems, menuItem];
     setMenuItems(updatedMenu);
 
