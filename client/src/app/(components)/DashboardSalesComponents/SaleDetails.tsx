@@ -42,15 +42,15 @@ const SaleDetails: React.FC<SaleDetailsProps> = ({
   };
 
   return (
-    <div className="pl-[19%]">
+    <div className="pl-[0%]">
       <table className="min-w-full mt-4 overflow-hidden">
         <thead>
           <tr>
-            {["Menu Item", "Quantity", "Item Revenue", "Actions"].map(
+            {["Menu Item", "", "Quantity", "Item Revenue", "Actions"].map(
               (header) => (
                 <th
-                  key={header}
-                  className="w-1/3 text-left text-xs font-medium text-black uppercase tracking-wider"
+                        key={header}
+                        className={header === "Menu Item"? "pl-7 w-1/4 text-left text-xs font-medium text-black uppercase tracking-wider": " w-1/4 text-left text-xs font-medium text-black uppercase tracking-wider"}
                 >
                   {header}
                 </th>
