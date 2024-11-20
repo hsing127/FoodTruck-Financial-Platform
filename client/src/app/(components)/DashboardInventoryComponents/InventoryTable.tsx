@@ -298,7 +298,7 @@ const InventoryTable: React.FC = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
               <tr>
-                <th className="pl-7 text-left w-1/3 py-2 text-xs font-medium text-black uppercase tracking-wider">
+                <th className="text-left w-1/3 py-2 text-xs font-medium text-black uppercase tracking-wider">
                   <button
                     className="flex items-center w-full text-left cursor-pointer"
                     onClick={() =>
