@@ -49,25 +49,29 @@ export const useMenuData = (email: string) => {
         const getIcon = (name: string): JSX.Element => {
           const formattedName = name.replace(/\s+/g, ""); // Remove spaces
           const IconComponent = (Icons as any)[formattedName]; // Lookup icon by name
-          return IconComponent ? <IconComponent size={44} /> : <Icons.Pizza size={44} />; // Default to Pizza
+          return IconComponent ? (
+            <IconComponent size={44} />
+          ) : (
+            <Icons.Pizza size={44} />
+          ); // Default to Pizza
         };
 
         // Transform API data into desired format
-        const formattedMenuItems: MenuItem[] = Object.entries(menuData.menuItems).map(
-          ([menuName, menuItem]: [string, any], index: number) => ({
-            id: index + 1,
-            image: getIcon("pizza"), // Dynamically determine the icon
-            name: menuName,
-            price: `$${menuItem.cost}`,
-            details: menuItem.description || "No description available.",
-            ingredients: menuItem.ingredients.map((ingredient: any) => ({
-              ingredient: ingredient.name,
-              quantity: ingredient.amount,
-              units: ingredient.units,
-              price: "$1", // Placeholder price for ingredients
-            })),
-          })
-        );
+        const formattedMenuItems: MenuItem[] = Object.entries(
+          menuData.menuItems
+        ).map(([menuName, menuItem]: [string, any], index: number) => ({
+          id: index + 1,
+          image: getIcon("pizza"), // Dynamically determine the icon
+          name: menuName,
+          price: `$${menuItem.cost}`,
+          details: menuItem.description || "No description available.",
+          ingredients: menuItem.ingredients.map((ingredient: any) => ({
+            ingredient: ingredient.name,
+            quantity: ingredient.amount,
+            units: ingredient.units,
+            price: "$1", // Placeholder price for ingredients
+          })),
+        }));
 
         setMenuItems(formattedMenuItems);
       } catch (error) {

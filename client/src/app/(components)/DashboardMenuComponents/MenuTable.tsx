@@ -30,7 +30,7 @@ const MenuTable: React.FC = () => {
     []
   );
 
-const [menuItems, setMenuItems] = useMenuData("ajwitt2@asu.edu");
+  const [menuItems, setMenuItems] = useMenuData("ajwitt2@asu.edu");
 
   // Custom useSortLogic hook
   const { sortField, sortOrder, setSortFieldAndOrder, sortData } =
@@ -38,8 +38,6 @@ const [menuItems, setMenuItems] = useMenuData("ajwitt2@asu.edu");
 
   // Handle saving a new menu item
   const handleSaveMenuItem = (menuItem: MenuItem) => {
-    
-
     const updatedMenu = [...menuItems, menuItem];
     setMenuItems(updatedMenu);
 
