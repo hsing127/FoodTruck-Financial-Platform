@@ -11,6 +11,7 @@ type SortField =
   | "price"
   | "Amount"
   | "AmountUnits"
+  | "ingredients"
   | "Name";
 
 // Generic type for items to sort
