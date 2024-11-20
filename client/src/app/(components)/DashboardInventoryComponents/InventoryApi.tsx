@@ -59,3 +59,59 @@ export const useInventoryData = (email: string) => {
 
   return { inventory, setInventory, loading, error };
 };
+
+// Custom hook to add inventory data
+export const useAddInventoryData = (
+  inventoryItem: InventoryItem | null,
+  email: string
+) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const addInventory = async (
+      inventoryItem: InventoryItem,
+      email: string
+    ) => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              table: "ingredient",
+              body: [{ Email: email, ...inventoryItem }],
+            }),
+          }
+        );
+        let res = await response.json();
+        if (!response.ok) {
+          console.log("error");
+          throw new Error("Failed to add inventory data");
+        } else {
+          if (res.statusCode == 500) {
+            alert("Something went wrong.");
+          } else {
+            alert("Successfully Inserted.");
+            console.log("Inventory added successfully:", res);
+          }
+        }
+      } catch (err: any) {
+        console.error("Error adding inventory:", err);
+        setError(err.message || "Unknown error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (inventoryItem) {
+      addInventory(inventoryItem, email);
+    }
+  }, [inventoryItem, email]);
+
+  return { loading, error };
+};
