@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
+import * as Icons from "lucide-react";
 
-// Define your TypeScript interfaces
 interface Ingredient {
-  name: string;
-  amount: number;
+  ingredient: string;
+  quantity: number;
   units: string;
+  price: string;
 }
 
 interface MenuItem {
+  id: number;
+  image: JSX.Element;
   name: string;
-  cost: number;
+  price: string;
+  details?: string;
   ingredients: Ingredient[];
 }
 
@@ -33,6 +37,7 @@ export const useMenuData = (email: string) => {
 
         const data = await response.json();
 
+        //Parse data if `body` is a string
         let menuData;
         if (typeof data.body === "string") {
           menuData = JSON.parse(data.body);
@@ -40,15 +45,26 @@ export const useMenuData = (email: string) => {
           menuData = data.body;
         }
 
-        //Format the menu items into a usable structure
-        const formattedMenuItems = Object.entries(menuData.menuItems).map(
-          ([menuName, menuItem]: [string, any]) => ({
+        //Helper to get an icon dynamically
+        const getIcon = (name: string): JSX.Element => {
+          const formattedName = name.replace(/\s+/g, ""); // Remove spaces
+          const IconComponent = (Icons as any)[formattedName]; // Lookup icon by name
+          return IconComponent ? <IconComponent size={44} /> : <Icons.Pizza size={44} />; // Default to Pizza
+        };
+
+        // Transform API data into desired format
+        const formattedMenuItems: MenuItem[] = Object.entries(menuData.menuItems).map(
+          ([menuName, menuItem]: [string, any], index: number) => ({
+            id: index + 1,
+            image: getIcon("pizza"), // Dynamically determine the icon
             name: menuName,
-            cost: menuItem.cost,
+            price: "$1", // Placeholder price
+            details: menuItem.description || "No description available.",
             ingredients: menuItem.ingredients.map((ingredient: any) => ({
-              name: ingredient.name,
-              amount: ingredient.amount,
+              ingredient: ingredient.name,
+              quantity: ingredient.amount,
               units: ingredient.units,
+              price: "$1", // Placeholder price for ingredients
             })),
           })
         );
@@ -64,5 +80,5 @@ export const useMenuData = (email: string) => {
     fetchMenuData();
   }, [email]);
 
-  return { menuItems, setMenuItems, loading };
+  return [menuItems, setMenuItems, loading] as const;
 };
