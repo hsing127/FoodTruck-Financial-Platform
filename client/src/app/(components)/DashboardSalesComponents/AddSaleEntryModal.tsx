@@ -68,7 +68,7 @@ const AddSaleEntryModal: React.FC<AddManualEntryModalProps> = ({
       ...prevSale,
       details: [
         ...prevSale.details,
-        { menuitemname: "", count: 0, itemrevenue:0},
+        { menuitemname: "", count: 0, itemrevenue: 0 },
       ],
     }));
   };
@@ -76,9 +76,7 @@ const AddSaleEntryModal: React.FC<AddManualEntryModalProps> = ({
   // Delete a sale detail (menuItem) at a specific index
   const handleDeleteMenuItem = (index: number) => {
     setNewSale((prevSale) => {
-      const updatedDetails = prevSale.details.filter(
-        (_, idx) => idx !== index
-      );
+      const updatedDetails = prevSale.details.filter((_, idx) => idx !== index);
       return {
         ...prevSale,
         details: updatedDetails,

@@ -49,8 +49,12 @@ const SaleDetails: React.FC<SaleDetailsProps> = ({
             {["Menu Item", "", "Quantity", "Item Revenue", "Actions"].map(
               (header) => (
                 <th
-                        key={header}
-                        className={header === "Menu Item"? "pl-7 w-1/4 text-left text-xs font-medium text-black uppercase tracking-wider": " w-1/4 text-left text-xs font-medium text-black uppercase tracking-wider"}
+                  key={header}
+                  className={
+                    header === "Menu Item"
+                      ? "pl-7 w-1/4 text-left text-xs font-medium text-black uppercase tracking-wider"
+                      : " w-1/4 text-left text-xs font-medium text-black uppercase tracking-wider"
+                  }
                 >
                   {header}
                 </th>

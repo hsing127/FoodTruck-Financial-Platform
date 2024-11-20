@@ -62,9 +62,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
         <td className="py-5 text-sm font-medium text-black flex items-center ">
           <motion.div
             variants={chevronVariants}
-            animate={
-              isRowExpanded(sale.localSaleId) ? "rotated" : "default"
-            }
+            animate={isRowExpanded(sale.localSaleId) ? "rotated" : "default"}
             transition={{ duration: 0.2 }}
             className="mr-2"
           >
@@ -76,7 +74,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
         {/* Render editable cells */}
         <EditableCell
           isEditing={isEditing}
-          value={isEditing ? editedItem.startDate : sale.startDate}//change later
+          value={isEditing ? editedItem.startDate : sale.startDate} //change later
           name="startDate"
           onChange={handleInputChange}
         />

@@ -28,18 +28,16 @@ export const useSalesData = (email: string) => {
         }
 
         // Assign localSaleId sequentially to each sale item and format date
-        const salesWithId = salesData.sales.map(
-          (sale: any, index: number) => {
-                const startDateObj = new Date(sale.StartDate);
-                const endDateObj = new Date(sale.EndDate);
-            return {
-              ...sale,
-              localSaleId: index + 1001, // Start at 1001 and increment
-              startDate: startDateObj.toLocaleDateString(), // Format date
-              endDate: endDateObj.toLocaleDateString(), // Format date
-            };
-          }
-        );
+        const salesWithId = salesData.sales.map((sale: any, index: number) => {
+          const startDateObj = new Date(sale.StartDate);
+          const endDateObj = new Date(sale.EndDate);
+          return {
+            ...sale,
+            localSaleId: index + 1001, // Start at 1001 and increment
+            startDate: startDateObj.toLocaleDateString(), // Format date
+            endDate: endDateObj.toLocaleDateString(), // Format date
+          };
+        });
 
         setSales(salesWithId);
       } catch (error) {
