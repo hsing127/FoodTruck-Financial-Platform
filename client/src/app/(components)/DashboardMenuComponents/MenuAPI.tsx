@@ -58,7 +58,7 @@ export const useMenuData = (email: string) => {
             id: index + 1,
             image: getIcon("pizza"), // Dynamically determine the icon
             name: menuName,
-            price: "$1", // Placeholder price
+            price: `$${menuItem.cost}`,
             details: menuItem.description || "No description available.",
             ingredients: menuItem.ingredients.map((ingredient: any) => ({
               ingredient: ingredient.name,
