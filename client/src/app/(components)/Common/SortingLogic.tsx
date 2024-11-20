@@ -1,14 +1,18 @@
 import { useState, useCallback } from "react";
 
 // Types for sort fields and order
+type SortOrder = "asc" | "desc";
+
 type SortField =
   | "date"
   | "cost"
   | "location"
   | "name"
   | "price"
-  | "ingredients";
-type SortOrder = "asc" | "desc";
+  | "Amount"
+  | "AmountUnits"
+  | "ingredients"
+  | "Name";
 
 // Generic type for items to sort
 interface SortableItem {
@@ -34,7 +38,7 @@ const useSortLogic = <T extends SortableItem>(): UseSortLogicReturn<T> => {
 
   const { sortField, sortOrder } = sortConfig;
 
-  // Function to toggle sort order or set new sort field
+  // Function to toggle sort order or set a new sort field
   const setSortFieldAndOrder = (field: SortField) => {
     setSortConfig((prevConfig) => {
       if (field === prevConfig.sortField) {
@@ -71,19 +75,31 @@ const useSortLogic = <T extends SortableItem>(): UseSortLogicReturn<T> => {
         if (sortField === "date") {
           aField = new Date(aField).getTime();
           bField = new Date(bField).getTime();
-        } else if (sortField === "cost" || sortField === "price") {
+        } else if (
+          sortField === "cost" ||
+          sortField === "price" ||
+          sortField === "Amount"
+        ) {
+          // Parse numeric values from strings
           aField = parseFloat(String(aField).replace(/[^0-9.-]+/g, ""));
           bField = parseFloat(String(bField).replace(/[^0-9.-]+/g, ""));
-        } else if (sortField === "location" || sortField === "name") {
+        } else if (
+          sortField === "location" ||
+          sortField === "name" ||
+          sortField === "AmountUnits" ||
+          sortField === "Name"
+        ) {
+          // Convert to lowercase strings for case-insensitive comparison
           aField = String(aField).toLowerCase();
           bField = String(bField).toLowerCase();
         } else if (sortField === "ingredients") {
+          // Sort based on the number of ingredients
           aField = Array.isArray(aField) ? aField.length : 0;
           bField = Array.isArray(bField) ? bField.length : 0;
         } else {
           // Fallback for any other fields
-          aField = aField.toString().toLowerCase();
-          bField = bField.toString().toLowerCase();
+          aField = String(aField).toLowerCase();
+          bField = String(bField).toLowerCase();
         }
 
         if (aField < bField) return sortOrder === "asc" ? -1 : 1;

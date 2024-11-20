@@ -1,116 +1,68 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { motion } from "framer-motion";
 import InventoryTableRow from "./InventoryTableRow";
 import SearchInput from "../Common/SearchInput";
 import Pagination from "../Common/Pagination";
-import { Upload, Plus, Filter } from "lucide-react";
+import { Upload, Plus, Filter, ArrowUp, ArrowDown } from "lucide-react";
 import { InventoryItem } from "@/app/types/types";
 import AddInventoryItemModal from "./AddInventoryItemModal";
+import { useInventoryData } from "./InventoryApi";
+import UploadLogic, { UploadLogicHandle } from "../Common/UploadLogic";
+import useSortLogic from "../Common/SortingLogic";
 
-const ROW_HEIGHT = 60;
+// Constants
+const ROW_HEIGHT = 56;
 const BOTTOM_PADDING = 40;
 const MIN_ROWS = 6;
 
+// Action Types
+enum ActionType {
+  UPLOAD = "upload",
+  ADD_ENTRY = "addEntry",
+  FILTER = "filter",
+}
+
+// Filter Fields
+type FilterField = "Name" | "Amount" | "AmountUnits";
+
 const InventoryTable: React.FC = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
-  const [filteredInventory, setFilteredInventory] = useState<InventoryItem[]>(
-    []
-  );
+  const { inventory, setInventory, loading, error } =
+    useInventoryData("ajwitt2@asu.edu");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  const [showAddInventoryModal, setShowAddInventoryModal] = useState(false);
+  // Use the custom useSortLogic hook with InventoryItem
+  const { sortField, sortOrder, setSortFieldAndOrder, sortData } =
+    useSortLogic<InventoryItem>();
 
-  // Fetch inventory data
-  useEffect(() => {
-    const fetchInventoryData = async () => {
-      try {
-        const response = await fetch(
-          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/inventory",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            // Update email as needed
-            body: JSON.stringify({ email: "wenjiex1@asu.edu" }),
-          }
-        );
+  // Ref for UploadLogic
+  const uploadLogicRef = useRef<UploadLogicHandle>(null);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch inventory data");
-        }
-
-        const data = await response.json();
-
-        // Parse the 'body' field, which contains the actual inventory data as a JSON string
-        const parsedBody = JSON.parse(data.body);
-
-        if (parsedBody.inventory && Array.isArray(parsedBody.inventory)) {
-          const items = parsedBody.inventory as InventoryItem[];
-          setInventoryItems(items);
-          setFilteredInventory(items);
-        } else {
-          console.error("Unexpected data format:", parsedBody);
-        }
-      } catch (error) {
-        console.error("Error fetching inventory:", error);
-      }
-    };
-
-    fetchInventoryData();
+  // Function to open the modal
+  const openModal = useCallback(() => {
+    setIsModalOpen(true);
   }, []);
 
-  // Handle search input changes
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value.toLowerCase();
-    setSearchInput(term);
+  // Function to close the modal
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
 
-    if (term === "") {
-      setFilteredInventory(inventoryItems);
-    } else {
-      const filtered = inventoryItems.filter(
-        (item) =>
-          item.Name.toLowerCase().includes(term) ||
-          item.Amount.toLowerCase().includes(term) ||
-          item.AmountUnits.toLowerCase().includes(term)
-      );
-      setFilteredInventory(filtered);
-    }
-
-    setCurrentPage(1);
-  };
-
-  // Handle adding a new inventory item
-  const handleAddInventoryItem = (item: InventoryItem) => {
-    setInventoryItems((prev) => [...prev, item]);
-    setFilteredInventory((prev) => [...prev, item]);
-    setShowAddInventoryModal(false);
-  };
-
-  // Handle editing an inventory item
-  const handleItemEdit = (id: number, updatedItem: InventoryItem) => {
-    setInventoryItems((prev) =>
-      prev.map((item) => (item.id === id ? updatedItem : item))
-    );
-    setFilteredInventory((prev) =>
-      prev.map((item) => (item.id === id ? updatedItem : item))
-    );
-  };
-
-  // Handle deleting an inventory item
-  const handleItemDelete = (id: number) => {
-    setInventoryItems((prev) => prev.filter((item) => item.id !== id));
-    setFilteredInventory((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  // Calculate items per page based on viewport height
-  const calculateItemsPerPage = () => {
+  const calculateItemsPerPage = useCallback(() => {
     const viewportHeight = window.innerHeight;
     const availableHeight = viewportHeight - 420 - BOTTOM_PADDING;
-    return Math.max(MIN_ROWS, Math.floor(availableHeight / ROW_HEIGHT));
-  };
+    const calculatedRows = Math.floor(availableHeight / ROW_HEIGHT);
+    return Math.max(calculatedRows, MIN_ROWS);
+  }, []);
 
   // Set items per page and add window resize listener
   useEffect(() => {
@@ -122,32 +74,164 @@ const InventoryTable: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
+  }, [calculateItemsPerPage]);
+
+  // Handle search input changes
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value.toLowerCase());
+    setCurrentPage(1);
   }, []);
 
-  // Pagination calculations
-  const indexOfLastInventory = currentPage * itemsPerPage;
-  const indexOfFirstInventory = indexOfLastInventory - itemsPerPage;
-  const currentInventory = filteredInventory.slice(
-    indexOfFirstInventory,
-    indexOfLastInventory
+  // Handle adding a new inventory item
+  const handleAddInventoryItem = useCallback(
+    (item: InventoryItem) => {
+      setInventory((prev) => [...prev, item]);
+      setCurrentPage(1);
+      closeModal();
+    },
+    [setInventory, closeModal]
   );
-  const totalPages = Math.ceil(filteredInventory.length / itemsPerPage);
+
+  // Handle editing an inventory item
+  const handleItemEdit = useCallback(
+    (id: number, updatedItem: InventoryItem) => {
+      setInventory((prev) =>
+        prev.map((item) => (item.id === id ? updatedItem : item))
+      );
+    },
+    [setInventory]
+  );
+
+  // Handle deleting an inventory item
+  const handleDeleteClick = useCallback(
+    (id: number) => {
+      setInventory((prev) => {
+        const updatedInventory = prev.filter((item) => item.id !== id);
+        return updatedInventory;
+      });
+    },
+    [setInventory]
+  );
 
   // Handle action item clicks from SearchInput
-  const handleActionItemClick = (actionType: string, item: string) => {
-    if (actionType === "addEntry" && item === "Add Inventory Item") {
-      setShowAddInventoryModal(true);
-    } else {
-      console.log(`Action: ${actionType}, Item: ${item}`);
+  const handleActionItemClick = useCallback(
+    (actionType: string, item: string) => {
+      console.log(`Action Type: ${actionType}, Item: ${item}`); // Debug log
+
+      let enumActionType: ActionType | null = null;
+
+      switch (actionType) {
+        case "upload":
+          enumActionType = ActionType.UPLOAD;
+          break;
+        case "addEntry":
+          enumActionType = ActionType.ADD_ENTRY;
+          break;
+        case "filter":
+          enumActionType = ActionType.FILTER;
+          break;
+        default:
+          console.warn(`Unknown action type: ${actionType}`);
+      }
+
+      console.log(`Enum Action Type: ${enumActionType}`); // Debug log
+
+      if (!enumActionType) return;
+
+      if (
+        enumActionType === ActionType.ADD_ENTRY &&
+        item === "Add Inventory Item"
+      ) {
+        openModal();
+      } else if (enumActionType === ActionType.UPLOAD) {
+        switch (item) {
+          case "Upload Image":
+            uploadLogicRef.current?.triggerImageUpload();
+            break;
+          case "Upload Document":
+            uploadLogicRef.current?.triggerDocumentUpload();
+            break;
+          case "Upload Spreadsheet":
+            uploadLogicRef.current?.triggerSpreadsheetUpload();
+            break;
+          default:
+            console.warn(`Unknown upload item: ${item}`);
+        }
+      } else if (enumActionType === ActionType.FILTER) {
+        let field: FilterField | null = null;
+        switch (item) {
+          case "Filter by Name":
+            field = "Name"; // Correct mapping
+            break;
+          case "Filter by Amount":
+            field = "Amount";
+            break;
+          case "Filter by Units":
+            field = "AmountUnits";
+            break;
+          default:
+            console.warn(`Unknown filter item: ${item}`);
+        }
+
+        console.log(`Sort Field: ${field}`); // Debug log
+
+        if (field) {
+          setSortFieldAndOrder(field);
+        }
+      } else {
+        console.warn(`Unhandled action: ${enumActionType}, Item: ${item}`);
+      }
+    },
+    [openModal, setSortFieldAndOrder]
+  );
+
+  // Handle file uploads from UploadLogic
+  const handleFileUpload = useCallback((fileType: string, file: File) => {
+    console.log(`Uploaded ${fileType}:`, file);
+    // Implement actual upload logic here
+  }, []);
+
+  // Derive filtered inventory based on search input
+  const filteredInventory = useMemo(() => {
+    if (!searchInput) return inventory;
+
+    return inventory.filter(
+      (item) =>
+        item.Name.toLowerCase().includes(searchInput) ||
+        item.Amount.toLowerCase().includes(searchInput) ||
+        item.AmountUnits.toLowerCase().includes(searchInput)
+    );
+  }, [inventory, searchInput]);
+
+  // Derive sorted inventory based on sortField and sortOrder
+  const sortedInventory = useMemo(() => {
+    if (!sortField) return filteredInventory;
+    const sorted = sortData(filteredInventory);
+    console.log("Sorted Inventory:", sorted); // Debug log
+    return sorted;
+  }, [filteredInventory, sortField, sortData]);
+
+  // Pagination calculations
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentInventory = useMemo(
+    () => sortedInventory.slice(indexOfFirstItem, indexOfLastItem),
+    [sortedInventory, indexOfFirstItem, indexOfLastItem]
+  );
+  const totalPages = Math.ceil(sortedInventory.length / itemsPerPage);
+
+  // Reset animations when sortedInventory changes
+  useEffect(() => {
+    if (sortField) {
+      setCurrentPage(1);
+      setIsAnimating(true);
     }
-  };
+  }, [sortField, sortOrder, sortData]);
 
   return (
     <motion.div
-      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
-        inventoryItems.length > itemsPerPage
-          ? "overflow-hidden"
-          : "overflow-y-auto"
+      className={`pb-${BOTTOM_PADDING}px bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
+        isAnimating ? "overflow-hidden" : "overflow-y-auto"
       }`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -164,7 +248,7 @@ const InventoryTable: React.FC = () => {
             actions={[
               {
                 icon: <Upload size={20} />,
-                type: "upload",
+                type: ActionType.UPLOAD,
                 title: "Upload File",
                 items: [
                   "Upload Image",
@@ -174,13 +258,13 @@ const InventoryTable: React.FC = () => {
               },
               {
                 icon: <Plus size={20} />,
-                type: "addEntry",
+                type: ActionType.ADD_ENTRY,
                 title: "Add Entry",
                 items: ["Add Inventory Item"],
               },
               {
                 icon: <Filter size={20} />,
-                type: "filter",
+                type: ActionType.FILTER,
                 title: "Filter",
                 items: [
                   "Filter by Name",
@@ -191,67 +275,115 @@ const InventoryTable: React.FC = () => {
             ]}
             onActionItemClick={handleActionItemClick}
           />
-          {showAddInventoryModal && (
-            <AddInventoryItemModal
-              isOpen={showAddInventoryModal}
-              onClose={() => setShowAddInventoryModal(false)}
-              onSave={handleAddInventoryItem}
-            />
-          )}
+
+          {/* UploadLogic handles all file uploads */}
+          <UploadLogic ref={uploadLogicRef} onFileUpload={handleFileUpload} />
+
+          <AddInventoryItemModal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            onSave={handleAddInventoryItem}
+          />
         </div>
       </div>
 
       {/* Conditionally Render No Items Message or Inventory Table */}
-      {filteredInventory.length === 0 ? (
+      {sortedInventory.length === 0 ? (
         <p className="text-center text-gray-600 mt-8">
           No inventory items found. Add or upload items to get started.
         </p>
       ) : (
         <>
           {/* Table to display inventory data */}
-          <div className="flex-grow overflow-y-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr>
-                  <th className="pl-7 text-left w-1/3 py-2 text-xs font-medium text-black uppercase tracking-wider">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr>
+                <th className="text-left w-1/3 py-2 text-xs font-medium text-black uppercase tracking-wider">
+                  <button
+                    className="flex items-center w-full text-left cursor-pointer"
+                    onClick={() =>
+                      handleActionItemClick(ActionType.FILTER, "Filter by Name")
+                    }
+                  >
                     Name
-                  </th>
-                  <th className="text-left w-1/3 text-xs font-medium text-black uppercase tracking-wider">
+                    {sortField === "Name" &&
+                      (sortOrder === "asc" ? (
+                        <ArrowUp size={16} className="ml-1" />
+                      ) : (
+                        <ArrowDown size={16} className="ml-1" />
+                      ))}
+                  </button>
+                </th>
+                <th className="text-left w-1/3 text-xs font-medium text-black uppercase tracking-wider">
+                  <button
+                    className="flex items-center w-full text-left cursor-pointer"
+                    onClick={() =>
+                      handleActionItemClick(
+                        ActionType.FILTER,
+                        "Filter by Amount"
+                      )
+                    }
+                  >
                     Amount
-                  </th>
-                  <th className="text-left w-1/3 text-xs font-medium text-black uppercase tracking-wider">
+                    {sortField === "Amount" &&
+                      (sortOrder === "asc" ? (
+                        <ArrowUp size={16} className="ml-1" />
+                      ) : (
+                        <ArrowDown size={16} className="ml-1" />
+                      ))}
+                  </button>
+                </th>
+                <th className="text-left w-1/3 text-xs font-medium text-black uppercase tracking-wider">
+                  <button
+                    className="flex items-center w-full text-left cursor-pointer"
+                    onClick={() =>
+                      handleActionItemClick(
+                        ActionType.FILTER,
+                        "Filter by Units"
+                      )
+                    }
+                  >
                     Units
-                  </th>
-                  <th className="w-[100px] text-left text-xs font-medium text-black uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
+                    {sortField === "AmountUnits" &&
+                      (sortOrder === "asc" ? (
+                        <ArrowUp size={16} className="ml-1" />
+                      ) : (
+                        <ArrowDown size={16} className="ml-1" />
+                      ))}
+                  </button>
+                </th>
 
-              <motion.tbody
-                initial="hidden"
-                animate="visible"
-                variants={{
-                  hidden: { opacity: 0 },
-                  visible: {
-                    opacity: 1,
-                    transition: { staggerChildren: 0.07 },
-                  },
-                }}
-                key={currentPage}
-              >
-                {currentInventory.map((item, idx) => (
-                  <InventoryTableRow
-                    key={item.id} // Ensure 'id' is unique
-                    item={item}
-                    index={indexOfFirstInventory + idx}
-                    onItemEdit={handleItemEdit}
-                    onItemDelete={handleItemDelete}
-                  />
-                ))}
-              </motion.tbody>
-            </table>
-          </div>
+                <th className="w-[100px] text-left text-xs font-medium text-black uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+
+            <motion.tbody
+              initial="hidden"
+              animate="visible"
+              onAnimationComplete={() => setIsAnimating(false)}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.07 },
+                },
+              }}
+              key={currentPage}
+            >
+              {currentInventory.map((item, idx) => (
+                <InventoryTableRow
+                  key={item.id}
+                  item={item}
+                  index={indexOfFirstItem + idx}
+                  onItemEdit={handleItemEdit}
+                  onItemDelete={handleDeleteClick}
+                  setIsAnimating={setIsAnimating}
+                />
+              ))}
+            </motion.tbody>
+          </table>
 
           {/* Pagination */}
           <Pagination
