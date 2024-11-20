@@ -99,7 +99,7 @@ const MenuTable: React.FC = () => {
       setCurrentPage(1);
       setIsAnimating(true);
     },
-    [menuItems, sortData]
+    [menuItems, sortData, setFilteredMenu]
   );
 
   // Handle clicking "More Details" on a menu item
@@ -159,7 +159,7 @@ const MenuTable: React.FC = () => {
       setCurrentPage(1);
       setIsAnimating(true);
     }
-  }, [sortField, sortOrder, sortData, filteredMenu]);
+  }, [sortField, sortOrder, sortData, filteredMenu, setFilteredMenu]);
 
   // Debugging: Log state changes
   useEffect(() => {
