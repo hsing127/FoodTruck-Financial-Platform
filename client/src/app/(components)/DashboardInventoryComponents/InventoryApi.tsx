@@ -61,15 +61,20 @@ export const useInventoryData = (email: string) => {
 };
 
 // Custom hook to add inventory data
-export const useAddInventoryData = (inventoryItem: InventoryItem | null, email: string) => {
+export const useAddInventoryData = (
+  inventoryItem: InventoryItem | null,
+  email: string
+) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const addInventory = async (inventoryItem: InventoryItem, email: string) => {
+    const addInventory = async (
+      inventoryItem: InventoryItem,
+      email: string
+    ) => {
       setLoading(true);
       try {
-        
         const response = await fetch(
           "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
           {
@@ -77,26 +82,27 @@ export const useAddInventoryData = (inventoryItem: InventoryItem | null, email: 
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ table: "ingredient",
-                body: [{ Email: email, ...inventoryItem }], }),
+            body: JSON.stringify({
+              table: "ingredient",
+              body: [{ Email: email, ...inventoryItem }],
+            }),
           }
-          );
-          let res = await response.json()
-          if (!response.ok) {
-              console.log("error");
-            throw new Error("Failed to add inventory data");
+        );
+        let res = await response.json();
+        if (!response.ok) {
+          console.log("error");
+          throw new Error("Failed to add inventory data");
+        } else {
+          if (res.statusCode == 500) {
+            alert("Something went wrong.");
           } else {
-              if (res.statusCode == 500) {
-                  alert("Something went wrong.");
-              } else {
-                  alert("Successfully Inserted.");
-                  console.log("Inventory added successfully:", res);
-              }
+            alert("Successfully Inserted.");
+            console.log("Inventory added successfully:", res);
+          }
         }
       } catch (err: any) {
         console.error("Error adding inventory:", err);
-          setError(err.message || "Unknown error");
-          
+        setError(err.message || "Unknown error");
       } finally {
         setLoading(false);
       }
