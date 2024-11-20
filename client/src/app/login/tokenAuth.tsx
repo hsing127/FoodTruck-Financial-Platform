@@ -62,7 +62,7 @@ export const validateToken = async (): Promise<CustomJwtPayload | null> => {
     }
 
     try {
-        const response = await fetch("NeedsAPIGatewayURL", {
+        const response = await fetch("https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/validateToken", {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
