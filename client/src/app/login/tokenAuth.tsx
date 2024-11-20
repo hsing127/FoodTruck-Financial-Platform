@@ -62,7 +62,7 @@ export const validateToken = async (): Promise<CustomJwtPayload | null> => {
     }
 
     try {
-        const response = await fetch("https://your-api-gateway-url/validateToken", {
+        const response = await fetch("NeedsAPIGatewayURL", {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
