@@ -20,12 +20,15 @@ import {
   tableVariants,
 } from "../Common/Animations";
 import MenuItemIngredientRow from "./AddMenuItemIngredientRow";
+import { useMenuData } from "./MenuAPI";
 
 interface AddMenuItemModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (menuItem: MenuItem) => void;
 }
+
+const email = "ajwitt2@asu.edu";
 
 // Define the available food icons
 const availableIcons = [
@@ -35,6 +38,7 @@ const availableIcons = [
   { name: "Sandwich", component: <Sandwich size={44} /> },
   { name: "Salad", component: <Salad size={44} /> },
 ];
+
 
 const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
   isOpen,
@@ -59,6 +63,8 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
   // Ref for the image selector to detect outside clicks
   const imageSelectorRef = useRef<HTMLDivElement>(null);
 
+  const [menuItems, setMenuItems, loading, addMenuItem, sendMenuItemToAPI] = useMenuData(email);
+
   // Handle changes in the menu item input fields
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -80,7 +86,8 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
   };
 
   // Save the current menu item
-  const handleSaveMenuItem = () => {
+  const handleSaveMenuItem = async () => {
+
     if (!newMenuItem.name || !newMenuItem.price) {
       alert("Please fill in all required fields.");
       return;
@@ -93,6 +100,19 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
       image: newMenuItem.image || <Pizza size={44} color="#8B5CF6" />, // Fallback to Pizza if no image selected
       ingredients: newMenuItem.ingredients,
     };
+
+    try {
+      // Send the menu item to the API
+      await sendMenuItemToAPI(email, menuItem);
+      // If successful, execute onSave callback
+      onSave(menuItem);
+      setNewMenuItem(initialMenuItem); // Reset the form
+      onClose(); // Close the modal
+    }catch (error) {
+      alert("There was an error saving the menu item.");
+    }
+
+
     onSave(menuItem);
     setNewMenuItem(initialMenuItem);
     onClose();
