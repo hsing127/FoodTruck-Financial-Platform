@@ -56,10 +56,10 @@ export const menuItemRowVariants: Variants = {
 
 // animation variants for ingredient rows
 export const ingredientRowVariants: Variants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: 10 },
-  };
+  hidden: { opacity: 0, y: -10 },
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: 10 },
+};
 
 // animation variants for image selector
 export const imageSelectorVariants: Variants = {

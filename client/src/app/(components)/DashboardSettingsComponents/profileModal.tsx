@@ -79,92 +79,92 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="overflow-y-auto max-h-[90vh] p-6">
-                <div className="flex justify-between mb-6">
-                  <h2 className="text-2xl font-semibold text-black">
-                    Edit Profile
-                  </h2>
-                  <button
-                    onClick={onClose}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <X size={28} />
-                  </button>
-                </div>
+              <div className="flex justify-between mb-6">
+                <h2 className="text-2xl font-semibold text-black">
+                  Edit Profile
+                </h2>
+                <button
+                  onClick={onClose}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X size={28} />
+                </button>
+              </div>
 
-                <div className="flex flex-col items-center mb-4">
-                  <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center relative mb-4 overflow-hidden">
-                    {avatar ? (
-                      <Image
-                        src={URL.createObjectURL(avatar)}
-                        alt="Avatar"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <User2 className="w-12 h-12 text-gray-600" />
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="text-gray-500 text-sm mb-2 hidden"
+              <div className="flex flex-col items-center mb-4">
+                <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center relative mb-4 overflow-hidden">
+                  {avatar ? (
+                    <Image
+                      src={URL.createObjectURL(avatar)}
+                      alt="Avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User2 className="w-12 h-12 text-gray-600" />
+                  )}
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="text-gray-500 text-sm mb-2 hidden"
+                />
+                <p className="text-gray-500 text-sm">
+                  Image size limit: 125kb max
+                </p>
+              </div>
+
+              <form className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormInput
+                    label="First Name"
+                    name="firstName"
+                    value={profile.firstName}
+                    onChange={onProfileChange}
                   />
-                  <p className="text-gray-500 text-sm">
-                    Image size limit: 125kb max
-                  </p>
+                  <FormInput
+                    label="Last Name"
+                    name="lastName"
+                    value={profile.lastName}
+                    onChange={onProfileChange}
+                  />
+                  <FormInput
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    value={profile.email}
+                    onChange={onProfileChange}
+                  />
+                  <FormInput
+                    label="Phone Number"
+                    name="phone"
+                    type="tel"
+                    value={profile.phone}
+                    onChange={onProfileChange}
+                  />
+                  <FormInput
+                    label="Birth Date"
+                    name="birthDate"
+                    type="date"
+                    value={profile.birthDate}
+                    onChange={onProfileChange}
+                  />
+                  <FormInput
+                    label="Company Name"
+                    name="company"
+                    value={profile.company}
+                    onChange={onProfileChange}
+                  />
                 </div>
 
-                <form className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <FormInput
-                      label="First Name"
-                      name="firstName"
-                      value={profile.firstName}
-                      onChange={onProfileChange}
-                    />
-                    <FormInput
-                      label="Last Name"
-                      name="lastName"
-                      value={profile.lastName}
-                      onChange={onProfileChange}
-                    />
-                    <FormInput
-                      label="Email Address"
-                      name="email"
-                      type="email"
-                      value={profile.email}
-                      onChange={onProfileChange}
-                    />
-                    <FormInput
-                      label="Phone Number"
-                      name="phone"
-                      type="tel"
-                      value={profile.phone}
-                      onChange={onProfileChange}
-                    />
-                    <FormInput
-                      label="Birth Date"
-                      name="birthDate"
-                      type="date"
-                      value={profile.birthDate}
-                      onChange={onProfileChange}
-                    />
-                    <FormInput
-                      label="Company Name"
-                      name="company"
-                      value={profile.company}
-                      onChange={onProfileChange}
-                    />
-                  </div>
-
-                  <div className="flex justify-end space-x-2">
-                    <Button onClick={onClose} label="Cancel" />
-                    <Button
-                      onClick={() => console.log("Profile saved")}
-                      label="Save Changes"
-                    />
-                  </div>
-                </form>
+                <div className="flex justify-end space-x-2">
+                  <Button onClick={onClose} label="Cancel" />
+                  <Button
+                    onClick={() => console.log("Profile saved")}
+                    label="Save Changes"
+                  />
+                </div>
+              </form>
             </div>
           </motion.div>
         </motion.div>

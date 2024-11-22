@@ -1,12 +1,40 @@
 import "@/app/globals.css";
-import React from "react";
+import React, { useMemo } from "react";
 import DashboardLayout from "./DashboardWrapper";
 import { motion } from "framer-motion";
-import { Pizza, Star, DollarSign, Layers } from "lucide-react"; // Lucide icons for menu stats
+import { Pizza, DollarSign, ClipboardList, BookOpen } from "lucide-react";
 import DashCardLong from "../(components)/DashboardHomeComponents/DashCardLong";
 import MenuTable from "../(components)/DashboardMenuComponents/MenuTable";
+import { useMenuData } from "../(components)/DashboardMenuComponents/MenuAPI";
 
 export const DashboardMenu: React.FC = () => {
+  const [menuItems, setMenuItems] = useMenuData("ajwitt2@asu.edu");
+
+  // Compute Total Menu Items
+  const totalMenuItems = menuItems.length;
+
+  // Compute Average Price
+  const averagePrice = useMemo(() => {
+    if (menuItems.length === 0) return "0.00";
+    const total = menuItems.reduce((acc, item) => {
+      const price = parseFloat(item.price.replace("$", ""));
+      return acc + (isNaN(price) ? 0 : price);
+    }, 0);
+    return (total / menuItems.length).toFixed(2);
+  }, [menuItems]);
+
+  // Compute Total Unique Ingredients
+  const totalUniqueIngredients = useMemo(() => {
+    const ingredientSet = new Set<string>();
+    menuItems.forEach((item) => {
+      item.ingredients.forEach((ing) => ingredientSet.add(ing.ingredient));
+    });
+    return ingredientSet.size;
+  }, [menuItems]);
+
+  // Compute Total Inventory Items
+  const totalInventoryItems = 150; // Placeholder value
+
   return (
     <DashboardLayout>
       <div className="outline outline-white outline-8 flex-1 relative border-white rounded-3xl border-[16px] overflow-hidden">
@@ -24,35 +52,37 @@ export const DashboardMenu: React.FC = () => {
                 <DashCardLong
                   name="Total Menu Items"
                   icon={Pizza}
-                  value="50"
+                  value={totalMenuItems}
                   color="bg-gray-100"
-                />
-                <DashCardLong
-                  name="Most Popular Item"
-                  icon={Star}
-                  value="Margherita Pizza"
-                  color="bg-gray-100"
-                  isPurple={true}
                 />
                 <DashCardLong
                   name="Average Price"
                   icon={DollarSign}
-                  value="$12"
+                  value={`$${averagePrice}`}
                   color="bg-gray-100"
                 />
                 <DashCardLong
-                  name="New Foods"
-                  icon={Layers}
-                  value="8"
+                  name="Total Ingredients"
+                  icon={ClipboardList}
+                  value={totalUniqueIngredients}
+                  color="bg-gray-100"
+                  isPurple={true}
+                />
+                <DashCardLong
+                  name="Total Inventory Items"
+                  icon={BookOpen}
+                  value={totalInventoryItems}
                   color="bg-gray-100"
                   isPurple={true}
                 />
               </div>
             </motion.div>
           </div>
-          <MenuTable />
+          <MenuTable menuItems={menuItems} setMenuItems={setMenuItems} />
         </div>
       </div>
     </DashboardLayout>
   );
 };
+
+export default DashboardMenu;

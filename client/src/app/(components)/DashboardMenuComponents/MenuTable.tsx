@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { MENU_DATA } from "@/app/(components)/DashboardMenuComponents/MenuData";
-import { useMenuData } from "./MenuAPI";
 import Pagination from "../Common/Pagination";
 import SearchInput from "../Common/SearchInput";
 import MenuCard from "../DashboardMenuComponents/MenuCard";
@@ -12,15 +10,20 @@ import AddMenuItemModal from "./AddMenuItemModal";
 import useSortLogic from "../Common/SortingLogic";
 import { itemVariants, tableVariants } from "../Common/Animations";
 
+interface MenuTableProps {
+  menuItems: MenuItem[];
+  setMenuItems: React.Dispatch<React.SetStateAction<MenuItem[]>>;
+}
+
 const ROW_HEIGHT = 170;
 const BOTTOM_PADDING = 40;
 const ROWS = 4;
 const ITEMS_PER_ROW = 3;
 const MIN_ROWS = 2;
 
-const MenuTable: React.FC = () => {
+const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
   const [searchInput, setSearchInput] = useState("");
-  const [filteredMenu, setFilteredMenu] = useMenuData("ajwitt2@asu.edu");
+  const [filteredMenu, setFilteredMenu] = useState<MenuItem[]>(menuItems);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS * ITEMS_PER_ROW);
   const [isAnimating, setIsAnimating] = useState(true);
@@ -29,8 +32,6 @@ const MenuTable: React.FC = () => {
   const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>(
     []
   );
-
-  const [menuItems, setMenuItems] = useMenuData("ajwitt2@asu.edu");
 
   // Custom useSortLogic hook
   const { sortField, sortOrder, setSortFieldAndOrder, sortData } =
@@ -169,6 +170,18 @@ const MenuTable: React.FC = () => {
     console.log("Current Page:", currentPage);
     console.log("Total Pages:", totalPages);
   }, [sortField, sortOrder, filteredMenu.length, currentPage, totalPages]);
+
+  // Update filteredMenu whenever menuItems change
+  useEffect(() => {
+    let filtered = menuItems;
+    if (searchInput !== "") {
+      filtered = menuItems.filter((item) =>
+        item.name.toLowerCase().includes(searchInput)
+      );
+    }
+    const sortedFiltered = sortData(filtered);
+    setFilteredMenu(sortedFiltered);
+  }, [menuItems, searchInput, sortData]);
 
   return (
     <motion.div
