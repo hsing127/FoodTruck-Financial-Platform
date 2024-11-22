@@ -20,14 +20,13 @@ export const useMenuData = (email: string) => {
           body: JSON.stringify({
             table: "menuItem",
             body: [
-                {
-                  Email: email,
-                  Name: menuItem.name,
-                  Cost: menuItem.price,
-                },
-            ]
-          }
-        ),
+              {
+                Email: email,
+                Name: menuItem.name,
+                Cost: menuItem.price,
+              },
+            ],
+          }),
         }
       );
 
@@ -44,9 +43,8 @@ export const useMenuData = (email: string) => {
     }
   };
 
-
   //Function to handle adding a new menu item
-   const addMenuItem = async (newMenuItem: MenuItem) => {
+  const addMenuItem = async (newMenuItem: MenuItem) => {
     try {
       await sendMenuItemToAPI(email, newMenuItem);
     } catch (error) {
@@ -116,5 +114,11 @@ export const useMenuData = (email: string) => {
     fetchMenuData();
   }, [email]);
 
-  return [menuItems, setMenuItems, loading, addMenuItem, sendMenuItemToAPI] as const;
+  return [
+    menuItems,
+    setMenuItems,
+    loading,
+    addMenuItem,
+    sendMenuItemToAPI,
+  ] as const;
 };

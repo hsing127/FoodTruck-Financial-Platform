@@ -117,54 +117,50 @@ export const useAddInventoryData = (
 };
 
 export const useEditInventoryData = () => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-  
-    const editInventory = async (
-      oldItem: InventoryItem,
-      newItem: InventoryItem,
-      email: string
-    ) => {
-      setLoading(true);
-        try {
-          
-        console.log("Original item:", oldItem);
-        console.log("Edited item:", newItem);
-        const response = await fetch(
-          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const editInventory = async (
+    oldItem: InventoryItem,
+    newItem: InventoryItem,
+    email: string
+  ) => {
+    setLoading(true);
+    try {
+      console.log("Original item:", oldItem);
+      console.log("Edited item:", newItem);
+      const response = await fetch(
+        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            table: "ingredient",
+            body: {
+              Email: email,
+              NewName: newItem.Name,
+              NewAmount: newItem.Amount,
+              NewAmountUnits: newItem.AmountUnits,
+              Name: oldItem.Name,
             },
-            body: JSON.stringify({
-              table: "ingredient",
-              body: 
-                {
-                  Email: email,
-                  NewName: newItem.Name,
-                  NewAmount: newItem.Amount,
-                  NewAmountUnits: newItem.AmountUnits,
-                  Name: oldItem.Name,
-                },
-            }),
-          }
-        );
-        const res = await response.json();
-        if (!response.ok || res.statusCode === 500) {
-          throw new Error("Failed to edit inventory data");
+          }),
         }
-        alert("Successfully Updated.");
-        console.log("Inventory edited successfully:", res);
-      } catch (err: any) {
-        console.error("Error editing inventory:", err);
-        setError(err.message || "Unknown error");
-      } finally {
-        setLoading(false);
+      );
+      const res = await response.json();
+      if (!response.ok || res.statusCode === 500) {
+        throw new Error("Failed to edit inventory data");
       }
-    };
-  
-    return { editInventory, loading, error };
+      alert("Successfully Updated.");
+      console.log("Inventory edited successfully:", res);
+    } catch (err: any) {
+      console.error("Error editing inventory:", err);
+      setError(err.message || "Unknown error");
+    } finally {
+      setLoading(false);
+    }
   };
-  
-  
+
+  return { editInventory, loading, error };
+};

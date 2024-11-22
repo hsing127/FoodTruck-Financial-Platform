@@ -39,7 +39,6 @@ const availableIcons = [
   { name: "Salad", component: <Salad size={44} /> },
 ];
 
-
 const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
   isOpen,
   onClose,
@@ -63,7 +62,8 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
   // Ref for the image selector to detect outside clicks
   const imageSelectorRef = useRef<HTMLDivElement>(null);
 
-  const [menuItems, setMenuItems, loading, addMenuItem, sendMenuItemToAPI] = useMenuData(email);
+  const [menuItems, setMenuItems, loading, addMenuItem, sendMenuItemToAPI] =
+    useMenuData(email);
 
   // Handle changes in the menu item input fields
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +87,6 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
 
   // Save the current menu item
   const handleSaveMenuItem = async () => {
-
     if (!newMenuItem.name || !newMenuItem.price) {
       alert("Please fill in all required fields.");
       return;
@@ -108,10 +107,9 @@ const AddMenuItemModal: React.FC<AddMenuItemModalProps> = ({
       onSave(menuItem);
       setNewMenuItem(initialMenuItem); // Reset the form
       onClose(); // Close the modal
-    }catch (error) {
+    } catch (error) {
       alert("There was an error saving the menu item.");
     }
-
 
     onSave(menuItem);
     setNewMenuItem(initialMenuItem);

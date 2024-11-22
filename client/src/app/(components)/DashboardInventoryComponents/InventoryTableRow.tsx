@@ -21,81 +21,81 @@ const rowVariants = {
 };
 
 const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
-    item,
-    index,
-    onItemEdit,
-    onItemDelete,
-    setIsAnimating,
-  }) => {
-    const {
-      isEditing,
-      editedItem,
-      handleEditClick,
-      handleSaveClick,
-      handleCancelClick,
-      handleInputChange,
-    } = useEditable<InventoryItem>(item);
-  
-    const { editInventory, loading } = useEditInventoryData();
-  
-    const handleSave = async (e: React.MouseEvent) => {
-      e.stopPropagation();
-      handleSaveClick();
-      await editInventory(item, editedItem, "ajwitt2@asu.edu");
-      onItemEdit(item.id, editedItem);
-    };
-  
-    return (
-      <motion.tr
-        variants={rowVariants}
-        initial="hidden"
-        animate="visible"
-        exit="hidden"
-        transition={{
-          delay: index * 0.03,
-          ...tableRowTransition,
-          onStart: () => setIsAnimating(true),
-          onComplete: () => setIsAnimating(false),
-        }}
-        className="cursor-pointer border-b border-t border-white"
-      >
-        <EditableCell
-          isEditing={false}
-          value={item.Name}
-          name="Name"
-          onChange={() => {}}
-        />
-        <EditableCell
-          isEditing={isEditing}
-          value={isEditing ? editedItem.Amount : item.Amount}
-          name="Amount"
-          onChange={handleInputChange}
-          type="number"
-        />
-        <EditableCell
-          isEditing={isEditing}
-          value={isEditing ? editedItem.AmountUnits : item.AmountUnits}
-          name="AmountUnits"
-          onChange={handleInputChange}
-        />
-        <ActionButtons
-          isEditing={isEditing}
-          onEdit={(e) => {
-            e.stopPropagation();
-            handleEditClick();
-          }}
-          onSave={handleSave}
-          onCancel={(e) => {
-            e.stopPropagation();
-            handleCancelClick();
-          }}
-          onDelete={(e) => {
-            e.stopPropagation();
-            onItemDelete(item.id); // Use 'id' as the identifier
-          }}
-        />
-      </motion.tr>
-    );
+  item,
+  index,
+  onItemEdit,
+  onItemDelete,
+  setIsAnimating,
+}) => {
+  const {
+    isEditing,
+    editedItem,
+    handleEditClick,
+    handleSaveClick,
+    handleCancelClick,
+    handleInputChange,
+  } = useEditable<InventoryItem>(item);
+
+  const { editInventory, loading } = useEditInventoryData();
+
+  const handleSave = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    handleSaveClick();
+    await editInventory(item, editedItem, "ajwitt2@asu.edu");
+    onItemEdit(item.id, editedItem);
   };
-  
-  export default InventoryTableRow;
+
+  return (
+    <motion.tr
+      variants={rowVariants}
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+      transition={{
+        delay: index * 0.03,
+        ...tableRowTransition,
+        onStart: () => setIsAnimating(true),
+        onComplete: () => setIsAnimating(false),
+      }}
+      className="cursor-pointer border-b border-t border-white"
+    >
+      <EditableCell
+        isEditing={false}
+        value={item.Name}
+        name="Name"
+        onChange={() => {}}
+      />
+      <EditableCell
+        isEditing={isEditing}
+        value={isEditing ? editedItem.Amount : item.Amount}
+        name="Amount"
+        onChange={handleInputChange}
+        type="number"
+      />
+      <EditableCell
+        isEditing={isEditing}
+        value={isEditing ? editedItem.AmountUnits : item.AmountUnits}
+        name="AmountUnits"
+        onChange={handleInputChange}
+      />
+      <ActionButtons
+        isEditing={isEditing}
+        onEdit={(e) => {
+          e.stopPropagation();
+          handleEditClick();
+        }}
+        onSave={handleSave}
+        onCancel={(e) => {
+          e.stopPropagation();
+          handleCancelClick();
+        }}
+        onDelete={(e) => {
+          e.stopPropagation();
+          onItemDelete(item.id); // Use 'id' as the identifier
+        }}
+      />
+    </motion.tr>
+  );
+};
+
+export default InventoryTableRow;
