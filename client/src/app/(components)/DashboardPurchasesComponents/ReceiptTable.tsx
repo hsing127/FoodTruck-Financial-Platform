@@ -11,7 +11,6 @@ import SearchInput from "../Common/SearchInput";
 import Pagination from "../Common/Pagination";
 import { Upload, Plus, Filter, ArrowUp, ArrowDown } from "lucide-react";
 import { Receipt } from "@/app/types/types";
-import { useReceiptsData } from "./ReceiptAPI";
 import AddReceiptEntryModal from "./AddReceiptEntryModal";
 import UploadLogic, { UploadLogicHandle } from "../Common/UploadLogic";
 import useSortLogic from "../Common/SortingLogic";
@@ -32,9 +31,16 @@ enum ActionType {
 // Filter Fields
 type FilterField = "date" | "cost" | "location";
 
-const ReceiptTable: React.FC = () => {
+interface ReceiptTableProps {
+  receipts: Receipt[];
+  setReceipts: React.Dispatch<React.SetStateAction<Receipt[]>>;
+}
+
+const ReceiptTable: React.FC<ReceiptTableProps> = ({
+  receipts,
+  setReceipts,
+}) => {
   const [searchInput, setSearchInput] = useState("");
-  const { receipts, setReceipts } = useReceiptsData("ajwitt2@asu.edu");
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
@@ -231,7 +237,7 @@ const ReceiptTable: React.FC = () => {
 
   return (
     <motion.div
-      className={`pb-${BOTTOM_PADDING}px bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
+      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
         isAnimating ? "overflow-hidden" : "overflow-y-auto"
       }`}
       initial={{ opacity: 0, y: 20 }}

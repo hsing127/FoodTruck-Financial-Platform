@@ -11,7 +11,6 @@ import SearchInput from "../Common/SearchInput";
 import Pagination from "../Common/Pagination";
 import { Upload, Plus, Filter, ArrowUp, ArrowDown } from "lucide-react";
 import { Sale } from "@/app/types/types";
-import { useSalesData } from "./SalesAPI";
 import AddSaleEntryModal from "./AddSaleEntryModal";
 import UploadLogic, { UploadLogicHandle } from "../Common/UploadLogic";
 import useSortLogic from "../Common/SortingLogic";
@@ -32,9 +31,13 @@ enum ActionType {
 // Filter Fields
 type FilterField = "startDate" | "endDate" | "revenue";
 
-const SaleTable: React.FC = () => {
+interface SaleTableProps {
+  sales: Sale[];
+  setSales: React.Dispatch<React.SetStateAction<Sale[]>>;
+}
+
+const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
   const [searchInput, setSearchInput] = useState("");
-  const { sales, setSales } = useSalesData("ajwitt2@asu.edu");
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
@@ -105,7 +108,7 @@ const SaleTable: React.FC = () => {
     [setSales]
   );
 
-  // Handle item deletion for ingredients
+  // Handle item deletion for sale items
   const handleItemDelete = useCallback(
     (saleId: number, itemIndex: number) => {
       setSales((prev) =>
@@ -231,7 +234,7 @@ const SaleTable: React.FC = () => {
 
   return (
     <motion.div
-      className={`pb-${BOTTOM_PADDING}px bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
+      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
         isAnimating ? "overflow-hidden" : "overflow-y-auto"
       }`}
       initial={{ opacity: 0, y: 20 }}

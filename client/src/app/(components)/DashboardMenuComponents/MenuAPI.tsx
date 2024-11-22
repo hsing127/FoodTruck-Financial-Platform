@@ -1,21 +1,7 @@
 import { useEffect, useState } from "react";
 import * as Icons from "lucide-react";
-
-interface Ingredient {
-  ingredient: string;
-  quantity: number;
-  units: string;
-  price: string;
-}
-
-interface MenuItem {
-  id: number;
-  image: JSX.Element;
-  name: string;
-  price: string;
-  details?: string;
-  ingredients: Ingredient[];
-}
+import { MenuItem, Ingredient } from "@/app/types/types";
+import { ReactElement } from "react";
 
 export const useMenuData = (email: string) => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -37,7 +23,7 @@ export const useMenuData = (email: string) => {
 
         const data = await response.json();
 
-        //Parse data if `body` is a string
+        // Parse data if `body` is a string
         let menuData;
         if (typeof data.body === "string") {
           menuData = JSON.parse(data.body);
@@ -45,10 +31,10 @@ export const useMenuData = (email: string) => {
           menuData = data.body;
         }
 
-        //Helper to get an icon dynamically
-        const getIcon = (name: string): JSX.Element => {
+        // Helper to get an icon dynamically
+        const getIcon = (name: string): ReactElement => {
           const formattedName = name.replace(/\s+/g, ""); // Remove spaces
-          const IconComponent = (Icons as any)[formattedName]; // Lookup icon by name
+          const IconComponent = (Icons as any)[formattedName];
           return IconComponent ? (
             <IconComponent size={44} />
           ) : (
@@ -61,10 +47,9 @@ export const useMenuData = (email: string) => {
           menuData.menuItems
         ).map(([menuName, menuItem]: [string, any], index: number) => ({
           id: index + 1,
-          image: getIcon("pizza"), // Dynamically determine the icon
+          image: getIcon(menuName), // Dynamically determine the icon
           name: menuName,
-          price: `$${menuItem.cost}`,
-          details: menuItem.description || "No description available.",
+          price: `$${parseFloat(menuItem.cost).toFixed(2)}`,
           ingredients: menuItem.ingredients.map((ingredient: any) => ({
             ingredient: ingredient.name,
             quantity: ingredient.amount,
