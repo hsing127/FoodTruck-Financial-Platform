@@ -21,6 +21,53 @@ export const useMenuData = (email: string) => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  //Function to send menu item to API Gateway
+  const sendMenuItemToAPI = async (email: String, menuItem: MenuItem) => {
+    try {
+      const response = await fetch(
+        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            table: "menuItem",
+            body: [
+                {
+                  Email: email,
+                  Name: menuItem.name,
+                  Cost: menuItem.price,
+                },
+            ]
+          }
+        ),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to add menu item to API");
+      }
+
+      const data = await response.json();
+      console.log("Menu item added successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Error adding menu item:", error);
+      throw new Error("Failed to add menu item to API");
+    }
+  };
+
+
+  //Function to handle adding a new menu item
+   const addMenuItem = async (newMenuItem: MenuItem) => {
+    try {
+      await sendMenuItemToAPI(email, newMenuItem);
+    } catch (error) {
+      alert("There was an error adding the menu item.");
+    }
+  };
+
   useEffect(() => {
     const fetchMenuData = async () => {
       try {
@@ -84,5 +131,5 @@ export const useMenuData = (email: string) => {
     fetchMenuData();
   }, [email]);
 
-  return [menuItems, setMenuItems, loading] as const;
+  return [menuItems, setMenuItems, loading, addMenuItem, sendMenuItemToAPI] as const;
 };

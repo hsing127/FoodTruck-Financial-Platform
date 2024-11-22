@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { MENU_DATA } from "@/app/(components)/DashboardMenuComponents/MenuData";
 import { useMenuData } from "./MenuAPI";
 import Pagination from "../Common/Pagination";
 import SearchInput from "../Common/SearchInput";
