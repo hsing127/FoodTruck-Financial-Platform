@@ -36,7 +36,7 @@ export const DashboardInventory: React.FC = () => {
   // Compute Total Inventory Value
   const totalInventoryValue = useMemo(() => {
     return "$10,000"; //placeholder
-  }, [inventory]);
+  }, []);
 
   return (
     <DashboardLayout>
