@@ -12,7 +12,6 @@ import Pagination from "../Common/Pagination";
 import { Upload, Plus, Filter, ArrowUp, ArrowDown } from "lucide-react";
 import { InventoryItem } from "@/app/types/types";
 import AddInventoryItemModal from "./AddInventoryItemModal";
-import { useInventoryData } from "./InventoryApi";
 import UploadLogic, { UploadLogicHandle } from "../Common/UploadLogic";
 import useSortLogic from "../Common/SortingLogic";
 
@@ -31,10 +30,16 @@ enum ActionType {
 // Filter Fields
 type FilterField = "Name" | "Amount" | "AmountUnits";
 
-const InventoryTable: React.FC = () => {
+interface InventoryTableProps {
+  inventory: InventoryItem[];
+  setInventory: React.Dispatch<React.SetStateAction<InventoryItem[]>>;
+}
+
+const InventoryTable: React.FC<InventoryTableProps> = ({
+  inventory,
+  setInventory,
+}) => {
   const [searchInput, setSearchInput] = useState("");
-  const { inventory, setInventory, loading, error } =
-    useInventoryData("ajwitt2@asu.edu");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -105,10 +110,7 @@ const InventoryTable: React.FC = () => {
   // Handle deleting an inventory item
   const handleDeleteClick = useCallback(
     (id: number) => {
-      setInventory((prev) => {
-        const updatedInventory = prev.filter((item) => item.id !== id);
-        return updatedInventory;
-      });
+      setInventory((prev) => prev.filter((item) => item.id !== id));
     },
     [setInventory]
   );
@@ -116,8 +118,6 @@ const InventoryTable: React.FC = () => {
   // Handle action item clicks from SearchInput
   const handleActionItemClick = useCallback(
     (actionType: string, item: string) => {
-      console.log(`Action Type: ${actionType}, Item: ${item}`); // Debug log
-
       let enumActionType: ActionType | null = null;
 
       switch (actionType) {
@@ -133,8 +133,6 @@ const InventoryTable: React.FC = () => {
         default:
           console.warn(`Unknown action type: ${actionType}`);
       }
-
-      console.log(`Enum Action Type: ${enumActionType}`); // Debug log
 
       if (!enumActionType) return;
 
@@ -173,8 +171,6 @@ const InventoryTable: React.FC = () => {
             console.warn(`Unknown filter item: ${item}`);
         }
 
-        console.log(`Sort Field: ${field}`); // Debug log
-
         if (field) {
           setSortFieldAndOrder(field);
         }
@@ -206,12 +202,10 @@ const InventoryTable: React.FC = () => {
   // Derive sorted inventory based on sortField and sortOrder
   const sortedInventory = useMemo(() => {
     if (!sortField) return filteredInventory;
-    const sorted = sortData(filteredInventory);
-    console.log("Sorted Inventory:", sorted); // Debug log
-    return sorted;
+    return sortData(filteredInventory);
   }, [filteredInventory, sortField, sortData]);
 
-  // Pagination calculations
+  // Calculate pagination indices
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentInventory = useMemo(
@@ -230,7 +224,7 @@ const InventoryTable: React.FC = () => {
 
   return (
     <motion.div
-      className={`pb-${BOTTOM_PADDING}px bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
+      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
         isAnimating ? "overflow-hidden" : "overflow-y-auto"
       }`}
       initial={{ opacity: 0, y: 20 }}
@@ -279,6 +273,7 @@ const InventoryTable: React.FC = () => {
           {/* UploadLogic handles all file uploads */}
           <UploadLogic ref={uploadLogicRef} onFileUpload={handleFileUpload} />
 
+          {/* Modal for Adding Inventory Item */}
           <AddInventoryItemModal
             isOpen={isModalOpen}
             onClose={closeModal}

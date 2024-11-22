@@ -1,12 +1,46 @@
 import "@/app/globals.css";
-import React from "react";
+import React, { useMemo } from "react";
 import DashboardLayout from "./DashboardWrapper";
 import { motion } from "framer-motion";
 import { Banknote, ShoppingCart, FileText, Store } from "lucide-react";
 import SaleTable from "../(components)/DashboardSalesComponents/SaleTable";
 import DashCardLong from "../(components)/DashboardHomeComponents/DashCardLong";
+import { useSalesData } from "../(components)/DashboardSalesComponents/SalesAPI";
 
 export const DashboardSales: React.FC = () => {
+  const { sales, setSales } = useSalesData("ajwitt2@asu.edu");
+
+  // Compute Total Sales
+  const totalSales = useMemo(() => sales.length, [sales]);
+
+  // Compute Total Earnings
+  const totalEarnings = useMemo(() => {
+    return sales.reduce((acc, sale) => {
+      const revenue = parseFloat(sale.revenue.replace("$", ""));
+      return acc + (isNaN(revenue) ? 0 : revenue);
+    }, 0);
+  }, [sales]);
+
+  // Compute Average Revenue per Sale
+  const averageRevenuePerSale = useMemo(() => {
+    if (totalSales === 0) return "0.00";
+    return (totalEarnings / totalSales).toFixed(2);
+  }, [totalEarnings, totalSales]);
+
+  // Compute Most Bought Item
+  const mostBoughtItem = useMemo(() => {
+    if (sales.length === 0) return "N/A";
+    const itemCount: { [key: string]: number } = {};
+    sales.forEach((sale) => {
+      sale.details.forEach((detail) => {
+        itemCount[detail.menuitemname] =
+          (itemCount[detail.menuitemname] || 0) + detail.count;
+      });
+    });
+    const sortedItems = Object.entries(itemCount).sort((a, b) => b[1] - a[1]);
+    return sortedItems[0]?.[0] || "N/A";
+  }, [sales]);
+
   return (
     <DashboardLayout>
       <div className="outline outline-white outline-8 flex-1 relative border-white rounded-3xl border-[16px] overflow-hidden">
@@ -14,7 +48,7 @@ export const DashboardSales: React.FC = () => {
           <div className="pt-2 mx-auto ">
             {/* First row of dashboard cards */}
             <motion.div
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 mt-4 mb-4"
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 mb-4 mt-4"
               initial={{ opacity: 0, y: 20 }} // Animation for appearance
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
@@ -24,35 +58,37 @@ export const DashboardSales: React.FC = () => {
                 <DashCardLong
                   name="Total Sales"
                   icon={FileText}
-                  value="8"
+                  value={totalSales}
                   color="bg-gray-100"
                 />
                 <DashCardLong
                   name="Total Earnings"
                   icon={Banknote}
-                  value="$1,400"
+                  value={`$${totalEarnings.toLocaleString()}`}
                   color="bg-gray-100"
                   isPurple={true}
                 />
                 <DashCardLong
                   name="Average Revenue/Sale"
                   icon={ShoppingCart}
-                  value="$175"
+                  value={`$${averageRevenuePerSale}`}
                   color="bg-gray-100"
                 />
                 <DashCardLong
                   name="Most Bought Item"
                   icon={Store}
-                  value="Chicken Nuggets"
+                  value={mostBoughtItem}
                   color="bg-gray-100"
                   isPurple={true}
                 />
               </div>
             </motion.div>
           </div>
-          <SaleTable />
+          <SaleTable sales={sales} setSales={setSales} />
         </div>
       </div>
     </DashboardLayout>
   );
 };
+
+export default DashboardSales;
