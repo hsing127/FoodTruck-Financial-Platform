@@ -8,41 +8,50 @@ import Link from "next/link";
 
 const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState("");
+  const [error, setError] = useState<string | null>(null); // Added error state
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null); // Reset error state on new submit
+
     if (email.trim()) {
       try {
-        //Make the API call to send the email
-        const response = await fetch("https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/forgot-password/send-code", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        });
+        // Make the API call to send the email
+        const response = await fetch(
+          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/forgot-password/send-code",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          }
+        );
+
         if (!response.ok) {
-          throw new Error("Failed to send reset email");
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to send reset email");
         }
 
         const data = await response.json();
         const statusCode = data.statusCode;
-        // console.log(JSON.stringify({data}));
 
-        if(statusCode === 200) {
-          //Redirect if the email was sent successfully
+        if (statusCode === 200) {
+          // Redirect if the email was sent successfully
           router.push("/login/forgotpasswordcode");
-        }else {
-          alert("Invalid email");
+        } else {
+          setError("Invalid email");
         }
-
-      } catch (error) {
-        alert("There was an error sending the email. Please try again.");
+      } catch (error: any) {
+        setError(
+          error.message ||
+            "There was an error sending the email. Please try again."
+        );
         console.error("Error:", error);
       }
     } else {
-      alert("Please enter the email before submitting.");
+      setError("Please enter the email before submitting.");
     }
   };
 
@@ -51,14 +60,15 @@ const ForgotPasswordPage: React.FC = () => {
       title="Forgot Your Password?"
       description="Enter your email address and we will send you instructions to reset your password."
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="w-full max-w-sm mx-auto">
         <FormInput
-          type="text"
+          type="email"
           name="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        {error && <div className="mb-4 text-customRed text-sm">{error}</div>}
         <SubmitButton text="Submit" />
       </form>
       <p className="text-customWhite text-center mt-4">

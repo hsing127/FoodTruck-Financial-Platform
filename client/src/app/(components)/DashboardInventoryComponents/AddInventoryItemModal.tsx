@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, RefreshCcw } from "lucide-react";
 import EditableCell from "../Common/EditableCell";
 import { InventoryItem } from "@/app/types/types";
+import { useAddInventoryData } from "./InventoryApi"; // import your custom hook
 
 interface AddInventoryItemModalProps {
   isOpen: boolean;
@@ -35,6 +36,9 @@ const AddInventoryItemModal: React.FC<AddInventoryItemModalProps> = ({
   };
 
   const [newItem, setNewItem] = useState<InventoryItem>(initialItem);
+  const [submittedItem, setSubmittedItem] = useState<InventoryItem | null>(
+    null
+  ); // New state to track the submitted item
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,13 +53,34 @@ const AddInventoryItemModal: React.FC<AddInventoryItemModalProps> = ({
       alert("Name is required.");
       return;
     }
-    onSave(newItem);
-    setNewItem(initialItem);
+    setSubmittedItem(newItem); // Set the submitted item when "Add New Item" is clicked
+    setNewItem(initialItem); // Reset the form fields
   };
 
   const handleReset = () => {
     setNewItem(initialItem);
   };
+    const handleClose = () => {
+        window.location.reload();
+    };
+
+  // Call the custom hook to add inventory data when the submittedItem changes
+  const { loading: addItemLoading, error: addItemError } = useAddInventoryData(
+    submittedItem, // Pass the submitted item to the hook
+    "ajwitt2@asu.edu" // Replace with actual email if needed
+  );
+
+  useEffect(() => {
+    if (submittedItem) {
+      // Handle loading and error states if needed
+      if (addItemLoading) {
+        console.log("Adding item...");
+      }
+      if (addItemError) {
+        console.error("Error adding item:", addItemError);
+      }
+    }
+  }, [submittedItem, addItemLoading, addItemError]); // Runs only when submittedItem changes
 
   return (
     <AnimatePresence>
@@ -82,7 +107,7 @@ const AddInventoryItemModal: React.FC<AddInventoryItemModalProps> = ({
                 Add Inventory Item
               </h2>
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="text-gray-400 hover:text-gray-600"
               >
                 <X size={28} />
@@ -146,7 +171,7 @@ const AddInventoryItemModal: React.FC<AddInventoryItemModalProps> = ({
                 onClick={handleSave}
                 className="px-4 py-2 text-white font-medium rounded bg-[#8B5CF6] hover:bg-[#b07ff0]"
               >
-                Add New Item
+                {addItemLoading ? "Adding..." : "Add New Item"}
               </button>
             </div>
           </motion.div>

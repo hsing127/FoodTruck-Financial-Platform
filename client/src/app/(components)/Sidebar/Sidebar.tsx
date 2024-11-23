@@ -9,6 +9,7 @@ import React, { useMemo, useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import {
   CircleDollarSign,
+  Handshake,
   ClipboardList,
   HandCoins,
   Layout,
@@ -103,6 +104,11 @@ const Sidebar = React.memo(() => {
         href: "/dashboard/purchases",
         icon: CircleDollarSign,
         label: "Purchases",
+      },
+      {
+        href: "/dashboard/sales",
+        icon: Handshake,
+        label: "Sales",
       },
       { href: "/dashboard/menu", icon: MenuSquare, label: "Menu" },
       {

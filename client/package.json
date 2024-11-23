@@ -29,6 +29,7 @@
     "react-router-dom": "^6.26.2",
     "recharts": "^2.13.0",
     "redux-persist": "^6.0.0",
+    "saas-website-dark-landing-page": "file:",
     "sharp": "^0.33.5"
   },
   "devDependencies": {

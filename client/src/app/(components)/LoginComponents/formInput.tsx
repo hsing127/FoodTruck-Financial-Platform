@@ -15,7 +15,7 @@ const FormInput: React.FC<FormInputProps> = ({
   value,
   onChange,
 }) => (
-  <div className="relative mb-8">
+  <div className="relative mb-4">
     <input
       type={type}
       name={name}

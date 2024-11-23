@@ -4,12 +4,15 @@ import EditableCell from "../Common/EditableCell";
 import ActionButtons from "../Common/ActionButtons";
 import { InventoryItem } from "@/app/types/types";
 import { useEditable } from "@/app/hooks/useEditable";
+import { tableRowTransition } from "../Common/Animations";
+import { useEditInventoryData } from "./InventoryApi";
 
 interface InventoryTableRowProps {
   item: InventoryItem;
   index: number;
-  onItemEdit: (index: number, updatedItem: InventoryItem) => void;
-  onItemDelete: (index: number) => void;
+  onItemEdit: (id: number, updatedItem: InventoryItem) => void;
+  onItemDelete: (id: number) => void;
+  setIsAnimating: (isAnimating: boolean) => void;
 }
 
 const rowVariants = {
@@ -22,6 +25,7 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
   index,
   onItemEdit,
   onItemDelete,
+  setIsAnimating,
 }) => {
   const {
     isEditing,
@@ -32,9 +36,13 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
     handleInputChange,
   } = useEditable<InventoryItem>(item);
 
-  const handleSave = (e: React.MouseEvent) => {
+  const { editInventory, loading } = useEditInventoryData();
+
+  const handleSave = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     handleSaveClick();
-    onItemEdit(index, editedItem);
+    await editInventory(item, editedItem, "ajwitt2@asu.edu");
+    onItemEdit(item.id, editedItem);
   };
 
   return (
@@ -43,7 +51,13 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
       initial="hidden"
       animate="visible"
       exit="hidden"
-      transition={{ delay: index * 0.05, duration: 0.3 }}
+      transition={{
+        delay: index * 0.03,
+        ...tableRowTransition,
+        onStart: () => setIsAnimating(true),
+        onComplete: () => setIsAnimating(false),
+      }}
+      className="cursor-pointer border-b border-t border-white"
     >
       <EditableCell
         isEditing={false}
@@ -70,17 +84,14 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
           e.stopPropagation();
           handleEditClick();
         }}
-        onSave={(e) => {
-          e.stopPropagation();
-          handleSave(e);
-        }}
+        onSave={handleSave}
         onCancel={(e) => {
           e.stopPropagation();
           handleCancelClick();
         }}
         onDelete={(e) => {
           e.stopPropagation();
-          onItemDelete(index);
+          onItemDelete(item.id); // Use 'id' as the identifier
         }}
       />
     </motion.tr>

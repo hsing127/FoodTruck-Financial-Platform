@@ -47,6 +47,13 @@ export const itemVariants: Variants = {
   show: { opacity: 1, y: 0 },
 };
 
+// animation variants for menuItem rows
+export const menuItemRowVariants: Variants = {
+  hidden: { opacity: 0, y: -10 },
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: 10 },
+};
+
 // animation variants for ingredient rows
 export const ingredientRowVariants: Variants = {
   hidden: { opacity: 0, y: -10 },

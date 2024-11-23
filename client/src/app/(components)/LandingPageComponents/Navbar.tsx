@@ -42,7 +42,12 @@ export const Navbar = React.memo(() => {
           {/* Logo with gradient effect */}
           <div className="relative">
             <div className="absolute w-full top-2 bottom-2 bg-gradient-to-r from-[#F87BFF] to-[#2FD8FE] blur-md"></div>
-            <Image src={Logo} alt="FoodTruck Logo" className="h-12 w-12 relative" priority />
+            <Image
+              src={Logo}
+              alt="FoodTruck Logo"
+              className="h-12 w-12 relative"
+              priority
+            />
           </div>
 
           {/* Mobile Menu Icon using Lucide */}
@@ -56,16 +61,18 @@ export const Navbar = React.memo(() => {
 
           {/* Desktop Navigation */}
           <nav className="flex gap-6 items-center hidden sm:flex">
-            {["about", "features", "updates", "help", "contactUs"].map((section) => (
-              <a
-                key={section}
-                href={`#${section}`}
-                className="text-opacity-60 text-customWhite hover:text-opacity-100 transition"
-                onClick={() => handleScrollToSection(section)}
-              >
-                {section.charAt(0).toUpperCase() + section.slice(1)}
-              </a>
-            ))}
+            {["about", "features", "updates", "help", "contactUs"].map(
+              (section) => (
+                <a
+                  key={section}
+                  href={`#${section}`}
+                  className="text-opacity-60 text-customWhite hover:text-opacity-100 transition"
+                  onClick={() => handleScrollToSection(section)}
+                >
+                  {section.charAt(0).toUpperCase() + section.slice(1)}
+                </a>
+              )
+            )}
             <Link href="/login/login" passHref>
               <motion.button
                 className="bg-customWhite text-customBlack py-2 px-4 rounded-lg"
@@ -86,15 +93,17 @@ export const Navbar = React.memo(() => {
             animate="visible"
             exit="hidden"
           >
-            {["about", "features", "updates", "help", "contactUs"].map((section) => (
-              <motion.div
-                key={section}
-                className="text-customWhite text-center py-2 cursor-pointer hover:text-opacity-80"
-                onClick={() => handleScrollToSection(section)}
-              >
-                {section.charAt(0).toUpperCase() + section.slice(1)}
-              </motion.div>
-            ))}
+            {["about", "features", "updates", "help", "contactUs"].map(
+              (section) => (
+                <motion.div
+                  key={section}
+                  className="text-customWhite text-center py-2 cursor-pointer hover:text-opacity-80"
+                  onClick={() => handleScrollToSection(section)}
+                >
+                  {section.charAt(0).toUpperCase() + section.slice(1)}
+                </motion.div>
+              )
+            )}
             <Link href="/login/login" passHref>
               <motion.div
                 className="bg-customWhite text-customBlack text-center py-2 rounded-lg mx-4 mt-2 cursor-pointer"

@@ -18,6 +18,20 @@ export interface Receipt {
   details: ReceiptItem[];
 }
 
+export interface Sale {
+  localSaleId: number;
+  startDate: string;
+  endDate: string;
+  revenue: string;
+  details: SaleItem[];
+}
+
+export interface SaleItem {
+  menuitemname: string;
+  count: number;
+  itemrevenue: number;
+}
+
 // Interface for ingredients (used in MenuItem)
 export interface Ingredient {
   ingredient: string;
