@@ -60,6 +60,9 @@ const AddInventoryItemModal: React.FC<AddInventoryItemModalProps> = ({
   const handleReset = () => {
     setNewItem(initialItem);
   };
+    const handleClose = () => {
+        window.location.reload();
+    };
 
   // Call the custom hook to add inventory data when the submittedItem changes
   const { loading: addItemLoading, error: addItemError } = useAddInventoryData(
@@ -104,7 +107,7 @@ const AddInventoryItemModal: React.FC<AddInventoryItemModalProps> = ({
                 Add Inventory Item
               </h2>
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="text-gray-400 hover:text-gray-600"
               >
                 <X size={28} />
