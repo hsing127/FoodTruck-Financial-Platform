@@ -1,9 +1,19 @@
+import fetch from "node-fetch"; // For API requests
+import atob from "atob"; // For decoding JWT payloads
+
 interface CustomJwtPayload {
-    email?: string; // Optional property for the user's email
-    exp?: number;   // Optional property for expiration time
+    email?: string;
+    exp?: number;
 }
 
-// Save the token in localStorage or sessionStorage
+interface ValidateTokenResponse {
+    email: string;
+}
+
+interface ErrorResponse {
+    error: string;
+}
+
 export const saveToken = (token: string, rememberMe: boolean): void => {
     if (rememberMe) {
         localStorage.setItem("jwt", token);
@@ -12,18 +22,15 @@ export const saveToken = (token: string, rememberMe: boolean): void => {
     }
 };
 
-// Retrieve the token from storage
 export const getToken = (): string | null => {
     return localStorage.getItem("jwt") || sessionStorage.getItem("jwt");
 };
 
-// Decode the token to extract user information
 export const decodeToken = (): CustomJwtPayload | null => {
     const token = getToken();
     if (!token) return null;
 
     try {
-        // Manually decode the token
         const base64Url = token.split(".")[1];
         if (!base64Url) throw new Error("Invalid token structure.");
 
@@ -38,23 +45,20 @@ export const decodeToken = (): CustomJwtPayload | null => {
     }
 };
 
-// Check if the token is expired
 export const isTokenExpired = (): boolean => {
     const decoded = decodeToken();
-    if (!decoded || typeof decoded.exp === "undefined") return true; // Treat missing `exp` as expired
+    if (!decoded || typeof decoded.exp === "undefined") return true;
 
-    const now = Date.now() / 1000; // Current time in seconds
-    return decoded.exp < now; // True if token has expired
+    const now = Date.now() / 1000;
+    return decoded.exp < now;
 };
 
-// Clear the token from storage
 export const clearToken = (): void => {
     localStorage.removeItem("jwt");
     sessionStorage.removeItem("jwt");
 };
 
-// Validate the token via the backend
-export const validateToken = async (): Promise<CustomJwtPayload | null> => {
+export const validateToken = async (): Promise<{ email: string } | null> => {
     const token = getToken();
     if (!token) {
         console.error("No token found.");
@@ -62,18 +66,21 @@ export const validateToken = async (): Promise<CustomJwtPayload | null> => {
     }
 
     try {
-        const response = await fetch("https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/validateToken", {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await fetch(
+            "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/validateToken",
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
 
         if (response.ok) {
-            const data = await response.json();
-            return data.user as CustomJwtPayload; // Return user details
+            const data = (await response.json()) as ValidateTokenResponse; // Explicit type assertion
+            return { email: data.email };
         } else {
-            const errorData = await response.json();
+            const errorData = (await response.json()) as ErrorResponse; // Explicit type assertion
             console.error("Token validation error:", errorData.error);
             return null;
         }
@@ -83,3 +90,39 @@ export const validateToken = async (): Promise<CustomJwtPayload | null> => {
     }
 };
 
+
+export const requireTokenWrapper = async (
+    getServerSidePropsFunction: Function
+) => {
+    return async (context: any) => {
+        const token = getToken();
+
+        if (!token) {
+            return {
+                redirect: {
+                    destination: "/login",
+                    permanent: false,
+                },
+            };
+        }
+
+        const validationResult = await validateToken();
+
+        if (!validationResult || !validationResult.email) {
+            return {
+                redirect: {
+                    destination: "/login",
+                    permanent: false,
+                },
+            };
+        }
+
+        context.req.user = { email: validationResult.email };
+
+        if (getServerSidePropsFunction) {
+            return await getServerSidePropsFunction(context);
+        }
+
+        return { props: {} };
+    };
+};
