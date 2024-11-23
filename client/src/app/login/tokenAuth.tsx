@@ -1,6 +1,3 @@
-import fetch from "node-fetch"; // For API requests
-import atob from "atob"; // For decoding JWT payloads
-
 interface CustomJwtPayload {
     email?: string;
     exp?: number;
@@ -35,10 +32,9 @@ export const decodeToken = (): CustomJwtPayload | null => {
         if (!base64Url) throw new Error("Invalid token structure.");
 
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-        const jsonPayload = atob(base64);
-        const payload = JSON.parse(jsonPayload) as CustomJwtPayload;
+        const jsonPayload = JSON.parse(Buffer.from(base64, "base64").toString("utf-8")) as CustomJwtPayload;
 
-        return payload;
+        return jsonPayload;
     } catch (error) {
         console.error("Error decoding token:", error);
         return null;
@@ -77,10 +73,10 @@ export const validateToken = async (): Promise<{ email: string } | null> => {
         );
 
         if (response.ok) {
-            const data = (await response.json()) as ValidateTokenResponse; // Explicit type assertion
+            const data = (await response.json()) as ValidateTokenResponse;
             return { email: data.email };
         } else {
-            const errorData = (await response.json()) as ErrorResponse; // Explicit type assertion
+            const errorData = (await response.json()) as ErrorResponse;
             console.error("Token validation error:", errorData.error);
             return null;
         }
@@ -89,7 +85,6 @@ export const validateToken = async (): Promise<{ email: string } | null> => {
         return null;
     }
 };
-
 
 export const requireTokenWrapper = async (
     getServerSidePropsFunction: Function
