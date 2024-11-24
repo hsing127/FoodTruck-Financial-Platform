@@ -17,54 +17,52 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
 
     if (!email || !password) {
-        setErrorMessage("Please enter both email and password.");
-        return;
+      setErrorMessage("Please enter both email and password.");
+      return;
     }
 
     try {
-
-        const response = await fetch(
-            "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/login",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            }
-        );
-
-        const data = await response.json();
-        const statusCode = data.statusCode || response.status;
-
-        if (statusCode === 200) {
-            setErrorMessage("");
-
-            // Retrieve the token from the response
-            const { token } = data;
-
-            // Check "Remember Me" and store the token with expanded time constraints
-            const rememberMe = (
-                document.getElementById("remember-me") as HTMLInputElement
-            ).checked;
-
-            if (rememberMe) {
-                localStorage.setItem("jwt", token);
-            } else {
-                sessionStorage.setItem("jwt", token);
-            }
-
-            // Redirect to dashboard
-            router.push("/dashboard/home");
-        } else {
-            setErrorMessage("Invalid username or password.");
+      const response = await fetch(
+        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
         }
-    } catch (error) {
-        console.error("Login error:", error);
-        setErrorMessage("An error occurred. Please try again.");
-    }
-};
+      );
 
+      const data = await response.json();
+      const statusCode = data.statusCode || response.status;
+
+      if (statusCode === 200) {
+        setErrorMessage("");
+
+        // Retrieve the token from the response
+        const { token } = data;
+
+        // Check "Remember Me" and store the token with expanded time constraints
+        const rememberMe = (
+          document.getElementById("remember-me") as HTMLInputElement
+        ).checked;
+
+        if (rememberMe) {
+          localStorage.setItem("jwt", token);
+        } else {
+          sessionStorage.setItem("jwt", token);
+        }
+
+        // Redirect to dashboard
+        router.push("/dashboard/home");
+      } else {
+        setErrorMessage("Invalid username or password.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setErrorMessage("An error occurred. Please try again.");
+    }
+  };
 
   return (
     <FormLayout title="Login" description="Enter your login details below.">
