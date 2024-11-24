@@ -5,6 +5,7 @@ import FormLayout from "@/app/(components)/LoginComponents/formLayout";
 import FormInput from "@/app/(components)/LoginComponents/formInput";
 import SubmitButton from "@/app/(components)/LoginComponents/submitButton";
 import Link from "next/link";
+import { saveToken } from "@/app/login/tokenAuth";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -31,17 +32,34 @@ const LoginPage: React.FC = () => {
           body: JSON.stringify({ email, password }),
         }
       );
+
       const data = await response.json();
       const statusCode = data.statusCode || response.status;
 
-      // Redirect on successful login; otherwise, show error message
       if (statusCode === 200) {
         setErrorMessage("");
+
+        // Retrieve the token from the response
+        const { token } = data;
+
+        // Check "Remember Me" and store the token with expanded time constraints
+        const rememberMe = (
+          document.getElementById("remember-me") as HTMLInputElement
+        ).checked;
+
+        if (rememberMe) {
+          localStorage.setItem("jwt", token);
+        } else {
+          sessionStorage.setItem("jwt", token);
+        }
+
+        // Redirect to dashboard
         router.push("/dashboard/home");
       } else {
         setErrorMessage("Invalid username or password.");
       }
     } catch (error) {
+      console.error("Login error:", error);
       setErrorMessage("An error occurred. Please try again.");
     }
   };
