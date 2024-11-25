@@ -20,7 +20,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
     {isEditing ? (
       <>
         <button
-          className="mr-2 text-green-600"
+          className="mr-2 text-green-500 hover:text-green-600"
           onClick={(e) => {
             e.stopPropagation(); // Prevents row toggle
             onSave(e);
@@ -29,7 +29,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           <Save size={18} />
         </button>
         <button
-          className="text-red-600"
+          className="text-red-500 hover:text-red-600"
           onClick={(e) => {
             e.stopPropagation(); // Prevents row toggle
             onCancel(e);

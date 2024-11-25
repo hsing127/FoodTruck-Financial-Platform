@@ -17,7 +17,7 @@ import useSortLogic from "../Common/SortingLogic";
 
 // Constants
 const ROW_HEIGHT = 56;
-const BOTTOM_PADDING = 40;
+const BOTTOM_PADDING = 36;
 const MIN_ROWS = 6;
 
 // Action Types

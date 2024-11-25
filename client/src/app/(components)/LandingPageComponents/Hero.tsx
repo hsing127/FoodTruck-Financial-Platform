@@ -1,6 +1,8 @@
+"use client";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import React from "react";
+import { motion } from "framer-motion";
 
 const ArrowWIcon = dynamic(() => import("../../../assets/icons/arrow-w.svg"));
 
@@ -38,10 +40,13 @@ export const Hero = React.memo(() => {
           </p>
         </div>
         <div className="flex justify-center mt-8">
-          <Link href="/login/signup">
-            <button className="bg-customWhite text-customBlack py-3 px-5 rounded-lg font-medium">
+          <Link href="/login/signup" passHref>
+            <motion.button
+              className="bg-customWhite text-customBlack py-3 px-5 rounded-lg font-medium"
+              whileTap={{ scale: 0.9 }}
+            >
               Get Started
-            </button>
+            </motion.button>
           </Link>
         </div>
       </div>

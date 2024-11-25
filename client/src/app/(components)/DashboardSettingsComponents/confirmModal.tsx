@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import Button from "../DashboardSettingsComponents/button";
 
@@ -17,13 +17,45 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onConfirm,
   onCancel,
 }) => {
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onCancel();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscape);
+    } else {
+      document.removeEventListener("keydown", handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen, onCancel]);
+
   if (!isOpen) return null;
 
+  const handleBackdropClick = () => {
+    onCancel();
+  };
+
+  const handleModalClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  };
+
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70">
-      <div className="bg-gray-50 text-black p-6 rounded-lg shadow-lg w-full max-w-sm">
+    <div
+      className="fixed inset-0 bg-gray-100 bg-opacity-30 flex items-center justify-center z-50"
+      onClick={handleBackdropClick}
+    >
+      <div
+        className="bg-white text-black p-6 rounded-lg shadow-lg w-full max-w-sm"
+        onClick={handleModalClick}
+      >
         <h2 className="text-lg font-semibold mb-4">{title}</h2>
-        <p className="mb-6 text-black">{message}</p>
+        <p className="mb-6">{message}</p>
         <div className="flex justify-end gap-4">
           <Button onClick={onCancel} label="Cancel" />
           <Button onClick={onConfirm} label="Delete" type="danger" />
