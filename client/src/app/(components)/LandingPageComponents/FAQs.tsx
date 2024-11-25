@@ -25,28 +25,50 @@ const items = [
   },
 ];
 
-const AccordianItem = React.memo(
+const AccordionItem = React.memo(
   ({ question, answer }: { question: string; answer: string }) => {
     const [isOpen, setIsOpen] = useState(false);
 
+    const toggleOpen = () => setIsOpen((prev) => !prev);
+
     return (
       <div
-        key={question}
-        className="py-7 border-b border-customWhite/30"
-        onClick={() => setIsOpen(!isOpen)}
+        className="py-7 border-b border-customWhite/30 cursor-pointer"
+        onClick={toggleOpen}
         id="help"
       >
-        <div className="flex items-center cursor-pointer">
+        <div className="flex items-center">
           <span className="flex-1 text-lg font-bold">{question}</span>
           {isOpen ? <Minus size={20} /> : <Plus size={20} />}
         </div>
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0, marginTop: 0 }}
-              animate={{ opacity: 1, height: "auto", marginTop: "16px" }}
-              exit={{ opacity: 0, height: 0, marginTop: 0 }}
-              transition={{ duration: 0.3 }}
+              key="content"
+              initial="collapsed"
+              animate="open"
+              exit="collapsed"
+              variants={{
+                open: {
+                  opacity: 1,
+                  height: "auto",
+                  marginTop: "16px",
+                  transition: {
+                    duration: 0.3,
+                    ease: "easeOut",
+                  },
+                },
+                collapsed: {
+                  opacity: 0,
+                  height: 0,
+                  marginTop: 0,
+                  transition: {
+                    duration: 0.2,
+                    ease: "easeIn",
+                  },
+                },
+              }}
+              style={{ overflow: "hidden" }} // Ensures content doesn't spill
             >
               <p className="mt-3 text-customWhite/70">{answer}</p>
             </motion.div>
@@ -57,11 +79,13 @@ const AccordianItem = React.memo(
   }
 );
 
+AccordionItem.displayName = "AccordionItem";
+
 export const FAQs = () => {
   const memoizedItems = useMemo(
     () =>
       items.map(({ question, answer }) => (
-        <AccordianItem question={question} answer={answer} key={question} />
+        <AccordionItem question={question} answer={answer} key={question} />
       )),
     []
   );
@@ -77,5 +101,3 @@ export const FAQs = () => {
     </div>
   );
 };
-
-AccordianItem.displayName = "AccordionItem";

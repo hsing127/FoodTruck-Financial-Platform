@@ -1,15 +1,15 @@
+// MenuTable.tsx
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { useMenuData } from "./MenuAPI";
 import Pagination from "../Common/Pagination";
 import SearchInput from "../Common/SearchInput";
 import MenuCard from "../DashboardMenuComponents/MenuCard";
 import { Plus, ArrowUp, ArrowDown, Filter } from "lucide-react";
-import ViewMenuIngredientsModal from "./ViewMenuIngredientsModal";
 import { Ingredient, MenuItem } from "@/app/types/types";
 import AddMenuItemModal from "./AddMenuItemModal";
 import useSortLogic from "../Common/SortingLogic";
 import { itemVariants, tableVariants } from "../Common/Animations";
+import ViewMenuItemDetailsModal from "./ViewMenuIngredientsModal";
 
 interface MenuTableProps {
   menuItems: MenuItem[];
@@ -30,9 +30,7 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
   const [isAnimating, setIsAnimating] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false); // For MenuItemDetailsModal
   const [showAddMenuItemModal, setShowAddMenuItemModal] = useState(false); // For AddMenuItemModal
-  const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>(
-    []
-  );
+  const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem | null>(null); // Selected MenuItem for editing
 
   // Custom useSortLogic hook
   const { sortField, sortOrder, setSortFieldAndOrder, sortData } =
@@ -41,6 +39,27 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
   // Handle saving a new menu item
   const handleSaveMenuItem = (menuItem: MenuItem) => {
     const updatedMenu = [...menuItems, menuItem];
+    setMenuItems(updatedMenu);
+
+    // Apply current search and sort to the updated menu
+    let filtered = updatedMenu;
+    if (searchInput !== "") {
+      filtered = updatedMenu.filter((item) =>
+        item.name.toLowerCase().includes(searchInput)
+      );
+    }
+
+    const sortedFiltered = sortData(filtered);
+    setFilteredMenu(sortedFiltered);
+    setCurrentPage(1);
+    setIsAnimating(true);
+  };
+
+  // Handle updating an existing menu item
+  const handleUpdateMenuItem = (updatedMenuItem: MenuItem) => {
+    const updatedMenu = menuItems.map((item) =>
+      item.id === updatedMenuItem.id ? updatedMenuItem : item
+    );
     setMenuItems(updatedMenu);
 
     // Apply current search and sort to the updated menu
@@ -105,13 +124,16 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
   );
 
   // Handle clicking "More Details" on a menu item
-  const handleMoreDetailsClick = (ingredients: Ingredient[]) => {
-    setSelectedIngredients(ingredients);
+  const handleMoreDetailsClick = (menuItem: MenuItem) => {
+    setSelectedMenuItem(menuItem);
     setIsModalOpen(true);
   };
 
   // Close the MenuItemDetailsModal
-  const handleModalClose = () => setIsModalOpen(false);
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedMenuItem(null);
+  };
 
   // Pagination calculations
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -260,7 +282,7 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
               >
                 <MenuCard
                   item={item}
-                  handleMoreDetailsClick={handleMoreDetailsClick}
+                  handleMoreDetailsClick={() => handleMoreDetailsClick(item)}
                 />
               </motion.div>
             ))}
@@ -276,10 +298,11 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
       )}
 
       {/* Menu Item Details Modal */}
-      <ViewMenuIngredientsModal
+      <ViewMenuItemDetailsModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
-        initialIngredients={selectedIngredients}
+        menuItem={selectedMenuItem}
+        onSave={handleUpdateMenuItem}
       />
     </motion.div>
   );

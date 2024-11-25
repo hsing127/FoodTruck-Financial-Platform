@@ -1,17 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-
 import { Receipt } from "@/app/types/types";
 import { useEditable } from "@/app/hooks/useEditable";
 import ActionButtons from "../Common/ActionButtons";
 import EditableCell from "../Common/EditableCell";
 import ReceiptDetails from "./ReceiptDetails";
+import ConfirmModal from "../Common/ConfirmModal";
 import {
+  chevronVariants,
   rowVariants,
   tableRowTransition,
-  chevronVariants,
-} from "@/app/(components)/Common/Animations";
+} from "../Common/Animations";
 
 // Define types for props
 interface ReceiptTableRowProps {
@@ -41,6 +41,38 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
     handleCancelClick,
     handleInputChange,
   } = useEditable<Receipt>(receipt);
+
+  // State for confirmation modal
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [receiptToDelete, setReceiptToDelete] = useState<number | null>(null);
+
+  // Handler for delete button click
+  const onDelete = (e: React.MouseEvent) => {
+    const isShiftPressed = e.shiftKey;
+    if (isShiftPressed) {
+      // Bypass confirmation
+      handleDeleteClick(receipt.localReceiptId);
+    } else {
+      // Open confirmation modal
+      setReceiptToDelete(receipt.localReceiptId);
+      setIsConfirmModalOpen(true);
+    }
+  };
+
+  // Confirm deletion
+  const handleConfirmDelete = () => {
+    if (receiptToDelete !== null) {
+      handleDeleteClick(receiptToDelete);
+      setReceiptToDelete(null);
+      setIsConfirmModalOpen(false);
+    }
+  };
+
+  // Cancel deletion
+  const handleCancelDelete = () => {
+    setReceiptToDelete(null);
+    setIsConfirmModalOpen(false);
+  };
 
   return (
     <>
@@ -115,8 +147,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
             handleCancelClick();
           }}
           onDelete={(e) => {
-            e.stopPropagation();
-            handleDeleteClick(receipt.localReceiptId);
+            onDelete(e);
           }}
         />
       </motion.tr>
@@ -139,6 +170,16 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
           </td>
         </motion.tr>
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this receipt? This action cannot be undone."
+        proTip="Pro Tip: Hold down Shift while clicking Delete to bypass this confirmation."
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </>
   );
 };
