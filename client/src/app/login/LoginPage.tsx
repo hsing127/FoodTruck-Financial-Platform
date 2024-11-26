@@ -39,28 +39,26 @@ const LoginPage: React.FC = () => {
       if (statusCode === 200) {
         setErrorMessage("");
 
-        // Retrieve the token from the response
-        const { token } = data;
+        const body = JSON.parse(data.body);
+        const token = body.token;
 
-        // Check "Remember Me" and store the token with expanded time constraints
+        if (!token) {
+          setErrorMessage("Login failed.");
+          return;
+        }
+
         const rememberMe = (
           document.getElementById("remember-me") as HTMLInputElement
         ).checked;
 
-        if (rememberMe) {
-          localStorage.setItem("jwt", token);
-        } else {
-          sessionStorage.setItem("jwt", token);
-        }
+        saveToken(token, rememberMe);
 
-        // Redirect to dashboard
         router.push("/dashboard/home");
       } else {
-        setErrorMessage("Invalid username or password.");
+        setErrorMessage("Login failed.");
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      setErrorMessage("An error occurred. Please try again.");
+    } catch {
+      setErrorMessage("Login failed.");
     }
   };
 
