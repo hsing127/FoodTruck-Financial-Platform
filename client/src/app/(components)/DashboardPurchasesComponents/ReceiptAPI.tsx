@@ -55,5 +55,58 @@ export const useReceiptsData = (email: string) => {
     fetchReceipts();
   }, [email]);
 
-  return { receipts, setReceipts, loading };
+  // Function to edit a receipt in the API
+  const editReceiptAPI = async (
+    email: string,
+    updatedReceipt: Receipt,
+    originalReceipt: Receipt
+  ) => {
+    try {
+      const response = await fetch(
+        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            table: "purchases",
+            body: [
+              {
+                Email: email,
+                NewDateTime: updatedReceipt.date + " " + updatedReceipt.time,
+                NewLocation: updatedReceipt.location,
+                NewCost: updatedReceipt.cost,
+                DateTime: originalReceipt.date + " " + originalReceipt.time,
+                Location: originalReceipt.location,
+              },
+            ],
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to edit receipt in API");
+      }
+
+      const data = await response.json();
+      console.log("Receipt updated successfully:", data);
+
+      // Optionally update the state with the new receipt
+      setReceipts((prevReceipts) =>
+        prevReceipts.map((receipt) =>
+          receipt.localReceiptId === originalReceipt.localReceiptId
+            ? { ...receipt, ...updatedReceipt }
+            : receipt
+        )
+      );
+
+      return data;
+    } catch (error) {
+      console.error("Error editing receipt:", error);
+      throw new Error("Failed to edit receipt in API");
+    }
+  };
+
+  return { receipts, setReceipts, loading, editReceiptAPI };
 };
