@@ -38,7 +38,6 @@ export const decodeToken = (): CustomJwtPayload | null => {
     ) as CustomJwtPayload;
 
     return jsonPayload;
-
   } catch (error) {
     console.error("Error decoding token:", error);
     return null;
@@ -77,7 +76,6 @@ export const validateToken = async (): Promise<{ email: string } | null> => {
     );
 
     if (response.ok) {
-
       const data = (await response.json()) as ValidateTokenResponse;
       return { email: data.email };
     } else {
