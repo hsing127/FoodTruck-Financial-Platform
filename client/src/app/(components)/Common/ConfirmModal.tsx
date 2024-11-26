@@ -1,3 +1,4 @@
+// src/components/Common/ConfirmModal.tsx
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import Button from "../DashboardSettingsComponents/button";
@@ -6,6 +7,7 @@ interface ConfirmModalProps {
   isOpen: boolean;
   title: string;
   message: string;
+  proTip?: string; // Optional prop for the pro tip
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -14,6 +16,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isOpen,
   title,
   message,
+  proTip,
   onConfirm,
   onCancel,
 }) => {
@@ -53,9 +56,17 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       <div
         className="bg-white text-black p-6 rounded-lg shadow-lg w-full max-w-sm"
         onClick={handleModalClick}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-modal-title"
       >
-        <h2 className="text-lg font-semibold mb-4">{title}</h2>
-        <p className="mb-6">{message}</p>
+        <h2 id="confirm-modal-title" className="text-lg font-semibold mb-4">
+          {title}
+        </h2>
+        <p className="mb-4">{message}</p>
+        {proTip && (
+          <p className="text-sm text-gray-500 italic mb-4">{proTip}</p>
+        )}
         <div className="flex justify-end gap-4">
           <Button onClick={onCancel} label="Cancel" />
           <Button onClick={onConfirm} label="Delete" type="danger" />

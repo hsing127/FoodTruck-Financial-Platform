@@ -33,6 +33,7 @@ export const DashboardHome: React.FC = () => {
                 withToggleButtons={true}
                 monthlyValue="$3000"
                 yearlyValue="$36000"
+                weeklyValue="$1200"
                 isTrendingUp={true}
               />
             </div>

@@ -1,17 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-
 import { Sale } from "@/app/types/types";
 import { useEditable } from "@/app/hooks/useEditable";
 import ActionButtons from "../Common/ActionButtons";
 import EditableCell from "../Common/EditableCell";
+import SaleDetails from "./SaleDetails";
+import ConfirmModal from "../Common/ConfirmModal";
 import {
   rowVariants,
   tableRowTransition,
   chevronVariants,
-} from "@/app/(components)/Common/Animations";
-import SaleDetails from "./SaleDetails";
+} from "../Common/Animations";
 
 // Define types for props
 interface SaleTableRowProps {
@@ -41,6 +41,38 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
     handleCancelClick,
     handleInputChange,
   } = useEditable<Sale>(sale);
+
+  // State for confirmation modal
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [saleToDelete, setSaleToDelete] = useState<number | null>(null);
+
+  // Handler for delete button click
+  const onDelete = (e: React.MouseEvent) => {
+    const isShiftPressed = e.shiftKey;
+    if (isShiftPressed) {
+      // Bypass confirmation
+      handleDeleteClick(sale.localSaleId);
+    } else {
+      // Open confirmation modal
+      setSaleToDelete(sale.localSaleId);
+      setIsConfirmModalOpen(true);
+    }
+  };
+
+  // Confirm deletion
+  const handleConfirmDelete = () => {
+    if (saleToDelete !== null) {
+      handleDeleteClick(saleToDelete);
+      setSaleToDelete(null);
+      setIsConfirmModalOpen(false);
+    }
+  };
+
+  // Cancel deletion
+  const handleCancelDelete = () => {
+    setSaleToDelete(null);
+    setIsConfirmModalOpen(false);
+  };
 
   return (
     <>
@@ -74,7 +106,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
         {/* Render editable cells */}
         <EditableCell
           isEditing={isEditing}
-          value={isEditing ? editedItem.startDate : sale.startDate} //change later
+          value={isEditing ? editedItem.startDate : sale.startDate} // Update as needed
           name="startDate"
           onChange={handleInputChange}
         />
@@ -107,8 +139,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
             handleCancelClick();
           }}
           onDelete={(e) => {
-            e.stopPropagation();
-            handleDeleteClick(sale.localSaleId);
+            onDelete(e);
           }}
         />
       </motion.tr>
@@ -131,6 +162,16 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
           </td>
         </motion.tr>
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this sale? This action cannot be undone."
+        proTip="Pro Tip: Hold down Shift while clicking Delete to bypass this confirmation."
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </>
   );
 };

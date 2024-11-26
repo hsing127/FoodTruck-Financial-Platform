@@ -179,7 +179,7 @@ const AddSaleEntryModal: React.FC<AddManualEntryModalProps> = ({
                     name="cost"
                     onChange={handleSaleInputChange}
                     type="text"
-                    placeholder="Cost"
+                    placeholder="$Cost"
                   />
                   <td className="pl-2 pt-2 text-sm text-black">
                     <button

@@ -63,7 +63,7 @@ const MenuItemIngredientRow: React.FC<MenuItemIngredientRowProps> = ({
         value={ingredient.price}
         name="price"
         onChange={handleInputChange}
-        placeholder="Price"
+        placeholder="$Price"
       />
       <td className="pl-2 py-3 text-sm text-black">
         <button

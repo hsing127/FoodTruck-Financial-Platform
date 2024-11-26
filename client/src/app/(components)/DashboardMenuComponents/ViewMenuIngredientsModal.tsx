@@ -1,6 +1,7 @@
+// ViewMenuItemDetailsModal.tsx
 import React, { useEffect, useState } from "react";
 import IngredientTable from "./IngredientTable";
-import { Ingredient } from "@/app/types/types";
+import { Ingredient, MenuItem } from "@/app/types/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { backdropVariants, modalVariants } from "../Common/Animations";
@@ -8,21 +9,28 @@ import { backdropVariants, modalVariants } from "../Common/Animations";
 interface ViewMenuItemDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialIngredients: Ingredient[];
+  menuItem: MenuItem | null;
+  onSave: (updatedMenuItem: MenuItem) => void;
 }
 
 const ViewMenuItemDetailsModal: React.FC<ViewMenuItemDetailsModalProps> = ({
   isOpen,
   onClose,
-  initialIngredients,
+  menuItem,
+  onSave,
 }) => {
-  const [ingredients, setIngredients] =
-    useState<Ingredient[]>(initialIngredients);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [editableMenuItem, setEditableMenuItem] = useState<MenuItem | null>(
+    null
+  );
 
-  // Update ingredients when initialIngredients changes
+  // Initialize ingredients and editableMenuItem when menuItem changes
   useEffect(() => {
-    setIngredients(initialIngredients);
-  }, [initialIngredients]);
+    if (menuItem) {
+      setIngredients(menuItem.ingredients);
+      setEditableMenuItem({ ...menuItem });
+    }
+  }, [menuItem]);
 
   const onItemEdit = (index: number, updatedItem: Ingredient) => {
     setIngredients((prevIngredients) =>
@@ -39,6 +47,30 @@ const ViewMenuItemDetailsModal: React.FC<ViewMenuItemDetailsModalProps> = ({
   const onItemAdd = (newItem: Ingredient) => {
     setIngredients((prevIngredients) => [...prevIngredients, newItem]);
   };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (editableMenuItem) {
+      const { name, value } = e.target;
+      setEditableMenuItem({
+        ...editableMenuItem,
+        [name]: value,
+      });
+    }
+  };
+
+  const handleSave = () => {
+    if (editableMenuItem) {
+      // Update ingredients
+      const updatedMenuItem: MenuItem = {
+        ...editableMenuItem,
+        ingredients,
+      };
+      onSave(updatedMenuItem);
+      onClose();
+    }
+  };
+
+  if (!menuItem) return null;
 
   return (
     <AnimatePresence>
@@ -61,7 +93,7 @@ const ViewMenuItemDetailsModal: React.FC<ViewMenuItemDetailsModalProps> = ({
           >
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-semibold text-black">
-                Ingredient Details
+                Edit Menu Item
               </h2>
               <button
                 onClick={onClose}
@@ -70,6 +102,39 @@ const ViewMenuItemDetailsModal: React.FC<ViewMenuItemDetailsModalProps> = ({
                 <X size={28} />
               </button>
             </div>
+
+            {/* Editable Menu Item Details */}
+            <div className="mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div>
+                  <label className="block text-gray-700">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={editableMenuItem?.name || ""}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700">Price</label>
+                  <input
+                    type="text"
+                    name="price"
+                    value={editableMenuItem?.price || ""}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  />
+                </div>
+                <button
+                  onClick={handleSave}
+                  className="h-10 mt-7 text-sm font-medium rounded px-4 py-2 bg-[#8B5CF6] hover:bg-[#b07ff0] transition-colors duration-200"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+
             {/* IngredientTable component */}
             <IngredientTable
               ingredients={ingredients}

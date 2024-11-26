@@ -165,30 +165,32 @@ const Sidebar = React.memo(() => {
         </motion.button>
       </div>
 
-      {/* Main section of links */}
-      <div className="flex-grow mt-8">
-        {mainLinks.map((link) => (
-          <SidebarLink
-            key={link.href}
-            href={link.href}
-            icon={link.icon}
-            label={link.label}
-            isCollapsed={isSidebarCollapsed}
-          />
-        ))}
-      </div>
+      <div className="overflow-y-auto overflow-x-hidden flex flex-col justify-between h-full">
+        {/* Main section of links */}
+        <div className="mt-8">
+          {mainLinks.map((link) => (
+            <SidebarLink
+              key={link.href}
+              href={link.href}
+              icon={link.icon}
+              label={link.label}
+              isCollapsed={isSidebarCollapsed}
+            />
+          ))}
+        </div>
 
-      {/* Bottom section of links */}
-      <div className="mb-8">
-        {bottomLinks.map((link) => (
-          <SidebarLink
-            key={link.href}
-            href={link.href}
-            icon={link.icon}
-            label={link.label}
-            isCollapsed={isSidebarCollapsed}
-          />
-        ))}
+        {/* Bottom section of links */}
+        <div className="mb-8">
+          {bottomLinks.map((link) => (
+            <SidebarLink
+              key={link.href}
+              href={link.href}
+              icon={link.icon}
+              label={link.label}
+              isCollapsed={isSidebarCollapsed}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Footer message when not collapsed */}

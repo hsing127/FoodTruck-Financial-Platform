@@ -192,7 +192,7 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
                     name="cost"
                     onChange={handleReceiptInputChange}
                     type="text"
-                    placeholder="Cost"
+                    placeholder="$Cost"
                   />
                   <td className="pl-2 pt-2 text-sm text-black">
                     <button
