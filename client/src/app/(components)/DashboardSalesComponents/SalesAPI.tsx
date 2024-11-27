@@ -34,6 +34,8 @@ export const useSalesData = (email: string) => {
           return {
             ...sale,
             localSaleId: index + 1001, // Start at 1001 and increment
+            completeStartDate: sale.StartDate,
+            completeEndDate: sale.EndDate,
             startDate: startDateObj.toLocaleDateString(), // Format date
             endDate: endDateObj.toLocaleDateString(), // Format date
           };

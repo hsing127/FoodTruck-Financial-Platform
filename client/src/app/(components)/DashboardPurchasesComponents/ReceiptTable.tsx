@@ -103,26 +103,101 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
   );
 
   const handleDeleteClick = useCallback(
-    (localReceiptId: number) => {
-      setReceipts((prev) =>
-        prev.filter((receipt) => receipt.localReceiptId !== localReceiptId)
+    async (localReceiptId: number) => {
+      const receiptToDelete = receipts.find(
+        (receipt) => receipt.localReceiptId === localReceiptId
       );
+
+      if (!receiptToDelete) return;
+
+      const email = "ajwitt2@asu.edu"; // Use the given email
+
+      // API call to delete the receipt
+      try {
+        const response = await fetch(
+          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              table: "purchase",
+              body: {
+                Email: email,
+                DateTime: receiptToDelete.completeDateTime,
+                Location: receiptToDelete.location,
+              },
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to delete receipt");
+        }
+
+        const data = await response.json();
+        console.log("Receipt deleted successfully:", data);
+
+        // Update state after successful deletion
+        setReceipts((prev) =>
+          prev.filter((receipt) => receipt.localReceiptId !== localReceiptId)
+        );
+      } catch (error) {
+        console.error("Error deleting receipt:", error);
+      }
     },
-    [setReceipts]
+    [receipts, setReceipts]
   );
 
   // Handle item deletion for ingredients
   const handleItemDelete = useCallback(
     (receiptId: number, itemIndex: number) => {
       setReceipts((prev) =>
-        prev.map((receipt) =>
-          receipt.localReceiptId === receiptId
-            ? {
-                ...receipt,
-                details: receipt.details.filter((_, idx) => idx !== itemIndex),
+        prev.map((receipt) => {
+          if (receipt.localReceiptId === receiptId) {
+            const itemToDelete = receipt.details[itemIndex];
+            //console.log("Found Receipt:", receipt.completeDateTime);
+            //console.log("Item to be removed:", itemToDelete.ingredient);
+            const email = "ajwitt2@asu.edu";
+            try {
+                const response = fetch(
+                  "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      table: "includes", // Assuming you are deleting from the "inventory" table
+                      body: {
+                        Email: email,
+                        DateTime: receipt.completeDateTime,
+                        Location: receipt.location,
+                        IngredientName: itemToDelete.ingredient,
+                      },
+                    }),
+                  }
+                );
+          
+                //if (!response.ok) {
+               //   throw new Error("Failed to delete inventory item");
+               // }
+          
+                //const data = await response.json();
+                //console.log("Inventory item deleted successfully:", data);
+          
+                // Update state after successful deletion
+              } catch (error) {
+                console.error("Error deleting inventory item:", error);
               }
-            : receipt
-        )
+            return {
+              ...receipt,
+              details: receipt.details.filter((_, idx) => idx !== itemIndex),
+            };
+          }
+          return receipt;
+        })
       );
     },
     [setReceipts]

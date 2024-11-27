@@ -99,31 +99,107 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
     [expandedRows]
   );
 
-  const handleDeleteClick = useCallback(
-    (localSaleId: number) => {
-      setSales((prev) =>
-        prev.filter((sale) => sale.localSaleId !== localSaleId)
+    const handleDeleteClick = useCallback(
+        async (localSaleId: number) => {
+          const saleToDelete = sales.find(
+            (sale) => sale.localSaleId === localSaleId
+          );
+    
+          if (!saleToDelete) return;
+    
+          const email = "ajwitt2@asu.edu"; // Use the given email
+    
+          // API call to delete the sale
+          try {
+            const response = await fetch(
+              "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  table: "sale",
+                  body: {
+                    Email: email,
+                    StartDate: saleToDelete.completeStartDate,
+                    EndDate: saleToDelete.completeEndDate,
+                  },
+                }),
+              }
+            );
+    
+            if (!response.ok) {
+              throw new Error("Failed to delete sale");
+            }
+    
+            const data = await response.json();
+            console.log("Sale deleted successfully:", data);
+    
+            // Update state after successful deletion
+            setSales((prev) =>
+              prev.filter((sale) => sale.localSaleId !== localSaleId)
+            );
+          } catch (error) {
+            console.error("Error deleting sale:", error);
+          }
+        },
+        [sales, setSales]
       );
-    },
-    [setSales]
-  );
 
   // Handle item deletion for sale items
   const handleItemDelete = useCallback(
     (saleId: number, itemIndex: number) => {
       setSales((prev) =>
-        prev.map((sale) =>
-          sale.localSaleId === saleId
-            ? {
-                ...sale,
-                details: sale.details.filter((_, idx) => idx !== itemIndex),
+        prev.map((sale) => {
+          if (sale.localSaleId === saleId) {
+            const itemToDelete = sale.details[itemIndex];
+            //console.log("Found Sale:", sale.completeDateTime);
+            //console.log("Item to be removed:", itemToDelete.ingredient);
+            const email = "ajwitt2@asu.edu";
+            try {
+                const response = fetch(
+                  "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      table: "sold", // Assuming you are deleting from the "inventory" table
+                      body: {
+                        Email: email,
+                        StartDate: sale.completeStartDate,
+                        EndDate: sale.completeEndDate,
+                        MenuName: itemToDelete.menuitemname,
+                      },
+                    }),
+                  }
+                );
+          
+                //if (!response.ok) {
+               //   throw new Error("Failed to delete inventory item");
+               // }
+          
+                //const data = await response.json();
+                //console.log("Inventory item deleted successfully:", data);
+          
+                // Update state after successful deletion
+              } catch (error) {
+                console.error("Error deleting inventory item:", error);
               }
-            : sale
-        )
+            return {
+              ...sale,
+              details: sale.details.filter((_, idx) => idx !== itemIndex),
+            };
+          }
+          return sale;
+        })
       );
     },
     [setSales]
   );
+
 
   // Handle action item clicks
   const handleActionItemClick = useCallback(

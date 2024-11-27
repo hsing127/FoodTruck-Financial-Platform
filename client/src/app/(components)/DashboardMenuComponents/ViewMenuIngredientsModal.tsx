@@ -38,11 +38,51 @@ const ViewMenuItemDetailsModal: React.FC<ViewMenuItemDetailsModalProps> = ({
     );
   };
 
-  const onItemDelete = (index: number) => {
-    setIngredients((prevIngredients) =>
-      prevIngredients.filter((_, idx) => idx !== index)
-    );
+    const onItemDelete = async (index: number) => {
+        const deletedIngredient = ingredients[index];
+    
+          if (!deletedIngredient) return;
+    
+          const email = "ajwitt2@asu.edu"; // Use the given email
+    
+          // API call to delete the ingredient
+          try {
+            const response = await fetch(
+              "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  table: "uses",
+                  body: {
+                    Email: email,
+                    IngredientName: deletedIngredient.ingredient,
+                    MenuName: menuItem?.name,
+                  },
+                }),
+              }
+            );
+    
+            if (!response.ok) {
+              throw new Error("Failed to delete ingredient");
+            }
+    
+            const data = await response.json();
+            console.log("Ingredient deleted successfully:", data);
+    
+            // Update state after successful deletion
+            setIngredients((prevIngredients) => {
+                //console.log("Deleted Ingredient:", deletedIngredient);
+                return prevIngredients.filter((_, idx) => idx !== index);
+              });
+          } catch (error) {
+            console.error("Error deleting ingredient:", error);
+          }
+    
   };
+  
 
   const onItemAdd = (newItem: Ingredient) => {
     setIngredients((prevIngredients) => [...prevIngredients, newItem]);
