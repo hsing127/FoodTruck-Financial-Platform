@@ -108,5 +108,52 @@ export const useReceiptsData = (email: string) => {
     }
   };
 
-  return { receipts, setReceipts, loading, editReceiptAPI };
+  // Function to add a receipt to the API
+  const addReceiptAPI = async (email: string, newReceipt: Receipt) => {
+    try {
+      const response = await fetch(
+        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            table: "purchases",
+            body: [
+              {
+                DateTime: newReceipt.date + " " + newReceipt.time,
+                Location: newReceipt.location,
+                Cost: newReceipt.cost,
+                Email: email,
+              },
+            ],
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to add receipt to API");
+      }
+
+      const data = await response.json();
+      console.log("Receipt added successfully:", data);
+
+      // Optionally update the state with the new receipt
+      setReceipts((prevReceipts) => [
+        ...prevReceipts,
+        {
+          ...newReceipt,
+          localReceiptId: prevReceipts.length + 1001, // Assign a new unique ID
+        },
+      ]);
+
+      return data;
+    } catch (error) {
+      console.error("Error adding receipt:", error);
+      throw new Error("Failed to add receipt to API");
+    }
+  };
+
+  return { receipts, setReceipts, loading, editReceiptAPI, addReceiptAPI };
 };
