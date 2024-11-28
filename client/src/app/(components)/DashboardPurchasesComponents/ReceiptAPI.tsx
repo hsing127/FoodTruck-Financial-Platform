@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Receipt } from "@/app/types/types";
+import { Ingredient, Receipt } from "@/app/types/types";
 
 export const useReceiptsData = (email: string) => {
   const [areceipts, asetReceipts] = useState<Receipt[]>([]);
@@ -70,7 +70,7 @@ export const useReceiptsData = (email: string) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            table: "purchases",
+            table: "purchase",
             body: [
               {
                 Email: email,
@@ -119,7 +119,7 @@ export const useReceiptsData = (email: string) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            table: "purchases",
+            table: "purchase",
             body: [
               {
                 DateTime: newReceipt.date + " " + newReceipt.time,
@@ -155,5 +155,50 @@ export const useReceiptsData = (email: string) => {
     }
   };
 
-  return { areceipts, asetReceipts, loading, editReceiptAPI, addReceiptAPI };
+  const addReceiptIngredientAPI = async (
+    email: string,
+    newReceipt: Receipt,
+    newIngredient: Ingredient
+  ) => {
+    try {
+      // Prepare the API payload
+      const response = await fetch(
+        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            table: "includes",
+            body: [
+              {
+                Email: email,
+                DateTime: newReceipt.date + " " + newReceipt.time,
+                Location: newReceipt.location,
+                IngredientName: newIngredient.ingredient,
+                Price: parseFloat(newIngredient.price || "0"),
+                Amount: newIngredient.quantity,
+                AmountUnits: newIngredient.units,
+              },
+            ],
+          }),
+        }
+      );
+  
+      // Handle the API response
+      if (!response.ok) {
+        throw new Error("Failed to add ingredient to API");
+      }
+  
+      const data = await response.json();
+      console.log("Ingredient added successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("Error adding ingredient:", error);
+      throw new Error("Failed to add ingredient to API");
+    }
+  };
+
+  return { areceipts, asetReceipts, loading, editReceiptAPI, addReceiptAPI, addReceiptIngredientAPI };
 };

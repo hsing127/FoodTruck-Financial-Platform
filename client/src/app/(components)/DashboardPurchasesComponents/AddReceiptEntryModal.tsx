@@ -16,8 +16,6 @@ interface AddManualEntryModalProps {
   onClose: () => void;
 }
 
-
-
 const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
   isOpen,
   onClose,
@@ -42,7 +40,7 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
   const [newReceipt, setNewReceipt] = useState<Receipt>(initialReceipt);
 
   // API functions
-  const { areceipts, asetReceipts, loading, editReceiptAPI, addReceiptAPI } = useReceiptsData(email);
+  const { areceipts, asetReceipts, loading, editReceiptAPI, addReceiptAPI, addReceiptIngredientAPI } = useReceiptsData(email);
 
   // Handle changes in the receipt input fields
   const handleReceiptInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,9 +98,22 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
   const handleSaveReceipt = async () => {
     try {
       await addReceiptAPI(email, newReceipt);
-      setReceipts((prevReceipts) => [...prevReceipts, newReceipt]);
-      setNewReceipt(initialReceipt);
-      onClose();
+
+      // Add each ingredient (detail) to the includes table
+      const ingredientPromises = newReceipt.details.map((ingredient) =>
+      addReceiptIngredientAPI(email, newReceipt, ingredient)
+    );
+
+    await Promise.all(ingredientPromises);
+
+    // Update the local receipts state
+    setReceipts((prevReceipts) => [...prevReceipts, newReceipt]);
+
+    // Reset the new receipt form
+    setNewReceipt(initialReceipt);
+
+    // Close the modal
+    onClose();
     } catch(error) {
       alert("There was an error saving the receipt item");
     }
