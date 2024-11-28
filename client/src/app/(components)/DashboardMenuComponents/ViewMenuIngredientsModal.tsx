@@ -1,4 +1,3 @@
-// ViewMenuItemDetailsModal.tsx
 import React, { useEffect, useState } from "react";
 import IngredientTable from "./IngredientTable";
 import { Ingredient, MenuItem } from "@/app/types/types";

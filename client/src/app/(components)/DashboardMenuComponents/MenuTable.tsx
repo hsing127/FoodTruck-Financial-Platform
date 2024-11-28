@@ -1,15 +1,15 @@
-// MenuTable.tsx
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import Pagination from "../Common/Pagination";
 import SearchInput from "../Common/SearchInput";
-import MenuCard from "../DashboardMenuComponents/MenuCard";
 import { Plus, ArrowUp, ArrowDown, Filter } from "lucide-react";
-import { Ingredient, MenuItem } from "@/app/types/types";
+import { MenuItem } from "@/app/types/types";
 import AddMenuItemModal from "./AddMenuItemModal";
+import ConfirmModal from "../Common/ConfirmModal";
 import useSortLogic from "../Common/SortingLogic";
 import { itemVariants, tableVariants } from "../Common/Animations";
 import ViewMenuItemDetailsModal from "./ViewMenuIngredientsModal";
+import MenuCard from "./MenuCard";
 
 interface MenuTableProps {
   menuItems: MenuItem[];
@@ -28,9 +28,16 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS * ITEMS_PER_ROW);
   const [isAnimating, setIsAnimating] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false); // For MenuItemDetailsModal
-  const [showAddMenuItemModal, setShowAddMenuItemModal] = useState(false); // For AddMenuItemModal
-  const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem | null>(null); // Selected MenuItem for editing
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [showAddMenuItemModal, setShowAddMenuItemModal] = useState(false);
+  const [showEditMenuItemModal, setShowEditMenuItemModal] = useState(false);
+  const [selectedMenuItem, setSelectedMenuItem] = useState<MenuItem | null>(
+    null
+  );
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [menuItemToDelete, setMenuItemToDelete] = useState<MenuItem | null>(
+    null
+  );
 
   // Custom useSortLogic hook
   const { sortField, sortOrder, setSortFieldAndOrder, sortData } =
@@ -74,6 +81,43 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
     setFilteredMenu(sortedFiltered);
     setCurrentPage(1);
     setIsAnimating(true);
+  };
+
+  // Handle initiating deletion of a menu item
+  const initiateDeleteMenuItem = (item: MenuItem) => {
+    setMenuItemToDelete(item);
+    setIsConfirmModalOpen(true);
+  };
+
+  // Handle confirming deletion of a menu item
+  const handleConfirmDelete = () => {
+    if (menuItemToDelete) {
+      const updatedMenu = menuItems.filter(
+        (item) => item.id !== menuItemToDelete.id
+      );
+      setMenuItems(updatedMenu);
+
+      // Apply current search and sort to the updated menu
+      let filtered = updatedMenu;
+      if (searchInput !== "") {
+        filtered = updatedMenu.filter((item) =>
+          item.name.toLowerCase().includes(searchInput)
+        );
+      }
+
+      const sortedFiltered = sortData(filtered);
+      setFilteredMenu(sortedFiltered);
+      setCurrentPage(1);
+      setIsAnimating(true);
+      setMenuItemToDelete(null);
+      setIsConfirmModalOpen(false);
+    }
+  };
+
+  // Handle cancelling deletion
+  const handleCancelDelete = () => {
+    setMenuItemToDelete(null);
+    setIsConfirmModalOpen(false);
   };
 
   // Calculate items per page based on viewport height, with a minimum row count
@@ -126,12 +170,12 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
   // Handle clicking "More Details" on a menu item
   const handleMoreDetailsClick = (menuItem: MenuItem) => {
     setSelectedMenuItem(menuItem);
-    setIsModalOpen(true);
+    setIsDetailsModalOpen(true);
   };
 
-  // Close the MenuItemDetailsModal
-  const handleModalClose = () => {
-    setIsModalOpen(false);
+  // Close the ViewMenuItemDetailsModal
+  const handleDetailsModalClose = () => {
+    setIsDetailsModalOpen(false);
     setSelectedMenuItem(null);
   };
 
@@ -258,6 +302,30 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
         onSave={handleSaveMenuItem}
       />
 
+      {/* EditMenuItemModal */}
+      {selectedMenuItem && showEditMenuItemModal && (
+        <ViewMenuItemDetailsModal
+          isOpen={showEditMenuItemModal}
+          onClose={() => setShowEditMenuItemModal(false)}
+          menuItem={selectedMenuItem}
+          onSave={handleUpdateMenuItem}
+        />
+      )}
+
+      {/* ConfirmModal for Deletion */}
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        title="Confirm Deletion"
+        message={
+          menuItemToDelete
+            ? `Are you sure you want to delete the menu item "${menuItemToDelete.name}"? This action cannot be undone.`
+            : ""
+        }
+        proTip="Pro Tip: Hold down Shift while clicking Delete to bypass this confirmation."
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
+
       {/* Conditionally Render No Items Message or Grid of Menu Cards */}
       {filteredMenu.length === 0 ? (
         <p className="text-center text-gray-600 mt-8">
@@ -282,7 +350,12 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
               >
                 <MenuCard
                   item={item}
-                  handleMoreDetailsClick={() => handleMoreDetailsClick(item)}
+                  handleMoreDetailsClick={handleMoreDetailsClick}
+                  onEdit={(item) => {
+                    setSelectedMenuItem(item);
+                    setShowEditMenuItemModal(true);
+                  }}
+                  onDelete={initiateDeleteMenuItem} // Updated to use initiateDeleteMenuItem
                 />
               </motion.div>
             ))}
@@ -299,8 +372,8 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
 
       {/* Menu Item Details Modal */}
       <ViewMenuItemDetailsModal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
+        isOpen={isDetailsModalOpen}
+        onClose={handleDetailsModalClose}
         menuItem={selectedMenuItem}
         onSave={handleUpdateMenuItem}
       />
