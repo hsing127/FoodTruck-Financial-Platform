@@ -9,11 +9,14 @@ import {
   tableVariants,
 } from "../Common/Animations";
 import IngredientRow from "./AddReceiptIngredientRow";
+import { useReceiptsData } from "./ReceiptAPI";
 
 interface AddManualEntryModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+
 
 const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
   isOpen,
@@ -32,8 +35,14 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
   // State to hold all receipts (can be used for multiple receipts)
   const [receipts, setReceipts] = useState<Receipt[]>([]);
 
+  //Email var for page
+  const email = "ajwitt2@asu.edu";
+
   // State for the current new receipt being added
   const [newReceipt, setNewReceipt] = useState<Receipt>(initialReceipt);
+
+  // API functions
+  const { areceipts, asetReceipts, loading, editReceiptAPI, addReceiptAPI } = useReceiptsData(email);
 
   // Handle changes in the receipt input fields
   const handleReceiptInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +97,15 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
   };
 
   // Save the current receipt to the receipts list
-  const handleSaveReceipt = () => {
+  const handleSaveReceipt = async () => {
+    try {
+      await addReceiptAPI(email, newReceipt);
+      setReceipts((prevReceipts) => [...prevReceipts, newReceipt]);
+      setNewReceipt(initialReceipt);
+      onClose();
+    } catch(error) {
+      alert("There was an error saving the receipt item");
+    }
     setReceipts((prevReceipts) => [...prevReceipts, newReceipt]);
     setNewReceipt(initialReceipt);
     onClose();

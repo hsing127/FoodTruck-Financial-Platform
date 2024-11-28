@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Receipt } from "@/app/types/types";
 
 export const useReceiptsData = (email: string) => {
-  const [receipts, setReceipts] = useState<Receipt[]>([]);
+  const [areceipts, asetReceipts] = useState<Receipt[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export const useReceiptsData = (email: string) => {
           }
         );
 
-        setReceipts(receiptsWithId);
+        asetReceipts(receiptsWithId);
       } catch (error) {
         console.error("Error fetching receipts:", error);
       } finally {
@@ -93,7 +93,7 @@ export const useReceiptsData = (email: string) => {
       console.log("Receipt updated successfully:", data);
 
       // Optionally update the state with the new receipt
-      setReceipts((prevReceipts) =>
+      asetReceipts((prevReceipts) =>
         prevReceipts.map((receipt) =>
           receipt.localReceiptId === originalReceipt.localReceiptId
             ? { ...receipt, ...updatedReceipt }
@@ -140,7 +140,7 @@ export const useReceiptsData = (email: string) => {
       console.log("Receipt added successfully:", data);
 
       // Optionally update the state with the new receipt
-      setReceipts((prevReceipts) => [
+      asetReceipts((prevReceipts) => [
         ...prevReceipts,
         {
           ...newReceipt,
@@ -155,5 +155,5 @@ export const useReceiptsData = (email: string) => {
     }
   };
 
-  return { receipts, setReceipts, loading, editReceiptAPI, addReceiptAPI };
+  return { areceipts, asetReceipts, loading, editReceiptAPI, addReceiptAPI };
 };
