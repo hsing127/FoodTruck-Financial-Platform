@@ -185,12 +185,12 @@ export const useReceiptsData = (email: string) => {
           }),
         }
       );
-  
+
       // Handle the API response
       if (!response.ok) {
         throw new Error("Failed to add ingredient to API");
       }
-  
+
       const data = await response.json();
       console.log("Ingredient added successfully:", data);
       return data;

@@ -115,9 +115,9 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
         prev.map((sale) =>
           sale.localSaleId === saleId
             ? {
-                ...sale,
-                details: sale.details.filter((_, idx) => idx !== itemIndex),
-              }
+              ...sale,
+              details: sale.details.filter((_, idx) => idx !== itemIndex),
+            }
             : sale
         )
       );
@@ -234,9 +234,8 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
 
   return (
     <motion.div
-      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
-        isAnimating ? "overflow-hidden" : "overflow-y-auto"
-      }`}
+      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${isAnimating ? "overflow-hidden" : "overflow-y-auto"
+        }`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}

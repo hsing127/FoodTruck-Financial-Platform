@@ -118,9 +118,9 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
         prev.map((receipt) =>
           receipt.localReceiptId === receiptId
             ? {
-                ...receipt,
-                details: receipt.details.filter((_, idx) => idx !== itemIndex),
-              }
+              ...receipt,
+              details: receipt.details.filter((_, idx) => idx !== itemIndex),
+            }
             : receipt
         )
       );
@@ -237,9 +237,8 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
 
   return (
     <motion.div
-      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
-        isAnimating ? "overflow-hidden" : "overflow-y-auto"
-      }`}
+      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${isAnimating ? "overflow-hidden" : "overflow-y-auto"
+        }`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
