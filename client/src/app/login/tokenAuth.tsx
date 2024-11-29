@@ -14,6 +14,7 @@ interface ErrorResponse {
   error: string;
 }
 
+// Save the token in localStorage or sessionStorage
 export const saveToken = (token: string, rememberMe: boolean): void => {
   if (rememberMe) {
     localStorage.setItem("jwt", token);
@@ -22,10 +23,12 @@ export const saveToken = (token: string, rememberMe: boolean): void => {
   }
 };
 
+// Retrieve the token from storage
 export const getToken = (): string | null => {
   return localStorage.getItem("jwt") || sessionStorage.getItem("jwt");
 };
 
+// Decode the token to extract user information
 export const decodeToken = (): CustomJwtPayload | null => {
   const token = getToken();
   if (!token) return null;
@@ -45,6 +48,7 @@ export const decodeToken = (): CustomJwtPayload | null => {
   }
 };
 
+// Check if the token is expired
 export const isTokenExpired = (): boolean => {
   const decoded = decodeToken();
   if (!decoded || typeof decoded.exp === "undefined") return true;
@@ -53,11 +57,13 @@ export const isTokenExpired = (): boolean => {
   return decoded.exp < now;
 };
 
+// Clear the token from storage
 export const clearToken = (): void => {
   localStorage.removeItem("jwt");
   sessionStorage.removeItem("jwt");
 };
 
+// Validate the token via the backend
 export const validateToken = async (): Promise<{ email: string } | null> => {
   const token = getToken();
   if (!token) {
@@ -77,10 +83,10 @@ export const validateToken = async (): Promise<{ email: string } | null> => {
     );
 
     if (response.ok) {
-      const data = (await response.json()) as ValidateTokenResponse; // Explicit type assertion
+      const data = (await response.json()) as ValidateTokenResponse;
       return { email: data.email };
     } else {
-      const errorData = (await response.json()) as ErrorResponse; // Explicit type assertion
+      const errorData = (await response.json()) as ErrorResponse;
       console.error("Token validation error:", errorData.error);
       return null;
     }
@@ -90,12 +96,10 @@ export const validateToken = async (): Promise<{ email: string } | null> => {
   }
 };
 
-export const requireTokenWrapper = async (
-  getServerSidePropsFunction: Function
-) => {
+// Wrapper for SSR to check token and retrieve email
+export const requireTokenWrapper = (getServerSidePropsFunction: Function) => {
   return async (context: any) => {
-    const token = getToken();
-
+    const token = context.req.cookies?.jwt; // Retrieve token from cookies
     if (!token) {
       return {
         redirect: {
@@ -106,7 +110,6 @@ export const requireTokenWrapper = async (
     }
 
     const validationResult = await validateToken();
-
     if (!validationResult || !validationResult.email) {
       return {
         redirect: {
@@ -116,6 +119,7 @@ export const requireTokenWrapper = async (
       };
     }
 
+    // Pass the validated email to the context
     context.req.user = { email: validationResult.email };
 
     if (getServerSidePropsFunction) {
