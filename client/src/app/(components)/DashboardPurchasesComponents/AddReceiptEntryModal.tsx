@@ -101,20 +101,20 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
 
       // Add each ingredient (detail) to the includes table
       const ingredientPromises = newReceipt.details.map((ingredient) =>
-      addReceiptIngredientAPI(email, newReceipt, ingredient)
-    );
+        addReceiptIngredientAPI(email, newReceipt, ingredient)
+      );
 
-    await Promise.all(ingredientPromises);
+      await Promise.all(ingredientPromises);
 
-    // Update the local receipts state
-    setReceipts((prevReceipts) => [...prevReceipts, newReceipt]);
+      // Update the local receipts state
+      setReceipts((prevReceipts) => [...prevReceipts, newReceipt]);
 
-    // Reset the new receipt form
-    setNewReceipt(initialReceipt);
+      // Reset the new receipt form
+      setNewReceipt(initialReceipt);
 
-    // Close the modal
-    onClose();
-    } catch(error) {
+      // Close the modal
+      onClose();
+    } catch (error) {
       alert("There was an error saving the receipt item");
     }
     setReceipts((prevReceipts) => [...prevReceipts, newReceipt]);
