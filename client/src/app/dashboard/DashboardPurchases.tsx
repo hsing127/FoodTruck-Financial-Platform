@@ -8,18 +8,18 @@ import DashCardLong from "../(components)/DashboardHomeComponents/DashCardLong";
 import { useReceiptsData } from "../(components)/DashboardPurchasesComponents/ReceiptAPI";
 
 export const DashboardPurchases: React.FC = () => {
-  const { receipts, setReceipts } = useReceiptsData("ajwitt2@asu.edu");
+  const { areceipts, asetReceipts } = useReceiptsData("ajwitt2@asu.edu");
 
   // Compute Total Receipts
-  const totalReceipts = useMemo(() => receipts.length, [receipts]);
+  const totalReceipts = useMemo(() => areceipts.length, [areceipts]);
 
   // Compute Total Spendings
   const totalSpendings = useMemo(() => {
-    return receipts.reduce((acc, receipt) => {
+    return areceipts.reduce((acc, receipt) => {
       const cost = parseFloat(receipt.cost.replace("$", ""));
       return acc + (isNaN(cost) ? 0 : cost);
     }, 0);
-  }, [receipts]);
+  }, [areceipts]);
 
   // Compute Average Cost per Receipt
   const averageCostPerReceipt = useMemo(() => {
@@ -29,14 +29,14 @@ export const DashboardPurchases: React.FC = () => {
 
   // Compute Most Visited Store
   const mostVisitedStore = useMemo(() => {
-    if (receipts.length === 0) return "N/A";
+    if (areceipts.length === 0) return "N/A";
     const storeCount: { [key: string]: number } = {};
-    receipts.forEach((receipt) => {
-      storeCount[receipt.location] = (storeCount[receipt.location] || 0) + 1;
+    areceipts.forEach((areceipt) => {
+      storeCount[areceipt.location] = (storeCount[areceipt.location] || 0) + 1;
     });
     const sortedStores = Object.entries(storeCount).sort((a, b) => b[1] - a[1]);
     return sortedStores[0]?.[0] || "N/A";
-  }, [receipts]);
+  }, [areceipts]);
 
   return (
     <DashboardLayout>
@@ -81,7 +81,7 @@ export const DashboardPurchases: React.FC = () => {
               </div>
             </motion.div>
           </div>
-          <ReceiptTable receipts={receipts} setReceipts={setReceipts} />
+          <ReceiptTable receipts={areceipts} setReceipts={asetReceipts} />
         </div>
       </div>
     </DashboardLayout>
