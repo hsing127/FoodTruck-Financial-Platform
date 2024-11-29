@@ -160,26 +160,26 @@ const AddSaleEntryModal: React.FC<AddManualEntryModalProps> = ({
                   <EditableCell
                     isEditing={true}
                     value={newSale.startDate}
-                    name="date"
+                    name="startDate"
                     onChange={handleSaleInputChange}
                     type="date"
-                    placeholder="Date"
+                    placeholder="Start Date"
                   />
                   <EditableCell
                     isEditing={true}
                     value={newSale.endDate}
-                    name="date"
+                    name="endDate"
                     onChange={handleSaleInputChange}
                     type="date"
-                    placeholder="Date"
+                    placeholder="End Date"
                   />
                   <EditableCell
                     isEditing={true}
                     value={newSale.revenue}
-                    name="cost"
+                    name="revenue" 
                     onChange={handleSaleInputChange}
                     type="text"
-                    placeholder="$Cost"
+                    placeholder="$Revenue"
                   />
                   <td className="pl-2 pt-2 text-sm text-black">
                     <button
