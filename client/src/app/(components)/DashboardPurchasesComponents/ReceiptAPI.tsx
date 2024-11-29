@@ -34,7 +34,7 @@ export const useReceiptsData = (email: string) => {
             const dateObj = new Date(receipt.date);
             return {
               ...receipt,
-                localReceiptId: index + 1001, // Start at 1001 and increment
+              localReceiptId: index + 1001, // Start at 1001 and increment
               completeDateTime: receipt.date,
               date: dateObj.toLocaleDateString(), // Format date
               time: dateObj.toLocaleTimeString([], {

@@ -161,36 +161,36 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
             //console.log("Item to be removed:", itemToDelete.ingredient);
             const email = "ajwitt2@asu.edu";
             try {
-                const response = fetch(
-                  "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
+              const response = fetch(
+                "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    table: "includes", // Assuming you are deleting from the "inventory" table
+                    body: {
+                      Email: email,
+                      DateTime: receipt.completeDateTime,
+                      Location: receipt.location,
+                      IngredientName: itemToDelete.ingredient,
                     },
-                    body: JSON.stringify({
-                      table: "includes", // Assuming you are deleting from the "inventory" table
-                      body: {
-                        Email: email,
-                        DateTime: receipt.completeDateTime,
-                        Location: receipt.location,
-                        IngredientName: itemToDelete.ingredient,
-                      },
-                    }),
-                  }
-                );
-          
-                //if (!response.ok) {
-               //   throw new Error("Failed to delete inventory item");
-               // }
-          
-                //const data = await response.json();
-                //console.log("Inventory item deleted successfully:", data);
-          
-                // Update state after successful deletion
-              } catch (error) {
-                console.error("Error deleting inventory item:", error);
-              }
+                  }),
+                }
+              );
+
+              //if (!response.ok) {
+              //   throw new Error("Failed to delete inventory item");
+              // }
+
+              //const data = await response.json();
+              //console.log("Inventory item deleted successfully:", data);
+
+              // Update state after successful deletion
+            } catch (error) {
+              console.error("Error deleting inventory item:", error);
+            }
             return {
               ...receipt,
               details: receipt.details.filter((_, idx) => idx !== itemIndex),
@@ -312,9 +312,8 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
 
   return (
     <motion.div
-      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
-        isAnimating ? "overflow-hidden" : "overflow-y-auto"
-      }`}
+      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${isAnimating ? "overflow-hidden" : "overflow-y-auto"
+        }`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}

@@ -112,11 +112,11 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
     async (id: number) => {
       // Find the item to delete from the inventory
       const itemToDelete = inventory.find((item) => item.id === id);
-  
+
       if (!itemToDelete) return;
-  
+
       const email = "ajwitt2@asu.edu"; // Use the provided email
-  
+
       // API call to delete the inventory item
       try {
         const response = await fetch(
@@ -135,14 +135,14 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
             }),
           }
         );
-  
+
         if (!response.ok) {
           throw new Error("Failed to delete inventory item");
         }
-  
+
         const data = await response.json();
         //console.log("Inventory item deleted successfully:", data);
-  
+
         // Update state after successful deletion
         setInventory((prev) =>
           prev.filter((item) => item.id !== id)
@@ -153,7 +153,7 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
     },
     [inventory, setInventory]
   );
-  
+
 
   // Handle action item clicks from SearchInput
   const handleActionItemClick = useCallback(
@@ -264,9 +264,8 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
 
   return (
     <motion.div
-      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
-        isAnimating ? "overflow-hidden" : "overflow-y-auto"
-      }`}
+      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${isAnimating ? "overflow-hidden" : "overflow-y-auto"
+        }`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
