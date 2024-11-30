@@ -22,6 +22,8 @@ const AddSaleEntryModal: React.FC<AddManualEntryModalProps> = ({
   // Initial state for a new sale
   const initialSale: Sale = {
     localSaleId: Date.now(),
+    completeStartDate: "",
+    completeEndDate: "",
     startDate: "",
     endDate: "",
     revenue: "",

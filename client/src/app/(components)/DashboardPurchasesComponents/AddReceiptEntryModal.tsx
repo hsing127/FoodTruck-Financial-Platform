@@ -22,6 +22,7 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
   // Initial state for a new receipt
   const initialReceipt: Receipt = {
     localReceiptId: Date.now(),
+    completeDateTime: "",
     location: "",
     date: "",
     time: "",
