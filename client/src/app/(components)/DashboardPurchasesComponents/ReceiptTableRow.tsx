@@ -7,13 +7,13 @@ import ActionButtons from "../Common/ActionButtons";
 import EditableCell from "../Common/EditableCell";
 import ReceiptDetails from "./ReceiptDetails";
 import ConfirmModal from "../Common/ConfirmModal";
+import ContextMenu from "../Common/ContextMenu";
 import {
   chevronVariants,
   rowVariants,
   tableRowTransition,
 } from "../Common/Animations";
 
-// Define types for props
 interface ReceiptTableRowProps {
   receipt: Receipt;
   isRowExpanded: (id: number) => boolean;
@@ -22,6 +22,7 @@ interface ReceiptTableRowProps {
   index: number;
   setIsAnimating: (isAnimating: boolean) => void;
   onItemDelete: (receiptId: number, itemIndex: number) => void;
+  duplicateReceipt: (receipt: Receipt) => void;
 }
 
 const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
@@ -32,6 +33,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
   index,
   setIsAnimating,
   onItemDelete,
+  duplicateReceipt,
 }) => {
   const {
     isEditing,
@@ -46,6 +48,13 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [receiptToDelete, setReceiptToDelete] = useState<number | null>(null);
 
+  // State for context menu
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
   // Handler for delete button click
   const onDelete = (e: React.MouseEvent) => {
     const isShiftPressed = e.shiftKey;
@@ -57,6 +66,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
       setReceiptToDelete(receipt.localReceiptId);
       setIsConfirmModalOpen(true);
     }
+    setIsContextMenuOpen(false); // Close context menu
   };
 
   // Confirm deletion
@@ -78,6 +88,11 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
     <>
       <motion.tr
         onClick={() => toggleRow(receipt.localReceiptId)}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          setIsContextMenuOpen(true);
+          setContextMenuPosition({ x: e.clientX, y: e.clientY });
+        }}
         variants={rowVariants}
         initial="hidden"
         animate="visible"
@@ -88,7 +103,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
           onStart: () => setIsAnimating(true),
           onComplete: () => setIsAnimating(false),
         }}
-        className="cursor-pointer border-b border-t border-white"
+        className="cursor-pointer border-b border-t border-white relative"
       >
         {/* Receipt ID and Expander Icon */}
         <td className="py-5 text-sm font-medium text-black flex items-center ">
@@ -151,6 +166,33 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
           }}
         />
       </motion.tr>
+
+      {/* Context Menu */}
+      {isContextMenuOpen && (
+        <ContextMenu
+          options={["Edit", "Delete", "Duplicate"]}
+          position={contextMenuPosition}
+          onSelect={(option, e) => {
+            switch (option) {
+              case "Edit":
+                handleEditClick();
+                break;
+              case "Delete":
+                onDelete(e);
+                break;
+              case "Duplicate":
+                duplicateReceipt(receipt);
+                break;
+              default:
+                break;
+            }
+            setIsContextMenuOpen(false);
+          }}
+          onClose={() => {
+            setIsContextMenuOpen(false);
+          }}
+        />
+      )}
 
       {/* Expanded Row with Details */}
       {isRowExpanded(receipt.localReceiptId) && (
