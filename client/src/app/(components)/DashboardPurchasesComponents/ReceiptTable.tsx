@@ -320,12 +320,9 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
         ...receiptToDuplicate,
         localReceiptId: newReceiptId,
         location: `Copy of ${receiptToDuplicate.location}`,
-        // Optionally, adjust other fields like date/time if needed
       };
 
       setReceipts((prevReceipts) => [...prevReceipts, newReceipt]);
-
-      // Optionally, handle API call to add the new receipt to the server
     },
     [receipts, setReceipts]
   );

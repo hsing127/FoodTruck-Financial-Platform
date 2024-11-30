@@ -158,7 +158,7 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
             //console.log("Item to be removed:", itemToDelete.ingredient);
             const email = "ajwitt2@asu.edu";
             try {
-              const response = fetch(
+              fetch(
                 "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
                 {
                   method: "POST",
@@ -166,7 +166,7 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    table: "sold", // Assuming you are deleting from the "inventory" table
+                    table: "sold", // Assuming you are deleting from the "sold" table
                     body: {
                       Email: email,
                       StartDate: sale.completeStartDate,
@@ -186,7 +186,6 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
 
               // Update state after successful deletion
             } catch (error) {
-              console.error("Error deleting inventory item:", error);
             }
             return {
               ...sale,
@@ -199,7 +198,6 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
     },
     [setSales]
   );
-
 
   // Handle action item clicks
   const handleActionItemClick = useCallback(
@@ -308,10 +306,28 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
     }
   }, [sortField, sortOrder, sortData]);
 
+  // Function to duplicate a sale
+  const duplicateSale = useCallback(
+    (saleToDuplicate: Sale) => {
+      const newSaleId = Math.max(0, ...sales.map((s) => s.localSaleId)) + 1;
+
+      const newSale: Sale = {
+        ...saleToDuplicate,
+        localSaleId: newSaleId,
+        startDate: `Copy of ${saleToDuplicate.startDate}`,
+        endDate: `Copy of ${saleToDuplicate.endDate}`,
+      };
+
+      setSales((prevSales) => [...prevSales, newSale]);
+    },
+    [sales, setSales]
+  );
+
   return (
     <motion.div
-      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${isAnimating ? "overflow-hidden" : "overflow-y-auto"
-        }`}
+      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
+        isAnimating ? "overflow-hidden" : "overflow-y-auto"
+      }`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
@@ -452,6 +468,7 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
                   index={index}
                   setIsAnimating={setIsAnimating}
                   onItemDelete={handleItemDelete}
+                  duplicateSale={duplicateSale} // Pass the duplicateSale function
                 />
               ))}
             </motion.tbody>

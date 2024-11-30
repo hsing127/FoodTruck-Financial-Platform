@@ -11,16 +11,17 @@ import { itemVariants, tableVariants } from "../Common/Animations";
 import ViewMenuItemDetailsModal from "./ViewMenuIngredientsModal";
 import MenuCard from "./MenuCard";
 
-interface MenuTableProps {
-  menuItems: MenuItem[];
-  setMenuItems: React.Dispatch<React.SetStateAction<MenuItem[]>>;
-}
-
+// Constants
 const ROW_HEIGHT = 170;
 const BOTTOM_PADDING = 40;
 const ROWS = 4;
 const ITEMS_PER_ROW = 3;
 const MIN_ROWS = 2;
+
+interface MenuTableProps {
+  menuItems: MenuItem[];
+  setMenuItems: React.Dispatch<React.SetStateAction<MenuItem[]>>;
+}
 
 const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
   const [searchInput, setSearchInput] = useState("");
@@ -250,6 +251,35 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
     setFilteredMenu(sortedFiltered);
   }, [menuItems, searchInput, sortData]);
 
+  // Function to duplicate a menu item
+  const duplicateMenuItem = useCallback(
+    (itemToDuplicate: MenuItem) => {
+      const newId = Math.max(0, ...menuItems.map((i) => i.id)) + 1;
+
+      const newItem: MenuItem = {
+        ...itemToDuplicate,
+        id: newId,
+        name: `Copy of ${itemToDuplicate.name}`,
+      };
+
+      setMenuItems((prevMenu) => [...prevMenu, newItem]);
+
+      // Apply current search and sort to the updated menu
+      let filtered = [...menuItems, newItem];
+      if (searchInput !== "") {
+        filtered = filtered.filter((item) =>
+          item.name.toLowerCase().includes(searchInput)
+        );
+      }
+
+      const sortedFiltered = sortData(filtered);
+      setFilteredMenu(sortedFiltered);
+      setCurrentPage(1);
+      setIsAnimating(true);
+    },
+    [menuItems, setMenuItems, searchInput, sortData]
+  );
+
   return (
     <motion.div
       className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
@@ -355,7 +385,8 @@ const MenuTable: React.FC<MenuTableProps> = ({ menuItems, setMenuItems }) => {
                     setSelectedMenuItem(item);
                     setShowEditMenuItemModal(true);
                   }}
-                  onDelete={initiateDeleteMenuItem} // Updated to use initiateDeleteMenuItem
+                  onDelete={initiateDeleteMenuItem}
+                  duplicateMenuItem={duplicateMenuItem}
                 />
               </motion.div>
             ))}
