@@ -186,6 +186,7 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
 
               // Update state after successful deletion
             } catch (error) {
+              console.error("Error deleting sold item:", error);
             }
             return {
               ...sale,
