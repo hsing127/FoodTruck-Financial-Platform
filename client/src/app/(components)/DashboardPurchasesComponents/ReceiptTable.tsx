@@ -310,7 +310,12 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
     }
   }, [sortField, sortOrder, sortData]);
 
+  // Function to duplicate a receipt
+  const duplicateReceipt = useCallback(
+    (receiptToDuplicate: Receipt) => {
+      const newReceiptId =
         Math.max(0, ...receipts.map((r) => r.localReceiptId)) + 1;
+
       const newReceipt: Receipt = {
         ...receiptToDuplicate,
         localReceiptId: newReceiptId,
