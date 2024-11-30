@@ -1,4 +1,3 @@
-// src/components/Common/ConfirmModal.tsx
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import Button from "../DashboardSettingsComponents/button";
@@ -7,7 +6,7 @@ interface ConfirmModalProps {
   isOpen: boolean;
   title: string;
   message: string;
-  proTip?: string; // Optional prop for the pro tip
+  proTip?: string;
   onConfirm: () => void;
   onCancel: () => void;
 }
