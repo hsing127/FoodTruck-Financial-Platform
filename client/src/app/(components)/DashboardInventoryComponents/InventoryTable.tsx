@@ -14,8 +14,6 @@ import { InventoryItem } from "@/app/types/types";
 import AddInventoryItemModal from "./AddInventoryItemModal";
 import UploadLogic, { UploadLogicHandle } from "../Common/UploadLogic";
 import useSortLogic from "../Common/SortingLogic";
-import ContextMenu from "../Common/ContextMenu"; // Ensure this import exists
-import { tableVariants } from "../Common/Animations";
 
 // Constants
 const ROW_HEIGHT = 56;
