@@ -12,6 +12,7 @@ export interface ReceiptItem {
 export interface Receipt {
   localReceiptId: number;
   location: string;
+  completeDateTime: string;
   date: string;
   time: string;
   cost: string;
@@ -21,6 +22,8 @@ export interface Receipt {
 export interface Sale {
   localSaleId: number;
   startDate: string;
+  completeStartDate: String;
+  completeEndDate: String;
   endDate: string;
   revenue: string;
   details: SaleItem[];

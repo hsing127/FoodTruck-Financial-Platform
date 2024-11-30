@@ -109,11 +109,51 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
 
   // Handle deleting an inventory item
   const handleDeleteClick = useCallback(
-    (id: number) => {
-      setInventory((prev) => prev.filter((item) => item.id !== id));
+    async (id: number) => {
+      // Find the item to delete from the inventory
+      const itemToDelete = inventory.find((item) => item.id === id);
+
+      if (!itemToDelete) return;
+
+      const email = "ajwitt2@asu.edu"; // Use the provided email
+
+      // API call to delete the inventory item
+      try {
+        const response = await fetch(
+          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              table: "ingredient", // Assuming you are deleting from the "inventory" table
+              body: {
+                Email: email,
+                Name: itemToDelete.Name
+              },
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to delete inventory item");
+        }
+
+        const data = await response.json();
+        //console.log("Inventory item deleted successfully:", data);
+
+        // Update state after successful deletion
+        setInventory((prev) =>
+          prev.filter((item) => item.id !== id)
+        );
+      } catch (error) {
+        console.error("Error deleting inventory item:", error);
+      }
     },
-    [setInventory]
+    [inventory, setInventory]
   );
+
 
   // Handle action item clicks from SearchInput
   const handleActionItemClick = useCallback(
