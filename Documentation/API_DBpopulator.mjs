@@ -261,15 +261,51 @@ const insertUses = async (usesData) => {
     }
 };
 
+const insertOtherCost = async (otherCostData) => {
+    const client = new Client({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+
+    await client.connect();
+
+    try {
+        for (const otherCost of otherCostData) {
+            const { Email, CostDate, CostName, CostCategory, Cost } = otherCost;
+            await client.query(
+                `INSERT INTO "OtherCost" ("Email", "CostDate", "CostName", "CostCategory", "Cost") VALUES ($1, $2, $3, $4, $5)`,
+                [Email, CostDate, CostName, CostCategory, Cost]
+            );
+        }
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: "Other Costs inserted successfully" }),
+        };
+    } catch (error) {
+        console.error("Error inserting Other Costs:", error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "Failed to insert Other Costs" }),
+        };
+    } finally {
+        await client.end();
+    }
+};
+
 const handler = async (event) => {
     try { //For information regarding how the input data should be formatted, refer to the test cases.
         const table = event.table;
-        const data = JSON.parse(event.body);
-
+        const data = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
         if (!Array.isArray(data)) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ error: "Input data must be an array of ingredients" }),
+                body: JSON.stringify({ error: "Input data must be an array of ingredients"}),
             };
         }
         //use  switch case instead to quickly determine which function to use
@@ -295,6 +331,9 @@ const handler = async (event) => {
               break;
             case "uses":
                 return await insertUses(data);
+              break;
+            case "otherCost":
+                return await insertOtherCost(data);
               break;
         }
         
@@ -346,5 +385,152 @@ AddUses:
 {
   "table":"uses",
   "body": "[{\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Chicken Breast\", \"Amount\": 8, \"AmountUnits\": \"oz\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Garlic\", \"Amount\": 3, \"AmountUnits\": \"cloves\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Olive Oil\", \"Amount\": 1, \"AmountUnits\": \"tbsp\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Paprika\", \"Amount\": 1, \"AmountUnits\": \"tsp\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Black Pepper\", \"Amount\": 0.5, \"AmountUnits\": \"tsp\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Basmati Rice\", \"Amount\": 6, \"AmountUnits\": \"oz\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Garlic Herb Chicken with Rice\", \"IngredientName\": \"Cilantro\", \"Amount\": 0.25, \"AmountUnits\": \"oz\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Chicken Breast\", \"Amount\": 6, \"AmountUnits\": \"oz\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Bell Pepper\", \"Amount\": 2, \"AmountUnits\": \"pc\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Onion\", \"Amount\": 1, \"AmountUnits\": \"pc\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Garlic\", \"Amount\": 2, \"AmountUnits\": \"cloves\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Olive Oil\", \"Amount\": 1, \"AmountUnits\": \"tbsp\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Paprika\", \"Amount\": 1, \"AmountUnits\": \"tsp\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Black Pepper\", \"Amount\": 0.5, \"AmountUnits\": \"tsp\"}, {\"Email\": \"ajwitt2@asu.edu\", \"MenuName\": \"Spicy Chicken and Bell Pepper Stir Fry\", \"IngredientName\": \"Cilantro\", \"Amount\": 0.25, \"AmountUnits\": \"oz\"}]"
+}
+AddOtherCost:
+{
+    "table": "otherCost",
+    "body": [
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-24",
+      "CostName": "Labor Cost",
+      "CostCategory": "variable",
+      "Cost": 400.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-24",
+      "CostName": "Cooking Fuel Cost",
+      "CostCategory": "variable",
+      "Cost": 150.50
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-25",
+      "CostName": "Parking Cost",
+      "CostCategory": "fixedCost",
+      "Cost": 50.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-25",
+      "CostName": "Truck Fuel Cost",
+      "CostCategory": "variable",
+      "Cost": 180.25
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-26",
+      "CostName": "Food Packaging",
+      "CostCategory": "variable",
+      "Cost": 75.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-26",
+      "CostName": "Maintenance Supplies",
+      "CostCategory": "fixedCost",
+      "Cost": 200.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-27",
+      "CostName": "Labor Cost",
+      "CostCategory": "variable",
+      "Cost": 375.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-27",
+      "CostName": "Cleaning Supplies",
+      "CostCategory": "variable",
+      "Cost": 40.25
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-28",
+      "CostName": "Advertising Cost",
+      "CostCategory": "fixedCost",
+      "Cost": 100.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-28",
+      "CostName": "Truck Insurance",
+      "CostCategory": "fixedCost",
+      "Cost": 300.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-29",
+      "CostName": "Labor Cost",
+      "CostCategory": "variable",
+      "Cost": 425.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-29",
+      "CostName": "Cooking Fuel Cost",
+      "CostCategory": "variable",
+      "Cost": 135.75
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-30",
+      "CostName": "Permit Renewal Fee",
+      "CostCategory": "fixedCost",
+      "Cost": 75.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-30",
+      "CostName": "Food Packaging",
+      "CostCategory": "variable",
+      "Cost": 85.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-31",
+      "CostName": "Truck Cleaning",
+      "CostCategory": "fixedCost",
+      "Cost": 125.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-31",
+      "CostName": "Utilities (Electricity/Water)",
+      "CostCategory": "fixedCost",
+      "Cost": 95.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-11-01",
+      "CostName": "Truck Fuel Cost",
+      "CostCategory": "variable",
+      "Cost": 210.50
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-11-01",
+      "CostName": "Cooking Utensil Replacement",
+      "CostCategory": "fixedCost",
+      "Cost": 50.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-11-02",
+      "CostName": "Labor Cost",
+      "CostCategory": "variable",
+      "Cost": 450.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-11-02",
+      "CostName": "Cooking Fuel Cost",
+      "CostCategory": "variable",
+      "Cost": 140.00
+    }
+  ]
+  
 }
 */

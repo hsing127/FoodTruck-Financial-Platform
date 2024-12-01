@@ -1,0 +1,143 @@
+[
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-24",
+      "CostName": "Labor Cost",
+      "CostCategory": "variable",
+      "Cost": 400.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-24",
+      "CostName": "Cooking Fuel Cost",
+      "CostCategory": "variable",
+      "Cost": 150.50
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-25",
+      "CostName": "Parking Cost",
+      "CostCategory": "fixedCost",
+      "Cost": 50.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-25",
+      "CostName": "Truck Fuel Cost",
+      "CostCategory": "variable",
+      "Cost": 180.25
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-26",
+      "CostName": "Food Packaging",
+      "CostCategory": "variable",
+      "Cost": 75.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-26",
+      "CostName": "Maintenance Supplies",
+      "CostCategory": "fixedCost",
+      "Cost": 200.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-27",
+      "CostName": "Labor Cost",
+      "CostCategory": "variable",
+      "Cost": 375.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-27",
+      "CostName": "Cleaning Supplies",
+      "CostCategory": "variable",
+      "Cost": 40.25
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-28",
+      "CostName": "Advertising Cost",
+      "CostCategory": "fixedCost",
+      "Cost": 100.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-28",
+      "CostName": "Truck Insurance",
+      "CostCategory": "fixedCost",
+      "Cost": 300.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-29",
+      "CostName": "Labor Cost",
+      "CostCategory": "variable",
+      "Cost": 425.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-29",
+      "CostName": "Cooking Fuel Cost",
+      "CostCategory": "variable",
+      "Cost": 135.75
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-30",
+      "CostName": "Permit Renewal Fee",
+      "CostCategory": "fixedCost",
+      "Cost": 75.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-30",
+      "CostName": "Food Packaging",
+      "CostCategory": "variable",
+      "Cost": 85.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-31",
+      "CostName": "Truck Cleaning",
+      "CostCategory": "fixedCost",
+      "Cost": 125.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-10-31",
+      "CostName": "Utilities (Electricity/Water)",
+      "CostCategory": "fixedCost",
+      "Cost": 95.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-11-01",
+      "CostName": "Truck Fuel Cost",
+      "CostCategory": "variable",
+      "Cost": 210.50
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-11-01",
+      "CostName": "Cooking Utensil Replacement",
+      "CostCategory": "fixedCost",
+      "Cost": 50.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-11-02",
+      "CostName": "Labor Cost",
+      "CostCategory": "variable",
+      "Cost": 450.00
+    },
+    {
+      "Email": "ajwitt2@asu.edu",
+      "CostDate": "2024-11-02",
+      "CostName": "Cooking Fuel Cost",
+      "CostCategory": "variable",
+      "Cost": 140.00
+    }
+  ]
+  

@@ -17,11 +17,13 @@ model User {
     Email        String  @id @db.VarChar(50)
     Password     String  @db.VarChar(100)
     BusinessName String? @db.VarChar(50)
+    Province       String? @db.VarChar(50)
 
     purchases   Purchase[]
     ingredients Ingredient[]
     menuItems   MenuItem[]
     sales       Sale[]
+    otherCosts       OtherCost[]
     code        Code?
 }
 
@@ -92,6 +94,9 @@ model Sale {
     StartDate DateTime @db.Date
     EndDate   DateTime @db.Date
     Revenue   Decimal  @db.Decimal(8, 2)
+    Weather   String? @db.VarChar(50)
+    HoursOpened Decimal?  @db.Decimal(8, 2)
+    OpenLocation String? @db.VarChar(50)
     user      User     @relation(fields: [Email], references: [Email], onDelete: Cascade, onUpdate: Cascade)
     soldItems Sold[]
 
@@ -117,5 +122,17 @@ model Code {
     Code      Int
     Used      Boolean  @default(false)
     user      User     @relation(fields: [Email], references: [Email], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model OtherCost {
+    Email     String   @db.VarChar(50)
+    CostDate  DateTime @db.Date
+    CostName  String   @db.VarChar(50)
+    CostCategory String @db.VarChar(50)
+    Cost      Decimal  @db.Decimal(8, 2)
+    user      User     @relation(fields: [Email], references: [Email], onDelete: Cascade, onUpdate: Cascade)
+
+    @@id([Email, CostDate, CostName])
+    @@unique([Email, CostDate, CostName])
 }
 
