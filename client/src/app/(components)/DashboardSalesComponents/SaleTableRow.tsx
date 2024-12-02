@@ -7,13 +7,13 @@ import ActionButtons from "../Common/ActionButtons";
 import EditableCell from "../Common/EditableCell";
 import SaleDetails from "./SaleDetails";
 import ConfirmModal from "../Common/ConfirmModal";
+import ContextMenu from "../Common/ContextMenu";
 import {
+  chevronVariants,
   rowVariants,
   tableRowTransition,
-  chevronVariants,
 } from "../Common/Animations";
 
-// Define types for props
 interface SaleTableRowProps {
   sale: Sale;
   isRowExpanded: (id: number) => boolean;
@@ -22,6 +22,7 @@ interface SaleTableRowProps {
   index: number;
   setIsAnimating: (isAnimating: boolean) => void;
   onItemDelete: (saleId: number, itemIndex: number) => void;
+  duplicateSale: (sale: Sale) => void;
 }
 
 const SaleTableRow: React.FC<SaleTableRowProps> = ({
@@ -32,6 +33,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
   index,
   setIsAnimating,
   onItemDelete,
+  duplicateSale,
 }) => {
   const {
     isEditing,
@@ -46,6 +48,13 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [saleToDelete, setSaleToDelete] = useState<number | null>(null);
 
+  // State for context menu
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
   // Handler for delete button click
   const onDelete = (e: React.MouseEvent) => {
     const isShiftPressed = e.shiftKey;
@@ -57,6 +66,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
       setSaleToDelete(sale.localSaleId);
       setIsConfirmModalOpen(true);
     }
+    setIsContextMenuOpen(false); // Close context menu
   };
 
   // Confirm deletion
@@ -74,10 +84,18 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
     setIsConfirmModalOpen(false);
   };
 
+  // Handler for right-click to open context menu
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsContextMenuOpen(true);
+    setContextMenuPosition({ x: e.clientX, y: e.clientY });
+  };
+
   return (
     <>
       <motion.tr
         onClick={() => toggleRow(sale.localSaleId)}
+        onContextMenu={handleContextMenu} // Add right-click handler
         variants={rowVariants}
         initial="hidden"
         animate="visible"
@@ -88,7 +106,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
           onStart: () => setIsAnimating(true),
           onComplete: () => setIsAnimating(false),
         }}
-        className="cursor-pointer border-b border-t border-white"
+        className="cursor-pointer border-b border-t border-white relative"
       >
         {/* Sale ID and Expander Icon */}
         <td className="py-5 text-sm font-medium text-black flex items-center ">
@@ -106,7 +124,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
         {/* Render editable cells */}
         <EditableCell
           isEditing={isEditing}
-          value={isEditing ? editedItem.startDate : sale.startDate} // Update as needed
+          value={isEditing ? editedItem.startDate : sale.startDate}
           name="startDate"
           onChange={handleInputChange}
         />
@@ -143,6 +161,33 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
           }}
         />
       </motion.tr>
+
+      {/* Context Menu */}
+      {isContextMenuOpen && (
+        <ContextMenu
+          options={["Edit", "Delete", "Duplicate"]}
+          position={contextMenuPosition}
+          onSelect={(option, e) => {
+            switch (option) {
+              case "Edit":
+                handleEditClick();
+                break;
+              case "Delete":
+                onDelete(e);
+                break;
+              case "Duplicate":
+                duplicateSale(sale);
+                break;
+              default:
+                break;
+            }
+            setIsContextMenuOpen(false);
+          }}
+          onClose={() => {
+            setIsContextMenuOpen(false);
+          }}
+        />
+      )}
 
       {/* Expanded Row with Details */}
       {isRowExpanded(sale.localSaleId) && (

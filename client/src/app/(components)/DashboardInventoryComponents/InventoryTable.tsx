@@ -127,10 +127,10 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              table: "ingredient", // Assuming you are deleting from the "inventory" table
+              table: "ingredient", // Assuming you are deleting from the "ingredient" table
               body: {
                 Email: email,
-                Name: itemToDelete.Name
+                Name: itemToDelete.Name,
               },
             }),
           }
@@ -144,16 +144,13 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
         //console.log("Inventory item deleted successfully:", data);
 
         // Update state after successful deletion
-        setInventory((prev) =>
-          prev.filter((item) => item.id !== id)
-        );
+        setInventory((prev) => prev.filter((item) => item.id !== id));
       } catch (error) {
         console.error("Error deleting inventory item:", error);
       }
     },
     [inventory, setInventory]
   );
-
 
   // Handle action item clicks from SearchInput
   const handleActionItemClick = useCallback(
@@ -262,10 +259,30 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
     }
   }, [sortField, sortOrder, sortData]);
 
+  // Function to duplicate an inventory item
+  const duplicateInventoryItem = useCallback(
+    (itemToDuplicate: InventoryItem) => {
+      const newId = Math.max(0, ...inventory.map((i) => i.id)) + 1;
+
+      const newItem: InventoryItem = {
+        ...itemToDuplicate,
+        id: newId,
+        Name: `Copy of ${itemToDuplicate.Name}`,
+        // Optionally, adjust other fields if needed
+      };
+
+      setInventory((prevInventory) => [...prevInventory, newItem]);
+
+      // Optionally, handle API call to add the new inventory item to the server
+    },
+    [inventory, setInventory]
+  );
+
   return (
     <motion.div
-      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${isAnimating ? "overflow-hidden" : "overflow-y-auto"
-        }`}
+      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
+        isAnimating ? "overflow-hidden" : "overflow-y-auto"
+      }`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
@@ -414,6 +431,7 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
                   onItemEdit={handleItemEdit}
                   onItemDelete={handleDeleteClick}
                   setIsAnimating={setIsAnimating}
+                  duplicateInventoryItem={duplicateInventoryItem} // Pass the duplicate function
                 />
               ))}
             </motion.tbody>

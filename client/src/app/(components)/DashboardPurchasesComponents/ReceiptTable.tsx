@@ -161,7 +161,7 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
             //console.log("Item to be removed:", itemToDelete.ingredient);
             const email = "ajwitt2@asu.edu";
             try {
-              const response = fetch(
+              fetch(
                 "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
                 {
                   method: "POST",
@@ -310,10 +310,28 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
     }
   }, [sortField, sortOrder, sortData]);
 
+  // Function to duplicate a receipt
+  const duplicateReceipt = useCallback(
+    (receiptToDuplicate: Receipt) => {
+      const newReceiptId =
+        Math.max(0, ...receipts.map((r) => r.localReceiptId)) + 1;
+
+      const newReceipt: Receipt = {
+        ...receiptToDuplicate,
+        localReceiptId: newReceiptId,
+        location: `Copy of ${receiptToDuplicate.location}`,
+      };
+
+      setReceipts((prevReceipts) => [...prevReceipts, newReceipt]);
+    },
+    [receipts, setReceipts]
+  );
+
   return (
     <motion.div
-      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${isAnimating ? "overflow-hidden" : "overflow-y-auto"
-        }`}
+      className={`pb-[${BOTTOM_PADDING}px] bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border-gray-700 flex flex-col h-full ${
+        isAnimating ? "overflow-hidden" : "overflow-y-auto"
+      }`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
@@ -451,6 +469,7 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
                   index={index}
                   setIsAnimating={setIsAnimating}
                   onItemDelete={handleItemDelete}
+                  duplicateReceipt={duplicateReceipt} // Pass the function
                 />
               ))}
             </motion.tbody>

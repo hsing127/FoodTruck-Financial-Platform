@@ -7,6 +7,7 @@ import { useEditable } from "@/app/hooks/useEditable";
 import { tableRowTransition } from "../Common/Animations";
 import { useEditInventoryData } from "./InventoryApi";
 import ConfirmModal from "../Common/ConfirmModal";
+import ContextMenu from "../Common/ContextMenu";
 
 interface InventoryTableRowProps {
   item: InventoryItem;
@@ -14,6 +15,7 @@ interface InventoryTableRowProps {
   onItemEdit: (id: number, updatedItem: InventoryItem) => void;
   onItemDelete: (id: number) => void;
   setIsAnimating: (isAnimating: boolean) => void;
+  duplicateInventoryItem: (item: InventoryItem) => void;
 }
 
 const rowVariants = {
@@ -27,6 +29,7 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
   onItemEdit,
   onItemDelete,
   setIsAnimating,
+  duplicateInventoryItem,
 }) => {
   const {
     isEditing,
@@ -43,6 +46,13 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [itemToDeleteId, setItemToDeleteId] = useState<number | null>(null);
 
+  // State for context menu
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
   // Handler for delete button click
   const handleDelete = (e: React.MouseEvent) => {
     const isShiftPressed = e.shiftKey;
@@ -54,6 +64,7 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
       setItemToDeleteId(item.id);
       setIsConfirmModalOpen(true);
     }
+    setIsContextMenuOpen(false); // Close context menu
   };
 
   // Confirm deletion
@@ -79,6 +90,13 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
     onItemEdit(item.id, editedItem);
   };
 
+  // Handler for right-click to open context menu
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsContextMenuOpen(true);
+    setContextMenuPosition({ x: e.clientX, y: e.clientY });
+  };
+
   return (
     <>
       <motion.tr
@@ -92,7 +110,8 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
           onStart: () => setIsAnimating(true),
           onComplete: () => setIsAnimating(false),
         }}
-        className="cursor-pointer border-b border-t border-white"
+        className="cursor-pointer border-b border-t border-white relative"
+        onContextMenu={handleContextMenu} // Add right-click handler
       >
         <EditableCell
           isEditing={false}
@@ -129,6 +148,33 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
           }}
         />
       </motion.tr>
+
+      {/* Context Menu */}
+      {isContextMenuOpen && (
+        <ContextMenu
+          options={["Edit", "Delete", "Duplicate"]}
+          position={contextMenuPosition}
+          onSelect={(option, e) => {
+            switch (option) {
+              case "Edit":
+                handleEditClick();
+                break;
+              case "Delete":
+                handleDelete(e);
+                break;
+              case "Duplicate":
+                duplicateInventoryItem(item);
+                break;
+              default:
+                break;
+            }
+            setIsContextMenuOpen(false);
+          }}
+          onClose={() => {
+            setIsContextMenuOpen(false);
+          }}
+        />
+      )}
 
       {/* Confirmation Modal */}
       <ConfirmModal
