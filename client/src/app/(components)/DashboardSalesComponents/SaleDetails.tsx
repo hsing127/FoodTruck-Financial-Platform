@@ -54,24 +54,28 @@ const SaleDetails: React.FC<SaleDetailsProps> = ({
           No sales items found for this receipt.
         </motion.p>
       ) : (
-        <div className="pl-[3%]">
+        <div className="pl-[2%]">
           <table className="min-w-full mt-4 overflow-hidden">
             <thead>
               <tr>
-                {["Menu Item", "Quantity", "Item Revenue", "Actions"].map(
-                  (header) => (
-                    <th
-                      key={header}
-                      className={
-                        header === "Menu Item"
-                          ? "w-1/2 text-left text-xs font-medium text-black uppercase tracking-wider"
-                          : "w-1/4 text-left text-xs font-medium text-black uppercase tracking-wider"
-                      }
-                    >
-                      {header}
-                    </th>
-                  )
-                )}
+                {[
+                  "Menu Item",
+                  "Quantity",
+                  "Item Revenue",
+                  "Profit Margin",
+                  "Actions",
+                ].map((header) => (
+                  <th
+                    key={header}
+                    className={
+                      header === "Menu Item"
+                        ? "w-1/3 text-left text-xs font-medium text-black uppercase tracking-wider"
+                        : "w-1/5 text-left text-xs font-medium text-black uppercase tracking-wider"
+                    }
+                  >
+                    {header}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>

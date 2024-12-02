@@ -16,7 +16,8 @@ type SortField =
   | "Amount"
   | "AmountUnits"
   | "ingredients"
-  | "Name";
+  | "Name"
+  | "profitMargin";
 
 // Generic type for items to sort
 interface SortableItem {

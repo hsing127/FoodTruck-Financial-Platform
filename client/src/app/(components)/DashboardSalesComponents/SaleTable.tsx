@@ -29,7 +29,7 @@ enum ActionType {
 }
 
 // Filter Fields
-type FilterField = "startDate" | "endDate" | "revenue";
+type FilterField = "startDate" | "endDate" | "revenue" | "profitMargin";
 
 interface SaleTableProps {
   sales: Sale[];
@@ -252,6 +252,9 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
           case "Filter by Revenue":
             field = "revenue";
             break;
+          case "Filter by ProfitMargin":
+            field = "profitMargin";
+            break;
           default:
             console.warn(`Unknown filter item: ${item}`);
         }
@@ -364,6 +367,7 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
                   "Filter by StartDate",
                   "Filter by EndDate",
                   "Filter by Revenue",
+                  "Filter by ProfitMargin",
                 ],
               },
             ]}
@@ -390,7 +394,7 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
                 <th className="pl-7 text-left w-1/4 py-2 text-xs font-medium text-black uppercase tracking-wider">
                   Sale ID
                 </th>
-                <th className="text-left w-1/4 text-xs font-medium text-black uppercase tracking-wider">
+                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
                   <button
                     className="flex items-center w-full text-left cursor-pointer"
                     onClick={() =>
@@ -409,7 +413,7 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
                       ))}
                   </button>
                 </th>
-                <th className="text-left w-1/4 text-xs font-medium text-black uppercase tracking-wider">
+                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
                   <button
                     className="flex items-center w-full text-left cursor-pointer"
                     onClick={() =>
@@ -428,7 +432,7 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
                       ))}
                   </button>
                 </th>
-                <th className="text-left w-1/4 text-xs font-medium text-black uppercase tracking-wider">
+                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
                   <button
                     className="flex items-center w-full text-left cursor-pointer"
                     onClick={() =>
@@ -440,6 +444,25 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
                   >
                     Revenue
                     {sortField === "revenue" &&
+                      (sortOrder === "asc" ? (
+                        <ArrowUp size={16} className="ml-1" />
+                      ) : (
+                        <ArrowDown size={16} className="ml-1" />
+                      ))}
+                  </button>
+                </th>
+                <th className="text-left w-1/5 text-xs font-medium text-black uppercase tracking-wider">
+                  <button
+                    className="flex items-center w-full text-left cursor-pointer"
+                    onClick={() =>
+                      handleActionItemClick(
+                        ActionType.FILTER,
+                        "Filter by ProfitMargin"
+                      )
+                    }
+                  >
+                    Profit Margin
+                    {sortField === "profitMargin" &&
                       (sortOrder === "asc" ? (
                         <ArrowUp size={16} className="ml-1" />
                       ) : (
@@ -469,7 +492,7 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
                   index={index}
                   setIsAnimating={setIsAnimating}
                   onItemDelete={handleItemDelete}
-                  duplicateSale={duplicateSale} // Pass the duplicateSale function
+                  duplicateSale={duplicateSale}
                 />
               ))}
             </motion.tbody>

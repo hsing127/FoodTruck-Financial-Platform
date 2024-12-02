@@ -1,3 +1,4 @@
+// SaleDetailsRow.tsx
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import EditableCell from "../Common/EditableCell";
@@ -97,6 +98,12 @@ const SaleDetailsRow: React.FC<SaleDetailsRowProps> = ({
           onChange={handleInputChange}
           type="number"
         />
+
+        <td className="py-2 px-4 text-sm text-black">
+          {/* Hard-coded profit margin value */}
+          <span className="text-gray-700">15%</span>
+        </td>
+
         <ActionButtons
           isEditing={isEditing}
           onEdit={(e) => {

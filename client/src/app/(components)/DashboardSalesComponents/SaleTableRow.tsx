@@ -1,3 +1,4 @@
+// SaleTableRow.tsx
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
@@ -140,6 +141,11 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
           name="revenue"
           onChange={handleInputChange}
         />
+
+        <td className="py-5 text-sm text-black">
+          {/* Hard-coded profit margin value */}
+          <span className="text-gray-700">20%</span>
+        </td>
 
         {/* Actions Column */}
         <ActionButtons
