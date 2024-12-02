@@ -56,7 +56,7 @@ const FoodItemsModal: React.FC<FoodItemsModalProps> = ({
     >
       <motion.div
         ref={modalRef}
-        className="bg-white rounded-lg shadow-lg p-8 w-[55%] max-w-6xl overflow-y-auto max-h-[90%]"
+        className="bg-white rounded-xl shadow-lg p-8 w-[55%] max-w-6xl overflow-y-auto max-h-[90%]"
         style={{
           maxHeight: `${Math.min(items.length * 75, 80)}vh`, // Dynamic height based on items
           overflowY: "auto",
