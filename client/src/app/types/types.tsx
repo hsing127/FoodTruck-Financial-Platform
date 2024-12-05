@@ -66,3 +66,38 @@ export interface Notification {
   title: string;
   description: string;
 }
+
+export interface ReportData {
+  year: number;
+  naicsCode: number;
+  province: string;
+  totalAssets: number;
+  qualityIndicator: string;
+  bottomQuartile: number;
+  lowerMiddle: number;
+  upperMiddle: number;
+  topQuartile: number;
+}
+
+export interface FinancialMetrics {
+  cashFlow: number;
+  cogs: number;
+  primeCost: number;
+  momGrowthRate: number;
+  breakEvenPoint: number;
+  grossProfitMargin: number;
+  spendPerHead: number;
+  foodCostPercentage: number;
+  laborCostRatio: number;
+  weeklySales: {
+    bestSelling: string;
+    worstSelling: string;
+  };
+  truckCostPercentage: number;
+  laborProductivity: number;
+  fuelTransportCostPercentage: number;
+  ordersPerHour: number;
+  dailyInventoryTurnover: number;
+  yoyGrowth: number;
+  locationPerformanceTrend: number;
+}
