@@ -4,12 +4,27 @@ import { Ingredient, MenuItem } from "@/app/types/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { backdropVariants, modalVariants } from "../Common/Animations";
+import { useMenuData } from "./MenuAPI";
 
 interface ViewMenuItemDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   menuItem: MenuItem | null;
   onSave: (updatedMenuItem: MenuItem) => void;
+}
+
+interface ViewMenuItemDetailsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  menuItem: MenuItem | null;
+  onSave: (updatedMenuItem: MenuItem) => void;
+  editIngredientItemAPI: (
+    email: string,
+    newMenuItem: MenuItem,
+    oldMenuItem: MenuItem,
+    newIngredientItem: Ingredient,
+    oldIngredientItem: Ingredient
+  ) => Promise<void>;
 }
 
 const ViewMenuItemDetailsModal: React.FC<ViewMenuItemDetailsModalProps> = ({
@@ -22,19 +37,45 @@ const ViewMenuItemDetailsModal: React.FC<ViewMenuItemDetailsModalProps> = ({
   const [editableMenuItem, setEditableMenuItem] = useState<MenuItem | null>(
     null
   );
-
+  const [originalMenuItem, setOriginalMenuItem] = useState<MenuItem | null>(
+    null
+  );
+  const email = "ajwitt2@asu.edu";
+  const [menuItems, setMenuItems, loading, addMenuItem, sendMenuItemToAPI,sendIngredientToAPI, editMenuItemAPI, editIngredientItemAPI] =
+  useMenuData(email);
   // Initialize ingredients and editableMenuItem when menuItem changes
   useEffect(() => {
     if (menuItem) {
       setIngredients(menuItem.ingredients);
       setEditableMenuItem({ ...menuItem });
+      setOriginalMenuItem({ ...menuItem }); // Save the original menu item for API calls
     }
   }, [menuItem]);
 
-  const onItemEdit = (index: number, updatedItem: Ingredient) => {
-    setIngredients((prevIngredients) =>
-      prevIngredients.map((item, idx) => (idx === index ? updatedItem : item))
-    );
+  const onItemEdit = async (index: number, updatedItem: Ingredient) => {
+    const oldIngredient = ingredients[index];
+    if (!editableMenuItem || !originalMenuItem) return;
+    try {
+      // Call the API to update the ingredient
+      await editIngredientItemAPI(
+        email,
+        editableMenuItem,
+        originalMenuItem,
+        updatedItem,
+        oldIngredient
+      );
+
+      // Update state after successful edit
+      setIngredients((prevIngredients) =>
+        prevIngredients.map((item, idx) =>
+          idx === index ? updatedItem : item
+        )
+      );
+      alert("Ingredient updated successfully!");
+    } catch (error) {
+      console.error("Error updating ingredient:", error);
+      alert("Failed to update the ingredient.");
+    }
   };
 
   const onItemDelete = async (index: number) => {

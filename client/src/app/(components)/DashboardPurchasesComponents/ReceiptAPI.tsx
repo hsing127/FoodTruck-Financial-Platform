@@ -201,5 +201,62 @@ export const useReceiptsData = (email: string) => {
     }
   };
 
-  return { areceipts, asetReceipts, loading, editReceiptAPI, addReceiptAPI, addReceiptIngredientAPI };
+  // Function to edit an ingredient in the API
+  const editReceiptIngredientAPI = async (
+    email: string,
+    updatedIngredient: Ingredient,
+    originalIngredient: Ingredient,
+    updatedReceipt: Receipt,
+    originalReceipt: Receipt
+  ) => {
+    try {
+      // Construct the API call payload
+      const response = await fetch(
+        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            table: "includes",
+            body: {
+              Email: email,
+              NewDateTime: updatedReceipt.date + " " + updatedReceipt.time,
+              NewLocation: updatedReceipt.location,
+              NewIngredientName: updatedIngredient.ingredient,
+              NewPrice: parseFloat(updatedIngredient.price || "0"),
+              NewAmount: updatedIngredient.quantity,
+              NewAmountUnits: updatedIngredient.units,
+              DateTime: originalReceipt.date + " " + originalReceipt.time,
+              Location: originalReceipt.location,
+              IngredientName: originalIngredient.ingredient,
+            },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to edit ingredient in API");
+      }
+
+      const data = await response.json();
+      console.log("Ingredient updated successfully:", data);
+
+      return data;
+    } catch (error) {
+      console.error("Error editing ingredient:", error);
+      throw new Error("Failed to edit ingredient in API");
+    }
+  };
+
+  return {
+    areceipts,
+    asetReceipts,
+    loading,
+    editReceiptAPI,
+    addReceiptAPI,
+    addReceiptIngredientAPI,
+    editReceiptIngredientAPI,
+  };
 };
