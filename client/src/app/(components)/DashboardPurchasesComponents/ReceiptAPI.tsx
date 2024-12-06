@@ -205,7 +205,9 @@ export const useReceiptsData = (email: string) => {
   const editReceiptIngredientAPI = async (
     email: string,
     updatedIngredient: Ingredient,
-    originalIngredient: Ingredient
+    originalIngredient: Ingredient,
+    updatedReceipt: Receipt,
+    originalReceipt: Receipt
   ) => {
     try {
       // Construct the API call payload
@@ -217,13 +219,18 @@ export const useReceiptsData = (email: string) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            table: "ingredient",
+            table: "includes",
             body: {
               Email: email,
-              NewName: updatedIngredient.ingredient,
+              NewDateTime: updatedReceipt.date + " " + updatedReceipt.time,
+              NewLocation: updatedReceipt.location,
+              NewIngredientName: updatedIngredient.ingredient,
+              NewPrice: parseFloat(updatedIngredient.price || "0"),
               NewAmount: updatedIngredient.quantity,
               NewAmountUnits: updatedIngredient.units,
-              Name: originalIngredient.ingredient,
+              DateTime: originalReceipt.date + " " + originalReceipt.time,
+              Location: originalReceipt.location,
+              IngredientName: originalIngredient.ingredient,
             },
           }),
         }

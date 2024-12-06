@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import ReceiptDetailsRow from "./ReceiptDetailsRow";
-import { ReceiptItem } from "@/app/types/types";
+import { Receipt, ReceiptItem } from "@/app/types/types";
 import { motion } from "framer-motion"; // Optional: For animations
+import { useReceiptsData } from "./ReceiptAPI";
 
 // Define the type for ReceiptDetails component props
 interface ReceiptDetailsProps {
@@ -17,16 +18,47 @@ const ReceiptDetails: React.FC<ReceiptDetailsProps> = ({
 }) => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editedItem, setEditedItem] = useState<ReceiptItem | null>(null);
+  const [originalItem, setOriginalItem] = useState<ReceiptItem | null>(null); // To track the original receipt
+  const [editedReceipt, setEditedReceipt] = useState<Receipt | null>(null); // To track updated receipt fields
+
+  //Email var for page
+  const email = "ajwitt2@asu.edu";
+
+  // API functions
+  const { 
+    areceipts,
+    asetReceipts,
+    loading, 
+    editReceiptAPI, 
+    addReceiptAPI, 
+    addReceiptIngredientAPI,
+    editReceiptIngredientAPI, 
+  } = useReceiptsData(email);
 
   // Toggle edit mode and initialize edited item
   const handleEditClick = (index: number, item: ReceiptItem) => {
     setEditingIndex(index);
     setEditedItem({ ...item });
+    setOriginalItem({ ...item }); // Save the original item before edits
+    // setEditedReceipt({ ...receipt});
   };
 
   // Handle save button click
-  const handleSaveClick = (index: number) => {
-    if (onItemEdit && editedItem) onItemEdit(index, editedItem);
+  const handleSaveClick = async(index: number) => {
+    // if (editedItem && originalItem && editedReceipt){
+    //   try {
+    //     await editReceiptIngredientAPI(email, editedItem, originalItem, editedReceipt);
+        
+    //     if(onItemEdit) {
+    //       onItemEdit(index, editedItem);
+    //     }
+    //     alert("Successfully Updated.");
+    //     resetEditing();
+    //   } catch (error) {
+    //     alert("There was an error editing the receipt item");
+    //   }
+    // }
+    if(editedItem && onItemEdit) onItemEdit(index, editedItem);
     resetEditing();
   };
 
