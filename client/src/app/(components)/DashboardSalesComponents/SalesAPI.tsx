@@ -52,5 +52,101 @@ export const useSalesData = (email: string) => {
     fetchSales();
   }, [email]);
 
-  return { sales, setSales, loading };
+  // Function to add a new sale to the API
+  const addSaleAPI = async (email: string, newSale: Sale) => {
+    try {
+      const response = await fetch(
+        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/addTable",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            table: "sales",
+            body: {
+              Email: email,
+              StartDate: newSale.startDate,
+              EndDate: newSale.endDate,
+              Revenue: newSale.revenue,
+            },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to add sale to API");
+      }
+
+      const data = await response.json();
+      console.log("Sale added successfully:", data);
+
+      // Update local state with the new sale
+      setSales((prevSales) => [
+        ...prevSales,
+        {
+          ...newSale,
+          localSaleId: prevSales.length + 1001, // Generate new ID
+        },
+      ]);
+
+      return data;
+    } catch (error) {
+      console.error("Error adding sale:", error);
+      throw new Error("Failed to add sale to API");
+    }
+  };
+
+  // Function to edit an existing sale in the API
+  const editSaleAPI = async (
+    email: string,
+    updatedSale: Sale,
+    originalSale: Sale
+  ) => {
+    try {
+      const response = await fetch(
+        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            table: "sales",
+            body: {
+              Email: email,
+              NewStartDate: updatedSale.startDate,
+              NewEndDate: updatedSale.endDate,
+              NewRevenue: updatedSale.revenue,
+              StartDate: originalSale.startDate,
+              EndDate: originalSale.endDate,
+            },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to edit sale in API");
+      }
+
+      const data = await response.json();
+      console.log("Sale updated successfully:", data);
+
+      // Update local state with the updated sale
+      setSales((prevSales) =>
+        prevSales.map((sale) =>
+          sale.localSaleId === originalSale.localSaleId
+            ? { ...sale, ...updatedSale }
+            : sale
+        )
+      );
+
+      return data;
+    } catch (error) {
+      console.error("Error editing sale:", error);
+      throw new Error("Failed to edit sale in API");
+    }
+  };
+
+  return { sales, setSales, loading, addSaleAPI, editSaleAPI };
 };
