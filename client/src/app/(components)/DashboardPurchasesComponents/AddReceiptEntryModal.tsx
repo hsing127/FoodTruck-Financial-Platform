@@ -41,7 +41,14 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
   const [newReceipt, setNewReceipt] = useState<Receipt>(initialReceipt);
 
   // API functions
-  const { areceipts, asetReceipts, loading, editReceiptAPI, addReceiptAPI, addReceiptIngredientAPI } = useReceiptsData(email);
+  const {
+    areceipts,
+    asetReceipts,
+    loading,
+    editReceiptAPI,
+    addReceiptAPI,
+    addReceiptIngredientAPI,
+  } = useReceiptsData(email);
 
   // Handle changes in the receipt input fields
   const handleReceiptInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
