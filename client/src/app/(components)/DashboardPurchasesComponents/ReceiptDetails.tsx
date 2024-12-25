@@ -25,14 +25,14 @@ const ReceiptDetails: React.FC<ReceiptDetailsProps> = ({
   const email = "ajwitt2@asu.edu";
 
   // API functions
-  const { 
+  const {
     areceipts,
     asetReceipts,
-    loading, 
-    editReceiptAPI, 
-    addReceiptAPI, 
+    loading,
+    editReceiptAPI,
+    addReceiptAPI,
     addReceiptIngredientAPI,
-    editReceiptIngredientAPI, 
+    editReceiptIngredientAPI,
   } = useReceiptsData(email);
 
   // Toggle edit mode and initialize edited item
@@ -44,11 +44,11 @@ const ReceiptDetails: React.FC<ReceiptDetailsProps> = ({
   };
 
   // Handle save button click
-  const handleSaveClick = async(index: number) => {
+  const handleSaveClick = async (index: number) => {
     // if (editedItem && originalItem && editedReceipt){
     //   try {
     //     await editReceiptIngredientAPI(email, editedItem, originalItem, editedReceipt);
-        
+
     //     if(onItemEdit) {
     //       onItemEdit(index, editedItem);
     //     }
@@ -58,7 +58,7 @@ const ReceiptDetails: React.FC<ReceiptDetailsProps> = ({
     //     alert("There was an error editing the receipt item");
     //   }
     // }
-    if(editedItem && onItemEdit) onItemEdit(index, editedItem);
+    if (editedItem && onItemEdit) onItemEdit(index, editedItem);
     resetEditing();
   };
 
