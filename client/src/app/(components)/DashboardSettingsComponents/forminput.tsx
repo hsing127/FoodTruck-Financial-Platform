@@ -5,6 +5,7 @@ interface FormInputProps {
   type?: string;
   name: string;
   value: string;
+  list?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

@@ -15,7 +15,7 @@ interface ProfileModalProps {
     lastName: string;
     email: string;
     phone: string;
-    birthDate: string;
+    province: string;
     company: string;
   };
   onProfileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -116,55 +116,79 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
 
               <form className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormInput
+                    <FormInput
                     label="First Name"
                     name="firstName"
                     value={profile.firstName}
                     onChange={onProfileChange}
-                  />
-                  <FormInput
+                    />
+                    <FormInput
                     label="Last Name"
                     name="lastName"
                     value={profile.lastName}
                     onChange={onProfileChange}
-                  />
-                  <FormInput
+                    />
+                    <FormInput
                     label="Email Address"
                     name="email"
                     type="email"
                     value={profile.email}
                     onChange={onProfileChange}
-                  />
-                  <FormInput
+                    />
+                    <FormInput
                     label="Phone Number"
                     name="phone"
                     type="tel"
                     value={profile.phone}
                     onChange={onProfileChange}
-                  />
-                  <FormInput
-                    label="Birth Date"
-                    name="birthDate"
-                    type="date"
-                    value={profile.birthDate}
-                    onChange={onProfileChange}
-                  />
-                  <FormInput
+                    />
+                    <div>
+                    <label htmlFor="province" className="block text-sm font-medium text-gray-700">
+                        Province
+                    </label>
+                    <input
+                        id="province"
+                        name="province"
+                        type="text"
+                        value={profile.province}
+                        onChange={onProfileChange}
+                        list="province-options"
+                        className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-black"
+                    />
+                    <datalist id="province-options">
+                        <option value="Alberta" />
+                        <option value="British Columbia" />
+                        <option value="Manitoba" />
+                        <option value="New Brunswick" />
+                        <option value="Newfoundland and Labrador" />
+                        <option value="Nova Scotia" />
+                        <option value="Ontario" />
+                        <option value="Prince Edward Island" />
+                        <option value="Quebec" />
+                        <option value="Northwest Territories" />
+                        <option value="Nunavut" />
+                        <option value="Yukon" />
+                        <option value="Saskatchewan" />
+                    </datalist>
+                    </div>
+
+                    <FormInput
                     label="Company Name"
                     name="company"
                     value={profile.company}
                     onChange={onProfileChange}
-                  />
+                    />
                 </div>
 
                 <div className="flex justify-end space-x-2">
-                  <Button onClick={onClose} label="Cancel" />
-                  <Button
+                    <Button onClick={onClose} label="Cancel" />
+                    <Button
                     onClick={() => console.log("Profile saved")}
                     label="Save Changes"
-                  />
+                    />
                 </div>
-              </form>
+                </form>
+
             </div>
           </motion.div>
         </motion.div>
