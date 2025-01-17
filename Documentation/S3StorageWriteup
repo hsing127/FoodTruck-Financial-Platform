@@ -1,0 +1,68 @@
+<!-- AWS S3 Storage Research for use with Amazon Textract
+
+Amazon S3 Storage Overview
+Amazon Simple Storage Service (S3) is a scalable object storage service. It allows users to store and retrieve any amount of data on the web. S3 boasts features such as versioning, encryption, and lifecycle policies that could be useful in our project regarding user receipts and extracting text from images via Amazon Textract as they integrate seamlessly. 
+Using S3 to Store User Images
+S3 can be configured to store images uploaded by users in a structured manner, ensuring security, scalability, and efficient retrieval. The service allows for the organization of data into buckets, and within buckets, objects (files) can be arranged hierarchically using prefixes that resemble folder structures.
+
+Our main goals and questions for S3 are as follows:
+
+Is it feasible to store all user images indefinitely? We need to analyze storage space, cost, projected user count and how the storage might look 10 years from now. 
+
+Does S3 offer a way to automatically delete images after a set time period? If indefinite storage proves unrealistic, does S3 offer a way for images/files to automatically delete themselves? This would allow us to store some of a user's recent history for their convenience while not incurring additional storage costs.
+
+Does storing an image prior to scanning with Amazon Textract pose any advantage? (as opposed to just scanning and deleting) Would this possibly add the ability to attempt a scan for text again without the user needing to resubmit an image, or the ability to offer the users recent history and uploads? Possibly a faster extraction process when referenced from S3 storage?
+
+Mock File/Folder Hierarchy for User-Specific Image Storage
+A sample structure for organizing user-uploaded images could look like this:
+FoodTruckUploadsS3Bucket/
+    users/
+        user001/
+            receipts/
+                2025-01-15-receipt1.jpg
+                2025-01-16-receipt2.jpg
+        user002/
+            receipts/
+                2025-01-16-receipt1.jpg
+Bucket: Represents the top-level container - Will store all Foodtruck web/app files necessary 
+Creating a hierarchy of bucket -> user folder -> specifics allows for future adaptations
+Users Folder: Organize data within the bucket - Allows for other future storage outside of the “users” folder
+ex: users/user001/receipts
+Reference Key: Refers to the full path of the file - Used for Textract reference
+ex: users/user001/receipts/2025-01-15-receipt1.jpg
+Storing Scanned/Uploaded Images
+Image Upload: Users upload/scan images through the platform, which are stored in their folders in the S3 bucket
+Data Storage: Relevant data (ex: upload date, file type, user ID) can be stored alongside the images in a database for quick reference. We can also look at having the user input required information that allows for sorting, such as receipt purchase date and location.
+Access Control: S3’s policies and IAM roles can be used as an alternative to our login/token verification but might require a more extensive setup when creating a user's account. Although a strong alternative we will likely use our in place token verification when a user uploads or requests to view one of their images. 
+Pros and Cons of Saving and Storing Images
+Pros of Saving Images:
+Future Reuse: Users may want to access their uploaded images later, either for reprocessing or reference.
+Error Handling: Retaining the original file allows for re-extraction of data in case of processing errors or updated OCR algorithms.
+Negatives of Saving Images:
+Storage Costs: Storage of a large amount of files/images can lead to exceeding AWS tier limits and incur costs.
+Security Concerns: Storing sensitive images (ex: receipts with personal details) may pose data security and privacy risks.
+Data Management Overhead: Maintaining and organizing stored files can add complexity to the web/apps operations and API calls.
+Positives of Extracting Data and Deleting Images
+Reduced Storage Costs: Deleting images after processing eliminates possible storage expenses.
+Enhanced Security: Sensitive data is not retained longer than necessary, reducing the risk of privacy issues.
+Simplified Operations: Without the need to manage and archive images, the platform can streamline its workflows and ignore additional storage/retrieval processes.
+Negatives of Deleting Images:
+Loss of Reference Data: Users cannot access the original files if reprocessing or validation is needed - this may be a much desired feature for users.
+Error Recovery Limitations: Mistakes in data extraction cannot be corrected without re-uploading the image.
+Implementing Time-Based Storage
+S3’s Lifecycle Policies can be configured to automatically delete files after a specified time period, enabling time-based storage.
+
+Policy Example: Automatically delete images 30 days after upload.
+Implementation Steps:
+Define a lifecycle policy for the S3 bucket.
+Set a rule with a filter (e.g., users/*/receipts/*) to apply the policy only to specific prefixes.
+Specify an expiration period (30 days - just for example, this can be customized) for the images.
+Benefits of Time-Based Storage
+Cost Management: Automatically clearing old files reduces storage costs without manual intervention.
+Efficient Cleanup: Eliminates stale data, keeping the storage environment organized.
+Increased Security and Data Privacy: In the case of sensitive data, we lower the risk of it being leaked as well as the amount that could get leaked with time based policies.
+Conclusion
+My personal opinion is that time based storage to allow users to access images uploaded within 30/60/90 days seems like the optimal solution. Although this comes with additional overhead and the creation of S3 storage for this, it allows a feature for users that is likely to be highly desired. It minimizes data and security risks, provides additional user features, and creates efficient clean up all while balancing storage requirements and potential costs.
+
+Final Decision will be made on inclusion of S3 storage by the team at the next stand up based on necessity and whether taking on additional scope is within our time restraints.
+ -->
