@@ -5,7 +5,8 @@ import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
 import React from "react";
 
 const EcosystemIcon = dynamic(
-  () => import("../../../assets/icons/ecosystem.svg")
+  () => import("../../../assets/icons/ecosystem.svg"),
+  { ssr: false }
 );
 
 export const Feature = React.memo(

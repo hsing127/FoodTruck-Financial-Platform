@@ -2,15 +2,16 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import React from "react";
 
 import appScreen from "../../../assets/WebsiteImg.png";
 
 export const ProductShowcase = React.memo(() => {
-  const appImg = useRef<HTMLImageElement>(null);
+  const appImgWrapper = useRef<HTMLDivElement>(null);
+
   const { scrollYProgress } = useScroll({
-    target: appImg,
+    target: appImgWrapper,
     offset: ["start end", "end end"],
   });
 
@@ -34,21 +35,18 @@ export const ProductShowcase = React.memo(() => {
             focus on what matters most&#8212;running your business.
           </p>
         </div>
+        {/* Wrap the image in a div that gets the ref */}
         <motion.div
+          ref={appImgWrapper}
           style={{
             willChange: "transform, opacity",
             opacity: rotateY,
             rotateX: rotateX,
             transformPerspective: "800px",
           }}
+          className="mt-14"
         >
-          <Image
-            src={appScreen}
-            alt="the Product Screenshot"
-            className="mt-14"
-            ref={appImg}
-            loading="lazy"
-          />
+          <Image src={appScreen} alt="the Product Screenshot" loading="lazy" />
         </motion.div>
       </div>
     </div>

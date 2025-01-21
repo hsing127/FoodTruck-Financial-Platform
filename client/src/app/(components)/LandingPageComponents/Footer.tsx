@@ -1,10 +1,20 @@
+"use client";
 import dynamic from "next/dynamic";
 import React from "react";
 
-const Insta = dynamic(() => import("../../../assets/icons/insta.svg"));
-const Pinterest = dynamic(() => import("../../../assets/icons/pinterest.svg"));
-const Tiktok = dynamic(() => import("../../../assets/icons/tiktok.svg"));
-const Youtube = dynamic(() => import("../../../assets/icons/youtube.svg"));
+// Disable SSR for these SVG icons.
+const Insta = dynamic(() => import("../../../assets/icons/insta.svg"), {
+  ssr: false,
+});
+const Pinterest = dynamic(() => import("../../../assets/icons/pinterest.svg"), {
+  ssr: false,
+});
+const Tiktok = dynamic(() => import("../../../assets/icons/tiktok.svg"), {
+  ssr: false,
+});
+const Youtube = dynamic(() => import("../../../assets/icons/youtube.svg"), {
+  ssr: false,
+});
 
 export const Footer = React.memo(() => {
   return (

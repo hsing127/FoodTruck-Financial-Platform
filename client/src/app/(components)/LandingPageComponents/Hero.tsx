@@ -4,7 +4,9 @@ import Link from "next/link";
 import React from "react";
 import { motion } from "framer-motion";
 
-const ArrowWIcon = dynamic(() => import("../../../assets/icons/arrow-w.svg"));
+const ArrowWIcon = dynamic(() => import("../../../assets/icons/arrow-w.svg"), {
+  ssr: false,
+});
 
 export const Hero = React.memo(() => {
   return (
