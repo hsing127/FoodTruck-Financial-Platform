@@ -17,6 +17,23 @@
 │   │   │   │   ├── InventoryData.tsx         # Contains mock inventory data for testing purposes.
 │   │   │   │   ├── InventoryTable.tsx        # Main inventory table component with search, sorting, filtering, and pagination features.
 │   │   │   │   ├── InventoryTableRow.tsx     # Component for rendering individual rows in the inventory table, supporting editing and deletion.
+│   │   │   ├── DashboardPurchasesComponents  # Components for dashboard purchases
+│   │   │   │   ├── AddReceiptEntryModal.tsx  # Modal for adding new receipts.
+│   │   │   │   ├── AddReceiptIngredientRow.tsx # Row component for adding receipt details.
+│   │   │   │   ├── ReceiptAPI.tsx            # API logic for CRUD operations on receipts.
+│   │   │   │   ├── ReceiptDetails.tsx        # Details table for individual receipt items.
+│   │   │   │   ├── ReceiptDetailsRow.tsx     # Editable row component for receipt details.
+│   │   │   │   ├── ReceiptTable.tsx          # Main table interface for receipts.
+│   │   │   │   ├── ReceiptTableRow.tsx       # Row component for individual receipts.
+│   │   │   │   ├── RECEIPT_DATA.tsx          # Mock data for receipts and their details.
+│   │   │   ├── DashboardInventoryComponents  # Components for dashboard inventory
+│   │   │   │   ├── AddInventoryItemModal.tsx # Modal for adding new inventory items.
+│   │   │   │   ├── InventoryAPI.tsx          # API logic for CRUD operations on inventory.
+│   │   │   │   ├── InventoryDetails.tsx      # Details table for inventory items.
+│   │   │   │   ├── InventoryDetailsRow.tsx   # Editable row component for inventory details.
+│   │   │   │   ├── InventoryTable.tsx        # Main table interface for inventory management.
+│   │   │   │   ├── InventoryTableRow.tsx     # Row component for individual inventory items.
+│   │   │   │   ├── INVENTORY_DATA.tsx        # Mock data for inventory items.
 │   │   ├── /dashboard                        # Dashboard-specific components (structure placeholder)
 │   │   ├── /hooks                            # Custom React hooks for state management and utilities
 │   │   ├── /login                            # Login-related functionality (structure placeholder)
