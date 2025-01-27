@@ -246,6 +246,41 @@ const updateUses = async (usesData) => {
     }
 };
 
+const updateUser = async (userData) => {
+    const client = new Client({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+
+    await client.connect();
+
+    try {
+        const { NewBusinessName, NewProvince, Email } = userData;
+            await client.query(
+                'UPDATE "User" SET "BusinessName" = $1, "province" = $2 WHERE "Email" = $3',
+                [NewBusinessName, NewProvince, Email]
+            );
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: "User updated successfully" }),
+        };
+    } catch (error) {
+        console.error("Error updating user:", error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "Failed to update user" }),
+        };
+    } finally {
+        await client.end();
+    }
+};
+
 const handler = async (event) => {
     try { //For information regarding how the input data should be formatted, refer to the test cases.
         const table = event.table;
@@ -274,6 +309,9 @@ const handler = async (event) => {
               break;
             case "uses":
                 return await updateUses(data);
+              break;
+            case "user":
+                return await updateUser(data);
               break;
         }
         
@@ -332,5 +370,11 @@ updateUses
 {
   "table": "uses",
   "body": "{\"NewMenuName\":\"BBQ Pulled Pork Sandwich\",\"NewIngredientName\":\"Pulled Pork\",\"NewAmount\":7,\"NewAmountUnits\":\"oz\",\"Email\":\"ajwitt2@asu.edu\",\"MenuName\":\"BBQ Pulled Pork Sandwich\",\"IngredientName\":\"Pulled Pork\"}"
+}
+
+updateUser
+{
+  "table": "user",
+  "body": "{\"NewBusinessName\":\"Witty's Wieners\",\"NewProvince\":\"Alberta\",\"Email\":\"ajwitt2@asu.edu\"}"
 }
 */

@@ -18,7 +18,7 @@
 
 // try {
 //     // Fetch data from each table
-//     const users = await client.query('SELECT "Email", "BusinessName" FROM "User" WHERE "Email" = $1', [email]);
+//     const users = await client.query('SELECT "Email", "BusinessName", "province" FROM "User" WHERE "Email" = $1', [email]);
 //     // Store results in cache
 //     if (users.rowCount > 0) {
 //         usersCache = users.rows[0];
