@@ -9,7 +9,7 @@ export const useSalesData = (email: string) => {
     const fetchSales = async () => {
       try {
         const response = await fetch(
-          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/sales",
+          "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/sales",
           {
             method: "POST",
             headers: {
@@ -56,7 +56,7 @@ export const useSalesData = (email: string) => {
   const addSaleAPI = async (email: string, newSale: Sale) => {
     try {
       const response = await fetch(
-        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/addTable",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/addTable",
         {
           method: "POST",
           headers: {
@@ -105,7 +105,7 @@ export const useSalesData = (email: string) => {
   ) => {
     try {
       const response = await fetch(
-        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
         {
           method: "POST",
           headers: {

@@ -23,7 +23,7 @@ const LoginPage: React.FC = () => {
 
     try {
       const response = await fetch(
-        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/login",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/auth/login",
         {
           method: "POST",
           headers: {

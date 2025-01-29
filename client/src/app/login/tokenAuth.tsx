@@ -73,7 +73,7 @@ export const validateToken = async (): Promise<{ email: string } | null> => {
 
   try {
     const response = await fetch(
-      "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth/validateToken",
+      "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/auth/validateToken",
       {
         method: "POST",
         headers: {

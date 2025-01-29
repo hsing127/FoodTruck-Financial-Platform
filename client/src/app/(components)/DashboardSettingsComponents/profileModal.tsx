@@ -18,7 +18,8 @@ interface ProfileModalProps {
     province: string;
     company: string;
   };
-  onProfileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onProfileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onSave: () => void;
 }
 
 const backdropVariants = {
@@ -38,6 +39,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
   onClose,
   profile,
   onProfileChange,
+  onSave,
 }) => {
   const [avatar, setAvatar] = useState<File | null>(null);
 
@@ -59,6 +61,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
     };
   }, [isOpen]);
 
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("Form submission prevented");
+    e.preventDefault();  
+    onSave();
+  };
+    
   return ReactDOM.createPortal(
     <AnimatePresence>
       {isOpen && (
@@ -114,7 +122,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
                 </p>
               </div>
 
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleFormSubmit}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormInput
                     label="First Name"
@@ -181,11 +189,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
                 </div>
 
                 <div className="flex justify-end space-x-2">
-                    <Button onClick={onClose} label="Cancel" />
-                    <Button
-                    onClick={() => console.log("Profile saved")}
-                    label="Save Changes"
-                    />
+                    <Button type="button" onClick={onClose} label="Cancel" />
+                   <Button type="button" onClick={() => handleFormSubmit} label="Save Changes" />
                 </div>
                 </form>
 

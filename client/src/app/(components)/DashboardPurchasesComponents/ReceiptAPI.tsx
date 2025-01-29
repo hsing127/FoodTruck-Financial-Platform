@@ -9,7 +9,7 @@ export const useReceiptsData = (email: string) => {
     const fetchReceipts = async () => {
       try {
         const response = await fetch(
-          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/purchases",
+          "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/purchases",
           {
             method: "POST",
             headers: {
@@ -64,7 +64,7 @@ export const useReceiptsData = (email: string) => {
   ) => {
     try {
       const response = await fetch(
-        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
         {
           method: "POST",
           headers: {
@@ -113,7 +113,7 @@ export const useReceiptsData = (email: string) => {
   const addReceiptAPI = async (email: string, newReceipt: Receipt) => {
     try {
       const response = await fetch(
-        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
         {
           method: "POST",
           headers: {
@@ -164,7 +164,7 @@ export const useReceiptsData = (email: string) => {
     try {
       // Prepare the API payload
       const response = await fetch(
-        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
         {
           method: "POST",
           headers: {
@@ -212,7 +212,7 @@ export const useReceiptsData = (email: string) => {
     try {
       // Construct the API call payload
       const response = await fetch(
-        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
         {
           method: "POST",
           headers: {

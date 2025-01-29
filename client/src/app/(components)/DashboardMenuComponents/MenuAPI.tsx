@@ -11,7 +11,7 @@ export const useMenuData = (email: string) => {
   const editIngredientItemAPI = async (email: String, newMenuItem: MenuItem, oldMenuItem: MenuItem, newIngredientItem: Ingredient, oldIngredientItem: Ingredient) => {
     try {
       const response = await fetch(
-        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
         {
           method: "POST",
           headers: {
@@ -52,7 +52,7 @@ export const useMenuData = (email: string) => {
   const editMenuItemAPI = async (email: String, newMenuItem: MenuItem, oldMenuItem: MenuItem) => {
     try {
       const response = await fetch(
-        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
         {
           method: "POST",
           headers: {
@@ -89,7 +89,7 @@ export const useMenuData = (email: string) => {
   const sendIngredientToAPI = async (email: String, menuItem: MenuItem, ingredient: Ingredient) => {
     try {
       const response = await fetch(
-        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
         {
           method: "POST",
           headers: {
@@ -127,7 +127,7 @@ export const useMenuData = (email: string) => {
   const sendMenuItemToAPI = async (email: String, menuItem: MenuItem) => {
     try {
       const response = await fetch(
-        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
         {
           method: "POST",
           headers: {
@@ -172,7 +172,7 @@ export const useMenuData = (email: string) => {
     const fetchMenuData = async () => {
       try {
         const response = await fetch(
-          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/menu",
+          "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/menu",
           {
             method: "POST",
             headers: {

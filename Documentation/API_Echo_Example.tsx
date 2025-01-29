@@ -7,7 +7,7 @@
 
 //   const handleSubmit = async () => {
 //     try {
-//       const apiUrl = 'https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/auth';
+//       const apiUrl = 'https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/auth';
 //       console.log('Sending request to:', apiUrl); // Log the URL being called
 //       console.log('Message being sent:', inputValue); // Log the input value
   

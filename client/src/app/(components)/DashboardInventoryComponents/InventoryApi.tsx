@@ -10,7 +10,7 @@ export const useInventoryData = (email: string) => {
     const fetchInventory = async () => {
       try {
         const response = await fetch(
-          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/inventory",
+          "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/inventory",
           {
             method: "POST",
             headers: {
@@ -76,7 +76,7 @@ export const useAddInventoryData = (
       setLoading(true);
       try {
         const response = await fetch(
-          "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
+          "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
           {
             method: "POST",
             headers: {
@@ -130,7 +130,7 @@ export const useEditInventoryData = () => {
       console.log("Original item:", oldItem);
       console.log("Edited item:", newItem);
       const response = await fetch(
-        "https://y4frxnym9g.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
         {
           method: "POST",
           headers: {
