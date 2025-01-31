@@ -247,6 +247,41 @@ const deleteUses = async (usesData) => {
     }
 };
 
+const deleteOtherCost = async (otherCostData) => {
+    const client = new Client({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+
+    await client.connect();
+
+    try {
+        const { Email, CostDate, CostName } = otherCostData;
+        await client.query(
+            `DELETE FROM "othercost" WHERE "email" = $1 AND "costdate" = $2 AND "costname" = $3`,
+            [Email, CostDate, CostName]
+        );
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: "Other Cost deleted successfully" }),
+        };
+    } catch (error) {
+        console.error("Error deleting Other Cost:", error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "Failed to delete Other Cost" }),
+        };
+    } finally {
+        await client.end();
+    }
+};
+
 const handler = async (event) => {
     try { //For information regarding how the input data should be formatted, refer to the test cases.
         const table = event.table;
@@ -275,6 +310,9 @@ const handler = async (event) => {
                 break;
             case "uses":
                 return await deleteUses(data);
+                break;
+            case "otherCost":
+                return await deleteOtherCost(data);
                 break;
         }
 
@@ -363,4 +401,9 @@ uses
   }
 }
 
+otherCost
+{
+  "table": "otherCost",
+  "body": "{\"Email\":\"ajwitt2@asu.edu\",\"CostDate\":\"2024-11-02T00:00:00.000Z\",\"CostName\":\"Labor Cost\"}"
+}
 */

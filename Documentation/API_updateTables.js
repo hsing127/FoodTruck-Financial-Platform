@@ -260,6 +260,9 @@ const updateUser = async (userData) => {
     await client.connect();
 
     try {
+        if (userData.getUser !== undefined && userData.getUser == 1) {
+            const users = await client.query('SELECT * FROM "User" WHERE "Email" = $1');
+        }
         const { NewBusinessName, NewProvince, Email } = userData;
             await client.query(
                 'UPDATE "User" SET "BusinessName" = $1, "province" = $2 WHERE "Email" = $3',
@@ -281,10 +284,45 @@ const updateUser = async (userData) => {
     }
 };
 
+const updateOtherCost = async (otherCostData) => {
+    const client = new Client({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+
+    await client.connect();
+
+    try {
+        const { NewCostDate, NewCostName, NewCostCategory, NewCost, Email, CostDate, CostName } = otherCostData;
+        await client.query(
+            'UPDATE "othercost" SET "costdate" = $1, "costname" = $2, "costcategory" = $3, "cost" = $4 WHERE "email" = $5 AND "costdate" = $6 AND "costname" = $7',
+            [NewCostDate, NewCostName, NewCostCategory, NewCost, Email, CostDate, CostName]
+        );
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: "Other Costs updated successfully" }),
+        };
+    } catch (error) {
+        console.error("Error updating Other Costs:", error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "Failed to update Other Costs" }),
+        };
+    } finally {
+        await client.end();
+    }
+};
+
 const handler = async (event) => {
     try { //For information regarding how the input data should be formatted, refer to the test cases.
         const table = event.table;
-        const data = JSON.parse(event.body);
+        const data = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
 
         //use  switch case instead to quickly determine which function to use
         //function determines which tables to add data to.
@@ -313,6 +351,9 @@ const handler = async (event) => {
             case "user":
                 return await updateUser(data);
               break;
+            case "otherCost":
+                return await updateOtherCost(data);
+              break;
         }
         
     } catch (error) {
@@ -326,6 +367,7 @@ const handler = async (event) => {
 
 // Use export for ES module syntax
 export { handler };
+
 
 
 Test Cases using the data:
@@ -376,5 +418,11 @@ updateUser
 {
   "table": "user",
   "body": "{\"NewBusinessName\":\"Witty's Wieners\",\"NewProvince\":\"Alberta\",\"Email\":\"ajwitt2@asu.edu\"}"
+}
+
+updateOtherCost
+{
+  "table": "otherCost",
+  "body": "{\"NewCostDate\":\"2024-11-02T00:00:00.000Z\",\"NewCostName\":\"Labor Cost\",\"NewCostCategory\":\"variable\",\"NewCost\":451,\"Email\":\"ajwitt2@asu.edu\",\"CostDate\":\"2024-11-02T00:00:00.000Z\",\"CostName\":\"Labor Cost\"}"
 }
 */
