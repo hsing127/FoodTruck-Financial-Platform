@@ -13,12 +13,15 @@
 # import logging
 # import json
 # import uuid
+# import time
 # import boto3
 # import os
 # from urllib.parse import unquote_plus
 
 # logger = logging.getLogger()
 # logger.setLevel(logging.INFO)
+# textract = boto3.client("textract")
+# s3 = boto3.client("s3")
 
 # def process_error() -> dict:
 #     ex_type, ex_value, ex_traceback = sys.exc_info()
@@ -39,23 +42,70 @@
 #             text.append(block["Text"])
 #     return text
 
+# def get_full_ocr_results(job_id):
+#     """Retrieve full OCR results, handling pagination."""
+#     pages = []
+#     next_token = None
+
+#     while True:
+#         if next_token:
+#             response = textract.get_document_text_detection(JobId=job_id, NextToken=next_token)
+#         else:
+#             response = textract.get_document_text_detection(JobId=job_id)
+
+#         pages.extend(response.get("Blocks", []))
+
+#         next_token = response.get("NextToken")
+#         if not next_token:
+#             break  # No more pages
+
+#     return {"Blocks": pages}
+
 
 # def lambda_handler(event, context):
-#     textract = boto3.client("textract")
-#     s3 = boto3.client("s3")
 
 #     try:
 
 #         logging.info(f"Bucket: {os.getenv("BUCKETNAME")} ::: Key: {event["filename"]}")
 
-#         response = textract.detect_document_text(
-#             Document={
-#                 "S3Object": {
-#                     "Bucket": os.getenv("BUCKETNAME"),
-#                     "Name": event["filename"],
+#         if os.path.splitext(event["filename"])[1].lower()==".pdf":
+#             response = textract.start_document_text_detection(
+#                 DocumentLocation={
+#                     "S3Object": {
+#                         "Bucket": os.getenv("BUCKETNAME"),
+#                         "Name": event["filename"],
+#                     }
 #                 }
-#             }
-#         )
+#             )
+#             job_id = response["JobId"]
+#             print(f"Started Textract Job: {job_id}")
+
+#             # Poll for job completion
+#             while True:
+#                 job_status = textract.get_document_text_detection(JobId=job_id)
+#                 status = job_status["JobStatus"]
+                
+#                 if status in ["SUCCEEDED", "FAILED"]:
+#                     break  # Stop polling when done
+                
+#                 print("Waiting for Textract to finish...")
+#                 time.sleep(5)  # Wait before polling again
+
+#             if status == "FAILED":
+#                 raise Exception("Textract job failed")
+
+#             # Retrieve the full OCR results
+#             response = get_full_ocr_results(job_id)
+        
+#         else:
+#             response = textract.detect_document_text(
+#                 Document={
+#                     "S3Object": {
+#                         "Bucket": os.getenv("BUCKETNAME"),
+#                         "Name": event["filename"],
+#                     }
+#                 }
+#             )
 #         logging.info(json.dumps(response))
 
 #         # change LINE by WORD if you want word level extraction
