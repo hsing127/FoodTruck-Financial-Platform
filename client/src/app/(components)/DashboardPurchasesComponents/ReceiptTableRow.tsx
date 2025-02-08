@@ -103,7 +103,7 @@ const ReceiptTableRow: React.FC<ReceiptTableRowProps> = ({
           onStart: () => setIsAnimating(true),
           onComplete: () => setIsAnimating(false),
         }}
-        className="cursor-pointer border-b border-t border-white relative"
+        className="cursor-pointer border-b border-t border-customBlack relative"
       >
         {/* Receipt ID and Expander Icon */}
         <td className="py-5 text-sm font-medium text-black flex items-center ">
