@@ -29,15 +29,13 @@ export const useSalesData = (email: string) => {
 
         // Assign localSaleId sequentially to each sale item and format date
         const salesWithId = salesData.sales.map((sale: any, index: number) => {
-          const startDateObj = new Date(sale.StartDate);
-          const endDateObj = new Date(sale.EndDate);
           return {
             ...sale,
             localSaleId: index + 1001, // Start at 1001 and increment
-            completeStartDate: sale.StartDate,
-            completeEndDate: sale.EndDate,
-            startDate: startDateObj.toLocaleDateString(), // Format date
-            endDate: endDateObj.toLocaleDateString(), // Format date
+            completeStartDate: sale.date,
+            completeEndDate: sale.date,
+            startDate: sale.date, // Use the date field as both start & end
+            endDate: sale.date,
           };
         });
 
@@ -52,101 +50,112 @@ export const useSalesData = (email: string) => {
     fetchSales();
   }, [email]);
 
-  // Function to add a new sale to the API
-  const addSaleAPI = async (email: string, newSale: Sale) => {
+  // Function to delete a sale from API
+  const deleteSaleAPI = async (sale: Sale) => {
     try {
       const response = await fetch(
-        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/addTable",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            table: "sales",
-            body: {
-              Email: email,
-              StartDate: newSale.startDate,
-              EndDate: newSale.endDate,
-              Revenue: newSale.revenue,
-            },
+            table: "sale",
+            Email: email,
+            StartDate: sale.startDate,
+            EndDate: sale.startDate,
+          }),
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setSales((prevSales) =>
+          prevSales.filter((s) => s.startDate !== sale.startDate)
+        );
+      } else {
+        console.error("Failed to delete sale:", data.error);
+      }
+    } catch (error) {
+      console.error("Error deleting sale:", error);
+    }
+  };
+
+  // Placeholder: Function to add a sale to API
+
+  /*
+  const addSaleAPI = async (newSale: Sale) => {
+    try {
+      const response = await fetch(
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/addSale",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            table: "sale",
+            Email: email,
+            StartDate: newSale.startDate,
+            EndDate: newSale.startDate,  
+            Revenue: newSale.revenue,
           }),
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to add sale to API");
-      }
-
       const data = await response.json();
-      console.log("Sale added successfully:", data);
-
-      // Update local state with the new sale
-      setSales((prevSales) => [
-        ...prevSales,
-        {
-          ...newSale,
-          localSaleId: prevSales.length + 1001, // Generate new ID
-        },
-      ]);
-
-      return data;
+      if (response.ok) {
+        setSales((prevSales) => [...prevSales, newSale]);
+      } else {
+        console.error("Failed to add sale:", data.error);
+      }
     } catch (error) {
       console.error("Error adding sale:", error);
-      throw new Error("Failed to add sale to API");
     }
   };
+  */
 
-  // Function to edit an existing sale in the API
-  const editSaleAPI = async (
-    email: string,
-    updatedSale: Sale,
-    originalSale: Sale
-  ) => {
+  // Placeholder: Function to edit a sale in API
+  
+  /*
+  const editSaleAPI = async (updatedSale: Sale, originalSale: Sale) => {
     try {
       const response = await fetch(
-        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editSale",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            table: "sales",
-            body: {
-              Email: email,
-              NewStartDate: updatedSale.startDate,
-              NewEndDate: updatedSale.endDate,
-              NewRevenue: updatedSale.revenue,
-              StartDate: originalSale.startDate,
-              EndDate: originalSale.endDate,
-            },
+            table: "sale",
+            Email: email,
+            NewStartDate: updatedSale.startDate,
+            NewEndDate: updatedSale.startDate,
+            NewRevenue: updatedSale.revenue,
+            StartDate: originalSale.startDate,
+            EndDate: originalSale.startDate,
           }),
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Failed to edit sale in API");
-      }
-
       const data = await response.json();
-      console.log("Sale updated successfully:", data);
-
-      // Update local state with the updated sale
-      setSales((prevSales) =>
-        prevSales.map((sale) =>
-          sale.localSaleId === originalSale.localSaleId
-            ? { ...sale, ...updatedSale }
-            : sale
-        )
-      );
-
-      return data;
+      if (response.ok) {
+        setSales((prevSales) =>
+          prevSales.map((sale) =>
+            sale.localSaleId === originalSale.localSaleId
+              ? { ...sale, ...updatedSale }
+              : sale
+          )
+        );
+      } else {
+        console.error("Failed to edit sale:", data.error);
+      }
     } catch (error) {
       console.error("Error editing sale:", error);
-      throw new Error("Failed to edit sale in API");
     }
   };
+  */
 
-  return { sales, setSales, loading, addSaleAPI, editSaleAPI };
+  return { sales, setSales, loading, deleteSaleAPI /*, addSaleAPI, editSaleAPI */ };
 };
