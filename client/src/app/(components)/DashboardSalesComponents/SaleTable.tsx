@@ -101,45 +101,34 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
 
   const handleDeleteClick = useCallback(
     async (localSaleId: number) => {
-      const saleToDelete = sales.find(
-        (sale) => sale.localSaleId === localSaleId
-      );
-
+      const saleToDelete = sales.find((sale) => sale.localSaleId === localSaleId);
       if (!saleToDelete) return;
-
-      const email = "ajwitt2@asu.edu"; // Use the given email
-
-      // API call to delete the sale
+  
+      const email = "ajwitt2@asu.edu"; //hardcoded for now - will be replaced by web email
+  
       try {
         const response = await fetch(
           "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               table: "sale",
-              body: {
-                Email: email,
-                StartDate: saleToDelete.completeStartDate,
-                EndDate: saleToDelete.completeEndDate,
-              },
+              Email: email, 
+              StartDate: saleToDelete.completeStartDate, 
+              EndDate: saleToDelete.completeEndDate,
             }),
           }
         );
-
+  
         if (!response.ok) {
           throw new Error("Failed to delete sale");
         }
-
+  
         const data = await response.json();
         console.log("Sale deleted successfully:", data);
-
-        // Update state after successful deletion
-        setSales((prev) =>
-          prev.filter((sale) => sale.localSaleId !== localSaleId)
-        );
+  
+        setSales((prev) => prev.filter((sale) => sale.localSaleId !== localSaleId));
       } catch (error) {
         console.error("Error deleting sale:", error);
       }
