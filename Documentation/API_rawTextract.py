@@ -16,6 +16,7 @@
 # import time
 # import boto3
 # import os
+# import re
 # from urllib.parse import unquote_plus
 
 # logger = logging.getLogger()
@@ -61,6 +62,36 @@
 
 #     return {"Blocks": pages}
 
+# def parse_receipt_data(raw_data):
+    
+#     #Store name
+#     store_name = " ".join(raw_data[:1]) 
+    
+#     #Regex created by ChatGPT
+#     date_time_patterns = [
+#         re.compile(r"(\d{2}/\d{2}/\d{2})\s(\d{2}[: ]\d{2}[apmAPM]{2})"),  # MM/DD/YY HH:MM AM/PM
+#         re.compile(r"(\d{4}/\d{2}/\d{2})\s(\d{2}:\d{2}:\d{2})"),  # YYYY/MM/DD HH:MM:SS
+#         re.compile(r"(\d{2}-\d{2}-\d{4})\s(\d{2}:\d{2})"),  # DD-MM-YYYY HH:MM
+#         re.compile(r"(\d{2}\.\d{2}\.\d{4})\s(\d{2}:\d{2})"),  # DD.MM.YYYY HH:MM
+#         re.compile(r"(\d{2}/\d{2}/\d{4})\s(\d{2}:\d{2})"),  # MM/DD/YYYY HH:MM
+#         re.compile(r"(\d{4}-\d{2}-\d{2})\s(\d{2}:\d{2})")   # YYYY-MM-DD HH:MM
+#     ]
+    
+#     date, time = None, None
+#     for item in raw_data:
+#         for pattern in date_time_patterns:
+#             match = pattern.search(item)
+#             if match:
+#                 date, time = match.groups()
+#                 break
+#         if date and time:
+#             break
+    
+#     return {
+#         "Store": store_name,
+#         "Date": date,
+#         "Time": time
+#     }
 
 # def lambda_handler(event, context):
 
@@ -111,6 +142,8 @@
 #         # change LINE by WORD if you want word level extraction
 #         raw_text = extract_text(response, extract_by="LINE")
 #         logging.info(raw_text)
+#         metaData = parse_receipt_data(raw_text)
+#         logging.info(metaData)
 
 #         # s3.put_object(
 #         #     Bucket=bucketname,
@@ -122,13 +155,13 @@
 #             "statusCode": 200,
 #             "body": json.dumps("Receipt/Document processed successfully!"),
 #             "data": json.dumps(raw_text),
+#             "storeAndTimeStamp": metaData
 #         }
 #     except:
 #         error_msg = process_error()
 #         logger.error(error_msg)
 
 #     return {"statusCode": 500, "body": json.dumps("Error processing the recceipt/document!")}
-
 
 # Testcase:
 # {
