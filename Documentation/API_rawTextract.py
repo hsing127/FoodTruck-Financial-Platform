@@ -18,6 +18,7 @@
 # import os
 # import re
 # from urllib.parse import unquote_plus
+# from collections import defaultdict
 
 # logger = logging.getLogger()
 # logger.setLevel(logging.INFO)
@@ -65,7 +66,7 @@
 # def parse_receipt_data(raw_data):
     
 #     #Store name
-#     store_name = " ".join(raw_data[:1]) 
+#     store_name = raw_data[0] 
     
 #     #Regex created by ChatGPT
 #     date_time_patterns = [
@@ -92,6 +93,35 @@
 #         "Date": date,
 #         "Time": time
 #     }
+
+# def parse_receipt_items(raw_data):
+#     items=[]
+#     count=[]
+#     for i in range(len(raw_data)):
+#         if re.match(r"^\d+\.\d+ [A-Za-z]$", raw_data[i]):
+#             raw_data[i] = raw_data[i][:-2]
+#         match = re.match(r"^(\d+\.\d+)-.*$", raw_data[i])
+#         if match:
+#             raw_data[i] = f"-{match.group(1)}"
+#         if bool(re.match(r'^-?\d+\.\d+$', raw_data[i])):
+#             print(raw_data[i])
+#             n = raw_data[i-1]
+#             if len(n) == 1:
+#                 n = raw_data[i-2]
+#             if(float(raw_data[i]) < 0):
+#                 if(len(items))==0:
+#                     continue
+#                 items[len(items)-1][1] = str(round(float(items[len(items)-1][1])+float(raw_data[i]),2))
+#             elif [n,raw_data[i]] in items:
+#                 count[items.index([n,raw_data[i]])] += 1
+#             else:
+#                 items.append([n,raw_data[i]])
+#                 count.append(1)
+#     for i in range(len(items)):
+#         items[i].append(count[i])
+
+#     items = list(filter(lambda item: not ("tax" in item[0].lower() or "total" in item[0].lower()), items))
+#     return items
 
 # def lambda_handler(event, context):
 
@@ -143,7 +173,12 @@
 #         raw_text = extract_text(response, extract_by="LINE")
 #         logging.info(raw_text)
 #         metaData = parse_receipt_data(raw_text)
+#         if True:#"costco" in event["filename"]:
+#             itemList = parse_receipt_items(raw_text)
+#         else:
+#             itemList = raw_text
 #         logging.info(metaData)
+#         logging.info(itemList)
 
 #         # s3.put_object(
 #         #     Bucket=bucketname,
@@ -154,8 +189,9 @@
 #         return {
 #             "statusCode": 200,
 #             "body": json.dumps("Receipt/Document processed successfully!"),
-#             "data": json.dumps(raw_text),
-#             "storeAndTimeStamp": metaData
+#             "storeAndTimeStamp": metaData,
+#             "data": itemList #json.dumps(raw_text),
+            
 #         }
 #     except:
 #         error_msg = process_error()
