@@ -104,30 +104,39 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
       const saleToDelete = sales.find((sale) => sale.localSaleId === localSaleId);
       if (!saleToDelete) return;
   
-      const email = "ajwitt2@asu.edu"; //hardcoded for now - will be replaced by web email
+      const email = "ajwitt2@asu.edu"; // hardcoded for now, will be replaced by web email
+  
+      // Prepare the data structure as expected by the Lambda function
+      const requestBody = {
+        table: "sale",
+        body: JSON.stringify({
+          Email: email,
+          StartDate: saleToDelete.completeStartDate,
+          EndDate: saleToDelete.completeEndDate,
+        }),
+      };
   
       try {
+        console.log("Making API call to delete sale with data:", requestBody);
+  
         const response = await fetch(
           "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/deleteRow",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              table: "sale",
-              Email: email, 
-              StartDate: saleToDelete.completeStartDate, 
-              EndDate: saleToDelete.completeEndDate,
-            }),
+            body: JSON.stringify(requestBody),
           }
         );
+  
+        const data = await response.json();
+  
+        console.log("API response after deletion:", data);
   
         if (!response.ok) {
           throw new Error("Failed to delete sale");
         }
   
-        const data = await response.json();
-        console.log("Sale deleted successfully:", data);
-  
+        // Update local state after successful deletion
         setSales((prev) => prev.filter((sale) => sale.localSaleId !== localSaleId));
       } catch (error) {
         console.error("Error deleting sale:", error);
@@ -135,6 +144,8 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
     },
     [sales, setSales]
   );
+  
+    
 
   // Handle item deletion for sale items
   const handleItemDelete = useCallback(
@@ -472,18 +483,18 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
               onAnimationComplete={() => setIsAnimating(false)}
             >
               {currentSales.map((sale, index) => (
-                <SaleTableRow
-                  key={sale.localSaleId}
-                  sale={sale}
-                  isRowExpanded={isRowExpanded}
-                  toggleRow={toggleRow}
-                  handleDeleteClick={handleDeleteClick}
-                  index={index}
-                  setIsAnimating={setIsAnimating}
-                  onItemDelete={handleItemDelete}
-                  duplicateSale={duplicateSale}
-                />
-              ))}
+              <SaleTableRow
+                key={sale.localSaleId}
+                sale={sale}
+                isRowExpanded={isRowExpanded}
+                toggleRow={toggleRow}
+                handleDeleteClick={handleDeleteClick}
+                index={index}
+                setIsAnimating={setIsAnimating}
+                onItemDelete={handleItemDelete}
+                duplicateSale={duplicateSale}
+              />
+            ))}
             </motion.tbody>
           </table>
 
