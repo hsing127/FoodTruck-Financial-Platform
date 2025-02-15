@@ -57,11 +57,11 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
   });
 
   // Handler for delete button click
-  const onDelete = (e: React.MouseEvent) => {
+  const onDelete = async (e: React.MouseEvent) => {
     const isShiftPressed = e.shiftKey;
     if (isShiftPressed) {
-      // Bypass confirmation
-      handleDeleteClick(sale.localSaleId);
+      // Bypass confirmation and directly delete
+      await handleDeleteClick(sale.localSaleId);
     } else {
       // Open confirmation modal
       setSaleToDelete(sale.localSaleId);
@@ -69,15 +69,17 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
     }
     setIsContextMenuOpen(false); // Close context menu
   };
+  
 
   // Confirm deletion
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (saleToDelete !== null) {
-      handleDeleteClick(saleToDelete);
+      await handleDeleteClick(saleToDelete);
       setSaleToDelete(null);
       setIsConfirmModalOpen(false);
     }
   };
+  
 
   // Cancel deletion
   const handleCancelDelete = () => {

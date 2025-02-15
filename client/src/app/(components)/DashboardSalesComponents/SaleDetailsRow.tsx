@@ -1,11 +1,10 @@
-// SaleDetailsRow.tsx
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import EditableCell from "../Common/EditableCell";
 import ActionButtons from "../Common/ActionButtons";
 import { SaleItem } from "@/app/types/types";
 import { menuItemRowVariants } from "../Common/Animations";
-import ConfirmModal from "../Common/ConfirmModal"; // Ensure the path is correct
+import ConfirmModal from "../Common/ConfirmModal";
 
 interface SaleDetailsRowProps {
   item: SaleItem;
@@ -16,7 +15,7 @@ interface SaleDetailsRowProps {
   onSaveClick: (index: number) => void;
   onCancelClick: () => void;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onItemDelete: (index: number) => void;
+  onItemDelete: (menuName: string, itemIndex: number) => void;
 }
 
 const SaleDetailsRow: React.FC<SaleDetailsRowProps> = ({
@@ -37,25 +36,28 @@ const SaleDetailsRow: React.FC<SaleDetailsRowProps> = ({
   const [itemToDeleteIndex, setItemToDeleteIndex] = useState<number | null>(
     null
   );
+  const [itemToDeleteName, setItemToDeleteName] = useState<string | null>(null);
 
   // Handler for delete button click
   const handleDelete = (e: React.MouseEvent) => {
     const isShiftPressed = e.shiftKey;
     if (isShiftPressed) {
       // Bypass confirmation
-      onItemDelete(index);
+      onItemDelete(currentItem.menuitemname, index);
     } else {
       // Open confirmation modal
       setItemToDeleteIndex(index);
+      setItemToDeleteName(currentItem.menuitemname);
       setIsConfirmModalOpen(true);
     }
   };
 
-  // Confirm deletion
+  // Confirm deletion of menu item
   const handleConfirmDelete = () => {
-    if (itemToDeleteIndex !== null) {
-      onItemDelete(itemToDeleteIndex);
+    if (itemToDeleteIndex !== null && itemToDeleteName) {
+      onItemDelete(itemToDeleteName, itemToDeleteIndex);
       setItemToDeleteIndex(null);
+      setItemToDeleteName(null);
       setIsConfirmModalOpen(false);
     }
   };
@@ -63,6 +65,7 @@ const SaleDetailsRow: React.FC<SaleDetailsRowProps> = ({
   // Cancel deletion
   const handleCancelDelete = () => {
     setItemToDeleteIndex(null);
+    setItemToDeleteName(null);
     setIsConfirmModalOpen(false);
   };
 
