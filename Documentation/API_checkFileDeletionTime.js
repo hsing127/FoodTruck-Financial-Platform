@@ -1,27 +1,53 @@
 // import AWS from 'aws-sdk';
 
 // const s3 = new AWS.S3();
-// const bucketName = BUCKET_NAME || 'your-s3-bucket-name';
+// const bucketName = process.env.BUCKET_NAME || 'your-s3-bucket-name';
 
 // const handler = async (event) => {
 //     try {
-//         const { fileName } = event;
+//         const { username, fileName } = event;
 
-//         // Get the metadata of the file from S3
-//         const metadata = await s3.headObject({
+//         if (!username || !fileName) {
+//             return {
+//                 statusCode: 400,
+//                 body: JSON.stringify({ message: "Username and fileName are required." }),
+//             };
+//         }
+
+//         // Define the prefix where user files are stored (assuming <username>/fileName format)
+//         const prefix = `${username}/`;
+
+//         // List objects in the user's directory to find a match
+//         const listedObjects = await s3.listObjectsV2({
 //             Bucket: bucketName,
-//             Key: fileName
+//             Prefix: prefix
 //         }).promise();
 
-//         // Get the last modified time of the file
+//         // Check if the file exists under the username directory
+//         const fileExists = listedObjects.Contents.some(obj => obj.Key === `${prefix}${fileName}`);
+
+//         if (!fileExists) {
+//             return {
+//                 statusCode: 404,
+//                 body: JSON.stringify({ message: "File not found for the specified username." }),
+//             };
+//         }
+
+//         // Get metadata of the file
+//         const metadata = await s3.headObject({
+//             Bucket: bucketName,
+//             Key: `${prefix}${fileName}`
+//         }).promise();
+
+//         // Get last modified time
 //         const lastModified = metadata.LastModified;
 //         const now = new Date();
 
-//         // Calculate the time left until the file is deleted (expiration is 1 day)
+//         // Calculate expiration time (1 day after last modified)
 //         const expirationTime = new Date(lastModified);
-//         expirationTime.setDate(expirationTime.getDate() + 1);  // Adding 1 day to last modified time
+//         expirationTime.setDate(expirationTime.getDate() + 1);
 
-//         // Calculate the time difference between now and expiration time
+//         // Calculate the time left until expiration
 //         const timeLeft = expirationTime - now;
 
 //         if (timeLeft > 0) {
@@ -51,3 +77,5 @@
 //         };
 //     }
 // };
+
+// export { handler };
