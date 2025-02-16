@@ -97,28 +97,58 @@
 # def parse_receipt_items(raw_data):
 #     items=[]
 #     count=[]
+#     weight=[]
+#     weightUnit=[]
 #     for i in range(len(raw_data)):
-#         if re.match(r"^\d+\.\d+ [A-Za-z]$", raw_data[i]):
+#         if "ks" in raw_data[i]:
+#             raw_data[i] = raw_data[i].replace("ks","kg")
+#         unit = "na"
+#         if "$" in raw_data[i]: #if has $ in front then remove everything up until price
+#             raw_data[i] = raw_data[i][raw_data[i].index("$")+1:]
+#             if raw_data[i][0] == " ": #if starts with space then remove.
+#                 raw_data[i] = raw_data[i][1:]
+#         if re.match(r"^\d+\.\d+ [A-Za-z]$", raw_data[i]): #if there is character at end. remove
 #             raw_data[i] = raw_data[i][:-2]
-#         match = re.match(r"^(\d+\.\d+)-.*$", raw_data[i])
+#         match = re.match(r"^(\d+\.\d+)-.*$", raw_data[i]) #if there is - at the end, then apply discount
 #         if match:
 #             raw_data[i] = f"-{match.group(1)}"
 #         if bool(re.match(r'^-?\d+\.\d+$', raw_data[i])):
-#             print(raw_data[i])
+#             #print(raw_data[i])
 #             n = raw_data[i-1]
-#             if len(n) == 1:
-#                 n = raw_data[i-2]
+#             counter = 1
+#             while ("kg" in n or "lb" in n) and counter < i: #tries to find the correct name, also saves units if found
+#                 if "kg" in n:
+#                     unit = "kg"
+#                 if "lb" in n:
+#                     unit = "lb"
+#                 counter += 1
+#                 n = raw_data[i-counter]
+#             if len(n) == 1 or n.isdigit() or n[:-1].isdigit(): #Also tries to find the correct name
+#                 counter += 1
+#                 n = raw_data[i-counter]
 #             if(float(raw_data[i]) < 0):
 #                 if(len(items))==0:
 #                     continue
-#                 items[len(items)-1][1] = str(round(float(items[len(items)-1][1])+float(raw_data[i]),2))
+#                 items[len(items)-1][1] = str(round(float(items[len(items)-1][1])+float(raw_data[i]),2)) #if its a discount, apply discount
 #             elif [n,raw_data[i]] in items:
-#                 count[items.index([n,raw_data[i]])] += 1
+#                 count[items.index([n,raw_data[i]])] += 1 #if item already exists, increment count
 #             else:
+#                 x = i-counter+1
+#                 w=0 
+#                 while (x < i) and unit != "na": #if there is a weight to it, find the
+#                     if unit in raw_data[x] and not ("/"+unit) in raw_data[x]:
+#                         match = re.search(r"[-+]?\d*\.\d+", raw_data[x])
+#                         if match:
+#                             w = float(match.group(0))
+#                     x+=1
 #                 items.append([n,raw_data[i]])
 #                 count.append(1)
+#                 weight.append(w)
+#                 weightUnit.append(unit)
 #     for i in range(len(items)):
 #         items[i].append(count[i])
+#         items[i].append(weight[i])
+#         items[i].append(weightUnit[i])
 
 #     items = list(filter(lambda item: not ("tax" in item[0].lower() or "total" in item[0].lower()), items))
 #     return items
@@ -208,5 +238,151 @@
 # {
 #   "statusCode": 200,
 #   "body": "\"Receipt/Document processed successfully!\"",
-#   "data": "[\"COSTCO\", \"WHOLESALE\", \"North London #530\", \"693 Wonderland Road North\", \"London, ON N6H 4L1\", \"1S Member 111791956937\", \"580517 **KS TOWEL**\", \"23.49 H\", \"893269 NYQUIL 2X354\", \"22.99 H\", \"40791 RIB STK BNLS\", \"54.22\", \"1707492 PRIME HYDRTN\", \"27.99 H\", \"1218130 PAYSAN BACON\", \"13.99\", \"190316 KS BACON\", \"9.99\", \"1780548 CRISPY ONION\", \"14.99\", \"1687657 SRIRACHA\", \"9.99\", \"1633066 AIOLI SAUCE\", \"9.79\", \"1801834 TPD/1633066\", \"2.00-\", \"1764997\", \"2,999.99\", \"H\", \"1392843 AVOCA SPRAY\", \"16.99\", \"1279452 KS COLDSINUS\", \"10.99 H\", \"1682107 CASA PIRI 1L\", \"11.49\", \"5696621 VITAFUSION\", \"14.99 H\", \"1080377 TURMERIC\", \"38.99 H\", \"1446552 JALAPENO\", \"14.99\", \"1742666 ORGANIKA\", \"54.99 H\", \"2333708 BAGEL SEASON\", \"9.49\", \"1638299 CASCADE PLAT\", \"24.99 H\", \"1677465 TRUFFLE PARM\", \"9.99\", \"11515 CAESAR SALAD\", \"13.25 H\", \"SUBTOTAL\", \"3,406.58\", \"TAX\", \"420.25\", \"**** TOTAL\", \"3,826.83\", \"XXXXXXXXXXXX3746\", \"ACCT: VISA\"]"
+#   "storeAndTimeStamp": {
+#     "Store": "COSTCO",
+#     "Date": null,
+#     "Time": null
+#   },
+#   "data": [
+#     [
+#       "580517 **KS TOWEL**",
+#       "23.49",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "893269 NYQUIL 2X354",
+#       "22.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "40791 RIB STK BNLS",
+#       "54.22",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1707492 PRIME HYDRTN",
+#       "27.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1218130 PAYSAN BACON",
+#       "13.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "190316 KS BACON",
+#       "9.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1780548 CRISPY ONION",
+#       "14.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1687657 SRIRACHA",
+#       "9.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1633066 AIOLI SAUCE",
+#       "7.79",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1392843 AVOCA SPRAY",
+#       "16.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1279452 KS COLDSINUS",
+#       "10.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1682107 CASA PIRI 1L",
+#       "11.49",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "5696621 VITAFUSION",
+#       "14.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1080377 TURMERIC",
+#       "38.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1446552 JALAPENO",
+#       "14.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1742666 ORGANIKA",
+#       "54.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "2333708 BAGEL SEASON",
+#       "9.49",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1638299 CASCADE PLAT",
+#       "24.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1677465 TRUFFLE PARM",
+#       "9.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "11515 CAESAR SALAD",
+#       "13.25",
+#       1,
+#       0,
+#       "na"
+#     ]
+#   ]
 # }
