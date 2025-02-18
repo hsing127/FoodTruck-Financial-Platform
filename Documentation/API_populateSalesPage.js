@@ -1,94 +1,97 @@
-/*
-import pkg from 'pg';
-const { Client } = pkg;
+// import pkg from 'pg';
+// const { Client } = pkg;
 
-const fetchSalesWithDetailsByEmail = async (email) => {
-    const client = new Client({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_DATABASE,
-        port: 5432,
-        ssl: {
-            rejectUnauthorized: false,
-        },
-    });
+// const fetchSalesWithDetailsByEmail = async (email) => {
+//     const client = new Client({
+//         host: process.env.DB_HOST,
+//         user: process.env.DB_USER,
+//         password: process.env.DB_PASSWORD,
+//         database: process.env.DB_DATABASE,
+//         port: 5432,
+//         ssl: {
+//             rejectUnauthorized: false,
+//         },
+//     });
 
-    await client.connect();
+//     await client.connect();
 
-    try {
-        // Step 1: Query the main sale records
-        const salesQuery = `
-            SELECT "StartDate", "EndDate", "Revenue"
-            FROM "Sale"
-            WHERE "Email" = $1
-        `;
-        const salesResult = await client.query(salesQuery, [email]);
+//     try {
+//         // Step 1: Query the main sale records
+//         const salesQuery = `
+//             SELECT "StartDate", "EndDate", "Revenue"
+//             FROM "Sale"
+//             WHERE "Email" = $1
+//         `;
+//         const salesResult = await client.query(salesQuery, [email]);
 
-        // Step 2: For each sale, get associated details from the Sold table
-        const salesWithDetails = await Promise.all(
-            salesResult.rows.map(async (sale) => {
-                const soldQuery = `
-                SELECT s."MenuName" as menuItemName, 
-                    s."Count" as Count, 
-                    (m."Cost" * s."Count") as itemRevenue
-                FROM "Sold" s
-                JOIN "MenuItem" m
-                ON s."MenuName" = m."Name"
-                WHERE s."Email" = $1 AND s."StartDate" = $2 AND s."EndDate" = $3;
-                `;
-                const soldResult = await client.query(soldQuery, [email, sale.StartDate, sale.EndDate]);
+//         // Step 2: For each sale, get associated details from the Sold table
+//         const salesWithDetails = await Promise.all(
+//             salesResult.rows.map(async (sale) => {
+//                 const soldQuery = `
+//                 SELECT s."MenuName" as menuItemName, 
+//                     s."Count" as Count, 
+//                     (m."Cost" * s."Count") as itemRevenue
+//                 FROM "Sold" s
+//                 JOIN "MenuItem" m
+//                 ON s."MenuName" = m."Name"
+//                 WHERE s."Email" = $1 AND s."StartDate" = $2 AND s."EndDate" = $3;
+//                 `;
+//                 const soldResult = await client.query(soldQuery, [email, sale.StartDate, sale.EndDate]);
 
-                // Combine each sale with its details
-                return {
-                    receiptId: `${sale.StartDate}-${sale.EndDate}`, // Generate a unique ID for front-end use
-                    StartDate: sale.StartDate,
-                    EndDate: sale.EndDate,
-                    revenue: `$${sale.Revenue}`, // Use Cost as it is, without formatting
-                    details: soldResult.rows, // Attach the details array from the Sold table
-                };
-            })
-        );
+//                 // Format dates to MM/DD/YYYY using toLocaleDateString
+//                 const formatDate = (date) => {
+//                     const d = new Date(date);
+//                     return d.toLocaleDateString('en-US'); // Format as MM/DD/YYYY
+//                 };
 
-        return salesWithDetails;
-    } catch (error) {
-        console.error("Error fetching sales with details:", error);
-        throw new Error("Failed to retrieve sales with details");
-    } finally {
-        await client.end();
-    }
-};
+//                 // Combine each sale with its details
+//                 return {
+//                     receiptId: `${formatDate(sale.StartDate)}-${formatDate(sale.EndDate)}`, // Generate a unique ID for front-end use
+//                     StartDate: formatDate(sale.StartDate), // Convert to MM/DD/YYYY
+//                     EndDate: sale.EndDate ? formatDate(sale.EndDate) : formatDate(sale.StartDate), // Convert to MM/DD/YYYY
+//                     revenue: `$${sale.Revenue}`, // Use Revenue as it is
+//                     details: soldResult.rows, // Attach the details array from the Sold table
+//                 };
+//             })
+//         );
 
-const handler = async (event) => {
-    try {
-        const email = event.email || (event.queryStringParameters && event.queryStringParameters.email);
+//         return salesWithDetails;
+//     } catch (error) {
+//         console.error("Error fetching sales with details:", error);
+//         throw new Error("Failed to retrieve sales with details");
+//     } finally {
+//         await client.end();
+//     }
+// };
+
+// const handler = async (event) => {
+//     try {
+//         const email = event.email || (event.queryStringParameters && event.queryStringParameters.email);
         
-        if (!email) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ error: "Email parameter is required and cannot be empty" }),
-            };
-        }
+//         if (!email) {
+//             return {
+//                 statusCode: 400,
+//                 body: JSON.stringify({ error: "Email parameter is required and cannot be empty" }),
+//             };
+//         }
 
-        // Fetch sales and details for the specified email
-        const salesWithDetails = await fetchSalesWithDetailsByEmail(email);
+//         // Fetch sales and details for the specified email
+//         const salesWithDetails = await fetchSalesWithDetailsByEmail(email);
 
-        // Return the combined data as JSON
-        return {
-            statusCode: 200,
-            body: JSON.stringify({
-                sales: salesWithDetails,
-            }),
-        };
-    } catch (error) {
-        console.error("Unexpected error:", error);
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ error: "Failed to retrieve sales with details" }),
-        };
-    }
-};
+//         // Return the combined data as JSON
+//         return {
+//             statusCode: 200,
+//             body: JSON.stringify({
+//                 sales: salesWithDetails,
+//             }),
+//         };
+//     } catch (error) {
+//         console.error("Unexpected error:", error);
+//         return {
+//             statusCode: 400,
+//             body: JSON.stringify({ error: "Failed to retrieve sales with details" }),
+//         };
+//     }
+// };
 
-export { handler };
-
-*/
+// export { handler };
