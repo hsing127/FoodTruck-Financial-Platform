@@ -105,7 +105,59 @@ const NavBar = () => {
 
   // Handle file uploads from UploadLogic
   const handleFileUpload = (fileType: string, file: File) => {
-    console.log(`Uploaded ${fileType}:`, file);
+    if (file.type === "application/pdf" || file.type === "text/plain") {
+      console.log(`Valid file type: ${fileType}`, file);
+      uploadFileToLambda(file);
+    } else {
+      alert("Please upload a PDF or TXT file.")
+    }
+  };
+
+  const uploadFileToLambda = async( file: File) => {
+    const apiUrl = "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/fileUpload"
+
+    try{
+      const fileData = await convertFileToBase64(file);
+
+      const fileName = file.name;
+      // console.log(`File name: ${fileName}`);
+      // console.log(`Encryption: ${fileData}`);
+
+      const data = JSON.stringify({
+        fileName,
+        fileData: fileData.split(",")[1],
+        overwrite: false,
+      });
+      // console.log(body);
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        body: data,
+        headers: {
+          "Content-Type": "application/json"
+        },
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        console.log("File uploaded successfully:", responseData);
+      } else {
+        console.error("Upload failed:", responseData);
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+    
+  };
+
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   };
 
   return (
