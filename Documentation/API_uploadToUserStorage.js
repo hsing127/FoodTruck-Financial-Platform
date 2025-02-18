@@ -1,12 +1,18 @@
 // import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 
 // const s3 = new S3Client({ region: "ca-central-1" });
-// const bucketName = BUCKET_NAME;
+// const bucketName = "foodtruck-userfiles";
 
 // const handler = async (event) => {
+//     console.log("Event received:", event); 
 //     try {
-//         const body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
-//         const { fileName, fileData, overwrite = false } = body; // "overwrite" is optional
+//         const fileName = event.fileName;
+//         const fileData = event.fileData;
+//         const overwrite = event.overwrite;
+
+//         console.log("File Name:", fileName);
+//         console.log("File Data:", fileData);  // You may want to decode base64 if necessary
+//         console.log("Overwrite:", overwrite);
 
 //         if (!fileName.endsWith('.pdf') && !fileName.endsWith('.txt')) {
 //             return {
@@ -35,14 +41,14 @@
 //             }
 //         }
 
-//         // Convert base64 fileData to a buffer
-//         const buffer = Buffer.from(fileData, 'base64');
+//         // // Convert base64 fileData to a buffer
+//         // const buffer = Buffer.from(fileData, 'base64');
 
 //         // Upload the file
 //         const uploadParams = {
 //             Bucket: bucketName,
 //             Key: fileName,
-//             Body: buffer,
+//             Body: fileData,
 //             ContentType: fileName.endsWith('.pdf') ? 'application/pdf' : 'text/plain',
 //         };
 
