@@ -1,7 +1,7 @@
 // import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 
 // const s3 = new S3Client({ region: "ca-central-1" });
-// const bucketName = "foodtruck-userfiles";
+// const bucketName = "BUCKET_NAME";
 
 // const handler = async (event) => {
 //     console.log("Event received:", event); 
