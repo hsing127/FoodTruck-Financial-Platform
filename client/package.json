@@ -16,6 +16,7 @@
     "chart.js": "^4.4.7",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
+    "expo": "^52.0.35",
     "framer-motion": "^11.11.11",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
