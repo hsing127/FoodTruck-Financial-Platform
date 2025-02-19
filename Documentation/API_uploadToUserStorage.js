@@ -1,7 +1,7 @@
 // import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 
 // const s3 = new S3Client({ region: "ca-central-1" });
-// const bucketName = "BUCKET_NAME";
+// const bucketName = "foodtruck-userfiles";
 
 // const handler = async (event) => {
 //     console.log("Event received:", event); 
@@ -11,13 +11,13 @@
 //         const overwrite = event.overwrite;
 
 //         console.log("File Name:", fileName);
-//         console.log("File Data:", fileData);  // You may want to decode base64 if necessary
+//         console.log("File Data:", fileData);
 //         console.log("Overwrite:", overwrite);
 
-//         if (!fileName.endsWith('.pdf') && !fileName.endsWith('.txt')) {
+//         if (!fileName.endsWith('.pdf') && !fileName.endsWith('.txt') && !fileName.endsWith('.png') && !fileName.endsWith('.jpg') && !fileName.endsWith('.jpeg')) {
 //             return {
 //                 statusCode: 400,
-//                 body: JSON.stringify({ message: 'Only PDF and TXT files are allowed' }),
+//                 body: JSON.stringify({ message: 'Only PDF, TXT, PNG, JPG, and JPEG files are allowed' }),
 //             };
 //         }
 

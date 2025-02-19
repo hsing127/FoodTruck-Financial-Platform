@@ -105,13 +105,16 @@ const NavBar = () => {
 
   // Handle file uploads from UploadLogic
   const handleFileUpload = (fileType: string, file: File) => {
-    if (file.type === "application/pdf" || file.type === "text/plain") {
-      console.log(`Valid file type: ${fileType}`, file);
+    if (
+      ["application/pdf", "text/plain", "image/png", "image/jpeg", "image/jpg"].includes(file.type)
+    ) {
+      //console.log(`Valid file type: ${fileType}`, file);
       uploadFileToLambda(file);
     } else {
-      alert("Please upload a PDF or TXT file.")
+      alert("Please upload a PDF, TXT, PNG, JPG, or JPEG file.");
     }
   };
+
 
   const uploadFileToLambda = async( file: File) => {
     const apiUrl = "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/fileUpload"
@@ -141,7 +144,7 @@ const NavBar = () => {
       const responseData = await response.json();
 
       if (response.ok) {
-        console.log("File uploaded successfully:", responseData);
+        //console.log("File uploaded successfully:", responseData);
       } else {
         console.error("Upload failed:", responseData);
       }
