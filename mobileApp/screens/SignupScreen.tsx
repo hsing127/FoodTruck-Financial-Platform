@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { useTheme } from "../ThemeContext";
 
-const LoginScreen: React.FC = () => {
+const SignInScreen: React.FC = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
@@ -19,14 +19,14 @@ const LoginScreen: React.FC = () => {
   } = useForm();
 
   const onSubmit = (data: { email: string; password: string }) => {
-    Alert.alert("Login Successful", `Welcome, ${data.email}!`);
+    Alert.alert("Sign In Successful", `Welcome back, ${data.email}!`);
   };
 
   return (
     <View className={`flex-1 ${backgroundColor} justify-center p-5`}>
       <View className={`${cardBackground} p-5 rounded-2xl shadow-lg`}>
         <Text className={`${textColor} text-2xl font-bold text-center mb-6`}>
-          Login
+          Sign In
         </Text>
 
         <Text className={`${textColor} text-base mb-2`}>Email</Text>
@@ -78,11 +78,20 @@ const LoginScreen: React.FC = () => {
           onPress={handleSubmit(onSubmit)}
           className="bg-teal-500 py-4 rounded-lg mt-5 items-center"
         >
-          <Text className="text-white text-lg font-bold">Login</Text>
+          <Text className="text-white text-lg font-bold">Sign In</Text>
         </TouchableOpacity>
+
+        <View className="flex-row justify-between mt-5">
+          <TouchableOpacity>
+            <Text className="text-teal-500 text-sm">Forgot Password?</Text>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Text className="text-teal-500 text-sm">Sign Up</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
 };
 
-export default LoginScreen;
+export default SignInScreen;
