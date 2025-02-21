@@ -47,8 +47,25 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
   const [itemsPerPage, setItemsPerPage] = useState(MIN_ROWS);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isScanModalOpen, setIsScanModalOpen] = useState(false);
+  const [isScanModalOpen, setIsScanModalOpen] = useState(false);
+  interface StoreAndTimestamp {
+      Store: null | string;
+      Date: null | string;
+      Time: null | string;
+    }
+  
+  interface ReceiptData {
+    storeAndTimeStamp: StoreAndTimestamp;
+      data: Array<Array<string | number>>;
+      // other properties...
+    }
+  const [scannedReceiptData, setScannedReceiptData] = useState<ReceiptData | null>(null);
     
+  const handleScanReceiptData = (value: React.SetStateAction<ReceiptData | null>) => {
+      console.log("API Response:", value);
+      setScannedReceiptData(value);
+      openModal();
+  };
   // Use the custom useSortLogic hook
   const { sortField, sortOrder, setSortFieldAndOrder, sortData } =
     useSortLogic<Receipt>();
@@ -276,7 +293,7 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
         console.warn(`Unhandled action: ${enumActionType}, Item: ${item}`);
       }
     },
-    [openModal, setSortFieldAndOrder]
+    [openModal, openScanModal, setSortFieldAndOrder]
   );
 
   // Handle file uploads from UploadLogic
@@ -387,8 +404,8 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
           <UploadLogic ref={uploadLogicRef} onFileUpload={handleFileUpload} />
 
           {/* Use isModalOpen to conditionally render the modal */}
-          <AddReceiptEntryModal isOpen={isModalOpen} onClose={closeModal} />
-          <ScanReceiptModal isOpen={isScanModalOpen} onClose={closeScanModal} />
+          <AddReceiptEntryModal isOpen={isModalOpen} onClose={closeModal} receiptData={scannedReceiptData}/>
+          <ScanReceiptModal isOpen={isScanModalOpen} onClose={closeScanModal} onScanComplete={handleScanReceiptData}/>
         </div>
       </div>
 

@@ -11,22 +11,37 @@ import {
 import IngredientRow from "./AddReceiptIngredientRow";
 import { useReceiptsData } from "./ReceiptAPI";
 
+interface StoreAndTimestamp {
+    Store: null | string;
+    Date: null | string;
+    Time: null | string;
+  }
+
+interface ReceiptData {
+    storeAndTimeStamp: StoreAndTimestamp;
+    data: Array<Array<string | number>>;
+    // other properties...
+  }
+
 interface AddManualEntryModalProps {
   isOpen: boolean;
-  onClose: () => void;
+    onClose: () => void;
+    receiptData: ReceiptData | null;
+  
 }
 
 const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
   isOpen,
-  onClose,
+    onClose,
+    receiptData,
 }) => {
   // Initial state for a new receipt
   const initialReceipt: Receipt = {
     localReceiptId: Date.now(),
     completeDateTime: "",
-    location: "",
-    date: "",
-    time: "",
+    location: receiptData==null? "" :  (receiptData.storeAndTimeStamp.Store? receiptData.storeAndTimeStamp.Store : ""),
+    date: receiptData==null? "" :  (receiptData.storeAndTimeStamp.Date? receiptData.storeAndTimeStamp.Date.replaceAll("/", "-") : ""),
+    time: receiptData==null? "" :  (receiptData.storeAndTimeStamp.Time? receiptData.storeAndTimeStamp.Time : ""),
     cost: "",
     details: [],
   };
@@ -50,7 +65,8 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
     addReceiptIngredientAPI,
   } = useReceiptsData(email);
 
-  // Handle changes in the receipt input fields
+    // Handle changes in the receipt input fields
+    const [count, setCount] = useState(0);
   const handleReceiptInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewReceipt((prev) => ({
@@ -84,9 +100,21 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
       ...prevReceipt,
       details: [
         ...prevReceipt.details,
-        { ingredient: "", quantity: 0, units: "", price: "" },
+          {
+              ingredient: receiptData == null ? "" : receiptData.data.length > count ? String(receiptData.data[count][0]) : "",
+              quantity: receiptData==null? 0 : receiptData.data.length > count? Number(receiptData.data[count][2]):0,
+              units: receiptData==null? "" : receiptData.data.length > count? String(receiptData.data[count][4]):"", 
+              price: receiptData==null? "" : receiptData.data.length > count? String(receiptData.data[count][1]):""
+          },
       ],
     }));
+      setCount((prevCount) => prevCount + 1);
+      if (count == 1) {
+        newReceipt.location= receiptData==null? "" :  (receiptData.storeAndTimeStamp.Store? receiptData.storeAndTimeStamp.Store : "")
+        newReceipt.date= receiptData==null? "" :  (receiptData.storeAndTimeStamp.Date? receiptData.storeAndTimeStamp.Date.replaceAll("/", "-") : "")
+        newReceipt.time= receiptData==null? "" :  (receiptData.storeAndTimeStamp.Time? receiptData.storeAndTimeStamp.Time : "")
+      }
+      console.log(newReceipt)
   };
 
   // Delete a receipt detail (ingredient) at a specific index
@@ -201,14 +229,14 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
                 >
                   <EditableCell
                     isEditing={true}
-                    value={newReceipt.location}
+                    value={count<=1? (receiptData==null? "2" :  (receiptData.storeAndTimeStamp.Store? receiptData.storeAndTimeStamp.Store : "3")): newReceipt.location}
                     name="location"
                     onChange={handleReceiptInputChange}
                     placeholder="Location"
                   />
                   <EditableCell
                     isEditing={true}
-                    value={newReceipt.date}
+                    value={count<=1? (receiptData==null? "" :  (receiptData.storeAndTimeStamp.Date? receiptData.storeAndTimeStamp.Date.replaceAll("/", "-") : "")) : newReceipt.date}
                     name="date"
                     onChange={handleReceiptInputChange}
                     type="date"
@@ -216,7 +244,7 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
                   />
                   <EditableCell
                     isEditing={true}
-                    value={newReceipt.time}
+                    value={count<=1? (receiptData==null? "" :  (receiptData.storeAndTimeStamp.Time? receiptData.storeAndTimeStamp.Time : "")) : newReceipt.time}
                     name="time"
                     onChange={handleReceiptInputChange}
                     type="time"

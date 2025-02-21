@@ -161,8 +161,24 @@ export const useReceiptsData = (email: string) => {
     newReceipt: Receipt,
     newIngredient: Ingredient
   ) => {
-    try {
-      // Prepare the API payload
+      try {
+          console.log("Location: ",newReceipt.location);
+          console.log("DateTime: ",newReceipt.date + " " + newReceipt.time);
+          // Prepare the API payload
+          const responseING = await fetch(
+            "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                table: "ingredient",
+                body: [{ Email: email,  Name:newIngredient.ingredient, Amount:newIngredient.quantity, AmountUnits: newIngredient.units}],
+              }),
+            }
+          );
+          console.log(responseING)
       const response = await fetch(
         "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
         {

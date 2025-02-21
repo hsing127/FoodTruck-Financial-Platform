@@ -5,10 +5,11 @@ import { backdropVariants, modalVariants } from "../Common/Animations";
 
 interface ScanReceiptModalProps {
   isOpen: boolean;
-  onClose: () => void;
+    onClose: () => void;
+    onScanComplete: (scanData: any) => void;
 }
 
-const ScanReceiptModal: React.FC<ScanReceiptModalProps> = ({ isOpen, onClose }) => {
+const ScanReceiptModal: React.FC<ScanReceiptModalProps> = ({ isOpen, onClose,onScanComplete }) => {
   const [fileName, setFileName] = useState("");
 
   const handleSubmit = async () => {
@@ -26,12 +27,16 @@ const ScanReceiptModal: React.FC<ScanReceiptModalProps> = ({ isOpen, onClose }) 
         body: JSON.stringify({ filename: fileName }),
       });
       
-      const data = await response.json();
-      console.log("API Response:", data);
+        const data = await response.json();
+        //console.log("API Response:", data);
+        if(data.statusCode==200)
+            onScanComplete(data);
+        else
+            onScanComplete(null)
     } catch (error) {
-      console.error("Error submitting file:", error);
+        console.error("Error submitting file:", error);
+        alert("There was an error processing the scanned receipt.");
     }
-
     onClose();
   };
 
