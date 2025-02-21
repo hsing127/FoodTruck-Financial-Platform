@@ -9,6 +9,8 @@ import {
   tableVariants,
 } from "../Common/Animations";
 import MenuItemRow from "./AddSaleMenuItemRow";
+import { useSalesData } from "./SalesAPI";
+
 
 interface AddManualEntryModalProps {
   isOpen: boolean;
@@ -33,6 +35,9 @@ const AddSaleEntryModal: React.FC<AddManualEntryModalProps> = ({
   // State to hold all sales (can be used for multiple sales)
   const [sales, setSales] = useState<Sale[]>([]);
 
+  // Use useSalesData hook to get the addSaleAPI function
+  const { addSaleAPI } = useSalesData("ajwitt2@asu.edu");
+  
   // State for the current new sale being added
   const [newSale, setNewSale] = useState<Sale>(initialSale);
 
@@ -88,11 +93,16 @@ const AddSaleEntryModal: React.FC<AddManualEntryModalProps> = ({
 
   // Save the current sale to the sales list
   const handleSaveSale = () => {
-    setSales((prevSales) => [...prevSales, newSale]);
+    if (newSale.details.length === 0) {
+      alert("Please add at least one menu item before saving.");
+      return;
+    }
+
+    addSaleAPI(newSale);
     setNewSale(initialSale);
     onClose();
   };
-
+  
   // Reset the sale fields to their initial state
   const handleResetSale = () => {
     setNewSale(initialSale);

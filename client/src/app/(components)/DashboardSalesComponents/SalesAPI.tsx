@@ -84,5 +84,65 @@ export const useSalesData = (email: string) => {
     }
   };
 
+  const addSaleAPI = async (newSale: Sale) => {
+    try {  
+      // Step 1: Add the new sale to the "Sale" table
+      const saleResponse = await fetch(
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            table: "sale",
+            Email: email,
+            NewStartDate: newSale.startDate,
+            NewEndDate: newSale.endDate,
+            NewRevenue: newSale.revenue,
+          }),
+        }
+      );
+  
+      if (!saleResponse.ok) {
+        throw new Error("Failed to add sale");
+      }
+  
+      console.log("Sale added successfully");
+  
+      // Step 2: Add each sold item associated with the sale to the "Sold" table
+      for (const item of newSale.details) {
+        const soldResponse = await fetch(
+          "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              table: "sold",
+              Email: email,
+              NewStartDate: newSale.startDate,
+              NewEndDate: newSale.endDate,
+              NewMenuName: item.menuitemname,
+              NewCount: item.count,
+            }),
+          }
+        );
+  
+        if (!soldResponse.ok) {
+          throw new Error(`Failed to add sold item: ${item.menuitemname}`);
+        }
+      }
+  
+      console.log("All sold items added successfully");
+  
+      // Step 3: Update state to include the new sale
+      setSales((prevSales) => [
+        ...prevSales,
+        { ...newSale, localSaleId: prevSales.length + 1001 },
+      ]);
+    } catch (error) {
+      console.error("Error adding sale and sold items:", error);
+    }
+  };
+  
+
   return { sales, setSales, loading, deleteSaleAPI };
 };
