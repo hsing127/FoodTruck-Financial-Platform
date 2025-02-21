@@ -34,6 +34,9 @@ const NavBar = () => {
   // Ref for UploadLogic
   const uploadLogicRef = useRef<UploadLogicHandle>(null);
 
+  // State for handling library modal
+  const [isLibraryModalOpen, setIsLibraryModalOpen] = useState(false);
+
   // Handle theme toggle between light and dark modes
   const handleThemeToggle = () => {
     const newTheme = isDarkMode ? "light" : "dark";
@@ -88,8 +91,8 @@ const NavBar = () => {
   // Handle action item clicks for upload dropdown
   const handleUploadItemClick = (item: string) => {
     switch (item) {
-      case "Upload Image":
-        uploadLogicRef.current?.triggerImageUpload();
+      case "Open Library":
+        setIsLibraryModalOpen(true);
         break;
       case "Upload Document":
         uploadLogicRef.current?.triggerDocumentUpload();
@@ -207,7 +210,7 @@ const NavBar = () => {
                 animate="visible"
                 exit="exit"
               >
-                {["Upload Image", "Upload Document", "Upload Spreadsheet"].map(
+                {["Open Library", "Upload Document", "Upload Spreadsheet"].map(
                   (item, index) => (
                     <motion.button
                       key={index}
