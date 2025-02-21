@@ -19,7 +19,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+            className="fixed inset-0 bg-black bg-opacity-5 flex justify-center items-center z-50"
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -34,7 +34,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
                 className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
                 aria-label="Close modal"
               >
-                ✖
+    
               </button>
               <h2 className="text-lg font-semibold mb-4">Library</h2>
               <p className="text-gray-600">
