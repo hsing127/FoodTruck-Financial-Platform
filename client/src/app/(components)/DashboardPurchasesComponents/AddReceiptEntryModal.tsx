@@ -15,6 +15,7 @@ interface StoreAndTimestamp {
     Store: null | string;
     Date: null | string;
     Time: null | string;
+    Total: null | string;
   }
 
 interface ReceiptData {
@@ -42,7 +43,7 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
     location: receiptData==null? "" :  (receiptData.storeAndTimeStamp.Store? receiptData.storeAndTimeStamp.Store : ""),
     date: receiptData==null? "" :  (receiptData.storeAndTimeStamp.Date? receiptData.storeAndTimeStamp.Date.replaceAll("/", "-") : ""),
     time: receiptData==null? "" :  (receiptData.storeAndTimeStamp.Time? receiptData.storeAndTimeStamp.Time : ""),
-    cost: "",
+    cost: receiptData==null? "" :  (receiptData.storeAndTimeStamp.Total? receiptData.storeAndTimeStamp.Total : ""),
     details: [],
   };
 
@@ -112,7 +113,8 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
       if (count == 1) {
         newReceipt.location= receiptData==null? "" :  (receiptData.storeAndTimeStamp.Store? receiptData.storeAndTimeStamp.Store : "")
         newReceipt.date= receiptData==null? "" :  (receiptData.storeAndTimeStamp.Date? receiptData.storeAndTimeStamp.Date.replaceAll("/", "-") : "")
-        newReceipt.time= receiptData==null? "" :  (receiptData.storeAndTimeStamp.Time? receiptData.storeAndTimeStamp.Time : "")
+        newReceipt.time = receiptData == null ? "" : (receiptData.storeAndTimeStamp.Time ? receiptData.storeAndTimeStamp.Time : "")
+        newReceipt.cost = receiptData == null ? "" : (receiptData.storeAndTimeStamp.Total ? receiptData.storeAndTimeStamp.Total : "")
       }
       console.log(newReceipt)
   };
@@ -252,7 +254,7 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
                   />
                   <EditableCell
                     isEditing={true}
-                    value={newReceipt.cost}
+                    value={count<=1? (receiptData==null? "" :  (receiptData.storeAndTimeStamp.Total? receiptData.storeAndTimeStamp.Total : "")) : newReceipt.cost}
                     name="cost"
                     onChange={handleReceiptInputChange}
                     type="text"

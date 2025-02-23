@@ -52,6 +52,7 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
       Store: null | string;
       Date: null | string;
       Time: null | string;
+      Total: null | string;
     }
   
   interface ReceiptData {
