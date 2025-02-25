@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, RefreshCcw, X } from "lucide-react";
 import EditableCell from "../Common/EditableCell";
@@ -96,26 +96,49 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
   };
 
   // Add a new empty receipt detail (ingredient) row
-  const handleAddIngredient = () => {
-    setNewReceipt((prevReceipt) => ({
-      ...prevReceipt,
-      details: [
-        ...prevReceipt.details,
-          {
-              ingredient: receiptData == null ? "" : receiptData.data.length > count ? String(receiptData.data[count][0]) : "",
-              quantity: receiptData==null? 0 : receiptData.data.length > count? Number(receiptData.data[count][2]):0,
-              units: receiptData==null? "" : receiptData.data.length > count? String(receiptData.data[count][4]):"", 
-              price: receiptData==null? "" : receiptData.data.length > count? String(receiptData.data[count][1]):""
-          },
-      ],
-    }));
-      setCount((prevCount) => prevCount + 1);
-      if (count == 1) {
-        newReceipt.location= receiptData==null? "" :  (receiptData.storeAndTimeStamp.Store? receiptData.storeAndTimeStamp.Store : "")
-        newReceipt.date= receiptData==null? "" :  (receiptData.storeAndTimeStamp.Date? receiptData.storeAndTimeStamp.Date.replaceAll("/", "-") : "")
-        newReceipt.time = receiptData == null ? "" : (receiptData.storeAndTimeStamp.Time ? receiptData.storeAndTimeStamp.Time : "")
-        newReceipt.cost = receiptData == null ? "" : (receiptData.storeAndTimeStamp.Total ? receiptData.storeAndTimeStamp.Total : "")
-      }
+    const handleAddIngredient = () => {
+        let tempCount = count;
+        let newDetails = [...newReceipt.details];
+        let flag = false;
+        if (tempCount == 0) {
+            newReceipt.location = receiptData == null ? "" : (receiptData.storeAndTimeStamp.Store ? receiptData.storeAndTimeStamp.Store : "")
+            newReceipt.date = receiptData == null ? "" : (receiptData.storeAndTimeStamp.Date ? receiptData.storeAndTimeStamp.Date.replaceAll("/", "-") : "")
+            newReceipt.time = receiptData == null ? "" : (receiptData.storeAndTimeStamp.Time ? receiptData.storeAndTimeStamp.Time : "")
+            newReceipt.cost = receiptData == null ? "" : (receiptData.storeAndTimeStamp.Total ? receiptData.storeAndTimeStamp.Total : "")
+        }
+        while (receiptData != null && tempCount < receiptData.data.length) {
+            flag = true;
+            newDetails.push({
+                ingredient: receiptData == null ? "" : receiptData.data.length > count ? String(receiptData.data[tempCount][0]) : "",
+                quantity: receiptData == null ? 0 : receiptData.data.length > count ? Number(receiptData.data[tempCount][2]) : 0,
+                units: receiptData == null ? "" : receiptData.data.length > count ? String(receiptData.data[tempCount][4]) : "",
+                price: receiptData == null ? "" : receiptData.data.length > count ? String(receiptData.data[tempCount][1]) : ""
+            });
+            tempCount++;
+        }
+        if (flag) {
+            setNewReceipt((prevReceipt) => ({
+                ...prevReceipt,
+                details: newDetails,
+            }));
+            
+            setCount(tempCount);
+        }
+        console.log(count);
+        if (!flag) {
+            setNewReceipt((prevReceipt) => ({
+                ...prevReceipt,
+                details: [
+                    ...prevReceipt.details,
+                    {
+                        ingredient: "",
+                        quantity: 0,
+                        units: "",
+                        price: ""
+                    },
+                ],
+            }));
+        }
       console.log(newReceipt)
   };
 
@@ -163,7 +186,13 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
   // Reset the receipt fields to their initial state
   const handleResetReceipt = () => {
     setNewReceipt(initialReceipt);
-  };
+    };
+    
+    useEffect(() => {
+        if (isOpen) {
+            handleAddIngredient();
+        }
+    }, [isOpen]);
 
   return (
     <AnimatePresence>
@@ -231,7 +260,7 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
                 >
                   <EditableCell
                     isEditing={true}
-                    value={count<=1? (receiptData==null? "2" :  (receiptData.storeAndTimeStamp.Store? receiptData.storeAndTimeStamp.Store : "3")): newReceipt.location}
+                    value={count<=1? (receiptData==null? "" :  (receiptData.storeAndTimeStamp.Store? receiptData.storeAndTimeStamp.Store : "")): newReceipt.location}
                     name="location"
                     onChange={handleReceiptInputChange}
                     placeholder="Location"
