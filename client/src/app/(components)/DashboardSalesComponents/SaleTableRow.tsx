@@ -167,6 +167,10 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
           onDelete={(e) => {
             onDelete(e);
           }}
+          onAdd={(e) => {
+            e.stopPropagation();
+            console.log("Plus button clicked for sale", sale.localSaleId);
+          }}
         />
       </motion.tr>
 
