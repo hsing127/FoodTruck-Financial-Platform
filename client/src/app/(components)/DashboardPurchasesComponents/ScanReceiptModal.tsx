@@ -1,20 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { backdropVariants, modalVariants } from "../Common/Animations";
 
 interface ScanReceiptModalProps {
   isOpen: boolean;
-    onClose: () => void;
-    onScanComplete: (scanData: any) => void;
+  onClose: () => void;
+  onScanComplete: (scanData: any) => void;
 }
 
-const ScanReceiptModal: React.FC<ScanReceiptModalProps> = ({ isOpen, onClose,onScanComplete }) => {
+const ScanReceiptModal: React.FC<ScanReceiptModalProps> = ({ isOpen, onClose, onScanComplete }) => {
   const [fileName, setFileName] = useState("");
+  const [fileOptions, setFileOptions] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchFileNames();
+    }
+  }, [isOpen]);
+
+  const fetchFileNames = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/viewLibrary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: "ajwitt2@asu.edu" }),
+      });
+
+      const data = await response.json();
+      if (data.statusCode === 200) {
+        const files = JSON.parse(data.body).files
+            .map((file: { fileName: string }) => file.fileName)
+            .filter((f: string) => f);
+        setFileOptions(files);
+        if (files.length > 0) {
+          setFileName(files[0]); 
+        }
+      } else {
+        setError("Failed to retrieve file names.");
+      }
+    } catch (error) {
+      console.error("Error fetching files:", error);
+      setError("Error retrieving files.");
+    }
+
+    setLoading(false);
+  };
 
   const handleSubmit = async () => {
     if (!fileName) {
-      alert("Please enter a file name.");
+      alert("Please select a file.");
       return;
     }
 
@@ -24,18 +66,18 @@ const ScanReceiptModal: React.FC<ScanReceiptModalProps> = ({ isOpen, onClose,onS
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ filename: fileName }),
+        body: JSON.stringify({ filename: "ajwitt2@asu.edu/" + fileName }),
       });
-      
-        const data = await response.json();
-        //console.log("API Response:", data);
-        if(data.statusCode==200)
-            onScanComplete(data);
-        else
-            onScanComplete(null)
+
+      const data = await response.json();
+      if (data.statusCode === 200) {
+        onScanComplete(data);
+      } else {
+        onScanComplete(null);
+      }
     } catch (error) {
-        console.error("Error submitting file:", error);
-        alert("There was an error processing the scanned receipt.");
+      console.error("Error submitting file:", error);
+      alert("There was an error processing the scanned receipt.");
     }
     onClose();
   };
@@ -65,18 +107,29 @@ const ScanReceiptModal: React.FC<ScanReceiptModalProps> = ({ isOpen, onClose,onS
                 <X size={24} />
               </button>
             </div>
-            
-            <input
-              type="text"
-              className="w-full border border-gray-300 rounded p-2 mb-4"
-              placeholder="Enter file name"
-              value={fileName}
-              onChange={(e) => setFileName(e.target.value)}
-            />
-            
+
+            {loading ? (
+              <p className="text-gray-500">Loading file options...</p>
+            ) : error ? (
+              <p className="text-red-500">{error}</p>
+            ) : (
+              <select
+                className="w-full border border-gray-300 rounded p-2 mb-4"
+                value={fileName}
+                onChange={(e) => setFileName(e.target.value)}
+              >
+                {fileOptions.map((file, index) => (
+                  <option key={index} value={file}>
+                    {file}
+                  </option>
+                ))}
+              </select>
+            )}
+
             <button
               onClick={handleSubmit}
               className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+              disabled={loading || fileOptions.length === 0}
             >
               Submit
             </button>
