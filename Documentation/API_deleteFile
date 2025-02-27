@@ -1,0 +1,60 @@
+import { S3Client, ListObjectsV2Command, DeleteObjectsCommand } from "@aws-sdk/client-s3";
+
+// const s3 = new S3Client({ region: "ca-central-1" });
+// const bucketName = "foodtruck-userfiles";
+
+// const handler = async (event) => {
+//     try {
+//         const username = event.username;
+
+//         if (!username) {
+//             return {
+//                 statusCode: 400,
+//                 body: JSON.stringify({ message: "Username is required." }),
+//             };
+//         }
+
+//         // Define the prefix where user files are stored
+//         const prefix = `${username}/`;
+
+//         // List all objects under the user's directory
+//         const listedObjects = await s3.send(
+//             new ListObjectsV2Command({
+//                 Bucket: bucketName,
+//                 Prefix: prefix,
+//             })
+//         );
+
+//         // Check if there are any files to delete
+//         if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
+//             return {
+//                 statusCode: 404,
+//                 body: JSON.stringify({ message: "No files found for the specified user." }),
+//             };
+//         }
+
+//         // Prepare an array of objects to delete
+//         const objectsToDelete = listedObjects.Contents.map((obj) => ({ Key: obj.Key }));
+
+//         // Delete the objects from S3
+//         await s3.send(
+//             new DeleteObjectsCommand({
+//                 Bucket: bucketName,
+//                 Delete: { Objects: objectsToDelete },
+//             })
+//         );
+
+//         return {
+//             statusCode: 200,
+//             body: JSON.stringify({ message: "Files deleted successfully.", deletedFiles: objectsToDelete }),
+//         };
+//     } catch (error) {
+//         console.error("Error deleting files:", error);
+//         return {
+//             statusCode: 500,
+//             body: JSON.stringify({ message: "Error deleting files", error: error.message }),
+//         };
+//     }
+// };
+
+// export { handler };
