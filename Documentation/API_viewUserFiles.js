@@ -35,7 +35,9 @@
 
 //         const now = new Date();
 //         const filesWithExpiration = await Promise.all(
-//             listedObjects.Contents.map(async (obj) => {
+//             listedObjects.Contents
+//                 .filter(obj => obj.Key && obj.Key !== prefix) // Ensure Key is not empty and not just the prefix itself
+//                 .map(async (obj) => {
 //                 try {
 //                     // Get metadata of the file
 //                     const metadata = await s3.send(

@@ -30,9 +30,9 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) {
-
       const fetchData = async () => {
         setLoading(true);
+        setError(null);
         try{
           const response = await fetch (apiUrl, {
             method: "POST",
@@ -47,14 +47,29 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
             throw new Error("Network response failed");
           }
           const data = await response.json();
-          setLibraryItems(data);
+          //console.log("Fetched data:", data);
+          const parsedBody = JSON.parse(data.body);
+          //console.log("Files field:", parsedBody.files);
+
+          const formattedItems = (parsedBody.files || []).map((item: any, index: any) => ({
+            id: index, // Generating an ID
+            fileName: item.fileName,
+            expirationDate: item.expirationTime,
+          }));
+
+          //console.log("Formatted Items: ", formattedItems);
+          setLibraryItems(formattedItems);
         }catch (error) {
+          console.error("Error: ", error);
           setError("Failed to load library items");
         } finally {
           setLoading(false);
         }
 
-      }
+      };
+
+
+      fetchData();
     }
   }, [isOpen]);
 
@@ -88,8 +103,14 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
               <div>
                 {libraryItems.length ? (
                   libraryItems.map((item) => (
-                    <div key={item.id} className="p-2 border-b border-gray-200">
-                      {item.fileName}
+                    <div
+                      key={item.id}
+                      className="p-2 border-b border-gray-200 flex justify-between"
+                    >
+                      <span>{item.fileName}</span>
+                      <span className="text-gray-500 text-sm">
+                        {item.expirationDate}
+                      </span>
                     </div>
                   ))
                 ) : (
