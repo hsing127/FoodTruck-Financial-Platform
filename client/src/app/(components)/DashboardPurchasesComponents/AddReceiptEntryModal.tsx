@@ -107,10 +107,15 @@ const AddReceiptEntryModal: React.FC<AddManualEntryModalProps> = ({
             newReceipt.cost = receiptData == null ? "" : (receiptData.storeAndTimeStamp.Total ? receiptData.storeAndTimeStamp.Total : "")
         }
         while (receiptData != null && tempCount < receiptData.data.length) {
-            flag = true;
+            flag = true;let w = 0;
+            if (receiptData.data[tempCount][3] == 0) {
+                w = parseInt(String(receiptData.data[tempCount][2]), 10);
+            } else {
+                w = parseFloat(String(receiptData.data[tempCount][3])) * parseInt(String(receiptData.data[tempCount][2]), 10);
+            }
             newDetails.push({
                 ingredient: receiptData == null ? "" : receiptData.data.length > count ? String(receiptData.data[tempCount][0]) : "",
-                quantity: receiptData == null ? 0 : receiptData.data.length > count ? Number(receiptData.data[tempCount][2]) : 0,
+                quantity: w,
                 units: receiptData == null ? "" : receiptData.data.length > count ? String(receiptData.data[tempCount][4]) : "",
                 price: receiptData == null ? "" : receiptData.data.length > count ? String(receiptData.data[tempCount][1]) : ""
             });
