@@ -6,12 +6,11 @@
 // const handler = async (event) => {
 //     try {
 //         const username = event.username;
-//         const fileName = event.fileName;
 
-//         if (!username || !fileName) {
+//         if (!username) {
 //             return {
 //                 statusCode: 400,
-//                 body: JSON.stringify({ message: "Username and file name are required." }),
+//                 body: JSON.stringify({ message: "Username is required." }),
 //             };
 //         }
 
@@ -20,7 +19,7 @@
 
 //         // List objects in the user's directory to find a match
 //         const listedObjects = await s3.send(
-//             new listObjectsV2Command({
+//             new ListObjectsV2Command({
 //                 Bucket: bucketName,
 //                 Prefix: prefix,
 //             })
@@ -30,13 +29,15 @@
 //         if (!listedObjects.Contents || listedObjects.length === 0) {
 //             return {
 //                 statusCode: 404,
-//                 body: JSON.stringify({ message: "No fieles found for the specified user"}),
+//                 body: JSON.stringify({ message: "No files found for the specified user"}),
 //             }
 //         }
 
 //         const now = new Date();
 //         const filesWithExpiration = await Promise.all(
-//             listedObjects.Contents.map(async (obj) => {
+//             listedObjects.Contents
+//                 .filter(obj => obj.Key && obj.Key !== prefix) // Ensure Key is not empty and not just the prefix itself
+//                 .map(async (obj) => {
 //                 try {
 //                     // Get metadata of the file
 //                     const metadata = await s3.send(
