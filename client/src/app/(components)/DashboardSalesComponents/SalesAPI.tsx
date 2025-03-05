@@ -86,7 +86,6 @@ export const useSalesData = (email: string) => {
 
   const addSaleAPI = async (newSale: Sale) => {
     try {  
-      // Step 1: Add the new sale to the "Sale" table
       const saleResponse = await fetch(
         "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
         {
@@ -106,43 +105,108 @@ export const useSalesData = (email: string) => {
         throw new Error("Failed to add sale");
       }
   
-      console.log("Sale added successfully");
-  
-      // Step 2: Add each sold item associated with the sale to the "Sold" table
-      for (const item of newSale.details) {
-        const soldResponse = await fetch(
-          "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              table: "sold",
-              Email: email,
-              NewStartDate: newSale.startDate,
-              NewEndDate: newSale.endDate,
-              NewMenuName: item.menuitemname,
-              NewCount: item.count,
-            }),
-          }
-        );
-  
-        if (!soldResponse.ok) {
-          throw new Error(`Failed to add sold item: ${item.menuitemname}`);
-        }
-      }
-  
-      console.log("All sold items added successfully");
-  
-      // Step 3: Update state to include the new sale
       setSales((prevSales) => [
         ...prevSales,
         { ...newSale, localSaleId: prevSales.length + 1001 },
       ]);
     } catch (error) {
-      console.error("Error adding sale and sold items:", error);
+      console.error("Error adding sale:", error);
+    }
+  };
+
+  const addSoldItemAPI = async (saleId: number, soldItem: any) => {
+    try {
+      const response = await fetch(
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/updateTables",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tableName: "Sold",
+            data: {
+              Email: email,
+              NewStartDate: soldItem.startDate,
+              NewEndDate: soldItem.endDate,
+              NewMenuName: soldItem.menuitemname,
+              NewCount: soldItem.count,
+            },
+          }),
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error("Failed to add sold item");
+      }
+  
+    } catch (error) {
+      console.error("Error adding sold item:", error);
+    }
+  };
+
+  const updateSaleAPI = async (updatedSale: Sale) => {
+    try {
+      const response = await fetch(
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/updateTables",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tableName: "sale",
+            data: {
+              Email: email,
+              StartDate: updatedSale.startDate,
+              EndDate: updatedSale.endDate,
+              NewRevenue: updatedSale.revenue,
+            },
+          }),
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error("Failed to update sale");
+      }
+  
+    } catch (error) {
+      console.error("Error updating sale:", error);
     }
   };
   
+  const updateSoldItemAPI = async (updatedSoldItem: any) => {
+    try {
+      const response = await fetch(
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/updateTables",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tableName: "Sold",
+            data: {
+              Email: email,
+              StartDate: updatedSoldItem.startDate,
+              EndDate: updatedSoldItem.endDate,
+              MenuName: updatedSoldItem.menuitemname,
+              NewCount: updatedSoldItem.count,
+            },
+          }),
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error("Failed to update sold item");
+      }
+    } catch (error) {
+      console.error("Error updating sold item:", error);
+    }
+  };
 
-  return { sales, setSales, loading, deleteSaleAPI };
+  return {
+    sales,
+    setSales,
+    loading,
+    deleteSaleAPI,
+    addSaleAPI,
+    addSoldItemAPI,
+    updateSaleAPI, 
+    updateSoldItemAPI, 
+  };
 };

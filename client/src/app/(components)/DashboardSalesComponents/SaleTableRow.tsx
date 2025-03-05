@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Sale } from "@/app/types/types";
 import { useEditable } from "@/app/hooks/useEditable";
+import { useSalesData } from "./SalesAPI";
 import ActionButtons from "../Common/ActionButtons";
 import EditableCell from "../Common/EditableCell";
 import SaleDetails from "./SaleDetails";
@@ -40,10 +41,12 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
     isEditing,
     editedItem,
     handleEditClick,
-    handleSaveClick,
     handleCancelClick,
     handleInputChange,
   } = useEditable<Sale>(sale);
+
+  // Get update functions from useSalesData
+  const { updateSaleAPI, updateSoldItemAPI } = useSalesData("ajwitt2@asu.edu"); // Replace with dynamic email if needed
 
   // State for confirmation modal
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -56,20 +59,33 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
     y: 0,
   });
 
+  const handleSaveClick = async () => {
+    try {
+      // Step 1: Update the sale itself
+      await updateSaleAPI(editedItem);
+
+      // Step 2: Update sold items associated with the sale
+      for (const soldItem of editedItem.details) {
+        await updateSoldItemAPI(soldItem);
+      }
+
+      console.log("Sale and Sold items updated successfully");
+    } catch (error) {
+      console.error("Error updating sale and sold items:", error);
+    }
+  };
+
   // Handler for delete button click
   const onDelete = async (e: React.MouseEvent) => {
     const isShiftPressed = e.shiftKey;
     if (isShiftPressed) {
-      // Bypass confirmation and directly delete
       await handleDeleteClick(sale.localSaleId);
     } else {
-      // Open confirmation modal
       setSaleToDelete(sale.localSaleId);
       setIsConfirmModalOpen(true);
     }
-    setIsContextMenuOpen(false); // Close context menu
+    setIsContextMenuOpen(false);
   };
-  
 
   // Confirm deletion
   const handleConfirmDelete = async () => {
@@ -79,7 +95,6 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
       setIsConfirmModalOpen(false);
     }
   };
-  
 
   // Cancel deletion
   const handleCancelDelete = () => {
@@ -98,7 +113,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
     <>
       <motion.tr
         onClick={() => toggleRow(sale.localSaleId)}
-        onContextMenu={handleContextMenu} // Add right-click handler
+        onContextMenu={handleContextMenu}
         variants={rowVariants}
         initial="hidden"
         animate="visible"
@@ -112,7 +127,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
         className="cursor-pointer border-b border-t border-customBlack relative"
       >
         {/* Sale ID and Expander Icon */}
-        <td className="py-5 text-sm font-medium text-black flex items-center ">
+        <td className="py-5 text-sm font-medium text-black flex items-center">
           <motion.div
             variants={chevronVariants}
             animate={isRowExpanded(sale.localSaleId) ? "rotated" : "default"}

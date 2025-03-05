@@ -484,16 +484,16 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
             >
               {currentSales.map((sale, index) => (
               <SaleTableRow
-                key={sale.localSaleId}
-                sale={sale}
-                isRowExpanded={isRowExpanded}
-                toggleRow={toggleRow}
-                handleDeleteClick={handleDeleteClick}
-                index={index}
-                setIsAnimating={setIsAnimating}
-                onItemDelete={handleItemDelete}
-                duplicateSale={duplicateSale}
-              />
+              key={sale.localSaleId}
+              sale={sale}
+              isRowExpanded={isRowExpanded}
+              toggleRow={toggleRow}
+              handleDeleteClick={handleDeleteClick}
+              index={index}
+              setIsAnimating={setIsAnimating}
+              onItemDelete={handleItemDelete}
+              duplicateSale={duplicateSale}
+            />
             ))}
             </motion.tbody>
           </table>
