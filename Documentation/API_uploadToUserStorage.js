@@ -6,10 +6,12 @@
 // const handler = async (event) => {
 //     console.log("Event received:", event); 
 //     try {
+//         const username = event.username
 //         const fileName = event.fileName;
 //         const fileData = event.fileData;
 //         const overwrite = event.overwrite;
 
+//         console.log("Username:", username);
 //         console.log("File Name:", fileName);
 //         console.log("File Data:", fileData);
 //         console.log("Overwrite:", overwrite);
@@ -21,15 +23,17 @@
 //             };
 //         }
 
+//         const s3Key = `${username}/${fileName}`;
+
 //         // Check if the file already exists
 //         try {
-//             await s3.send(new HeadObjectCommand({ Bucket: bucketName, Key: fileName }));
+//             await s3.send(new HeadObjectCommand({ Bucket: bucketName, Key: s3Key }));
 
 //             if (!overwrite) {
 //                 return {
 //                     statusCode: 409, // Conflict
 //                     body: JSON.stringify({
-//                         message: `A file with the name "${fileName}" already exists.`,
+//                         message: `A file with the name "${fileName}" already exists for user "${username}.`,
 //                         actionRequired: "Choose to overwrite or rename the file.",
 //                     }),
 //                 };
@@ -41,13 +45,10 @@
 //             }
 //         }
 
-//         // // Convert base64 fileData to a buffer
-//         // const buffer = Buffer.from(fileData, 'base64');
-
 //         // Upload the file
 //         const uploadParams = {
 //             Bucket: bucketName,
-//             Key: fileName,
+//             Key: s3Key,
 //             Body: fileData,
 //             ContentType: fileName.endsWith('.pdf') ? 'application/pdf' : 'text/plain',
 //         };

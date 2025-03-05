@@ -15,6 +15,7 @@ import {
   fadeInUpVariants,
   hoverVariants,
 } from "../Common/Animations";
+import LibraryModal from "./LibraryModal";
 
 const NavBar = () => {
   const dispatch = useAppDispatch();
@@ -33,6 +34,11 @@ const NavBar = () => {
 
   // Ref for UploadLogic
   const uploadLogicRef = useRef<UploadLogicHandle>(null);
+  const email = "ajwitt2@asu.edu";
+  // const email = "wenjie@asu.edu";
+
+  // State for handling library modal
+  const [isLibraryModalOpen, setIsLibraryModalOpen] = useState(false);
 
   // Handle theme toggle between light and dark modes
   const handleThemeToggle = () => {
@@ -88,8 +94,8 @@ const NavBar = () => {
   // Handle action item clicks for upload dropdown
   const handleUploadItemClick = (item: string) => {
     switch (item) {
-      case "Upload Image":
-        uploadLogicRef.current?.triggerImageUpload();
+      case "Open Library":
+        setIsLibraryModalOpen(true);
         break;
       case "Upload Document":
         uploadLogicRef.current?.triggerDocumentUpload();
@@ -123,15 +129,16 @@ const NavBar = () => {
       const fileData = await convertFileToBase64(file);
 
       const fileName = file.name;
-      // console.log(`File name: ${fileName}`);
-      // console.log(`Encryption: ${fileData}`);
+      console.log(`File name: ${fileName}`);
+      console.log(`Encryption: ${fileData}`);
 
       const data = JSON.stringify({
+        username: email,
         fileName,
         fileData: fileData.split(",")[1],
         overwrite: false,
       });
-      // console.log(body);
+      console.log(data);
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -144,7 +151,7 @@ const NavBar = () => {
       const responseData = await response.json();
 
       if (response.ok) {
-        //console.log("File uploaded successfully:", responseData);
+        console.log("File uploaded successfully:", responseData);
       } else {
         console.error("Upload failed:", responseData);
       }
@@ -207,7 +214,7 @@ const NavBar = () => {
                 animate="visible"
                 exit="exit"
               >
-                {["Upload Image", "Upload Document", "Upload Spreadsheet"].map(
+                {["Open Library", "Upload Document", "Upload Spreadsheet"].map(
                   (item, index) => (
                     <motion.button
                       key={index}
@@ -310,6 +317,11 @@ const NavBar = () => {
         isOpen={isNotificationsModalOpen}
         onClose={() => setIsNotificationsModalOpen(false)}
         notifications={notifications}
+      />
+
+      <LibraryModal
+        isOpen={isLibraryModalOpen}
+        onClose={() => setIsLibraryModalOpen(false)}
       />
     </div>
   );
