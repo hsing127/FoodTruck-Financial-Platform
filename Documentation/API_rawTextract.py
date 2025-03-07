@@ -145,13 +145,17 @@
 #                 count.append(1)
 #                 weight.append(w)
 #                 weightUnit.append(unit)
+#     total = 0
 #     for i in range(len(items)):
 #         items[i].append(count[i])
 #         items[i].append(weight[i])
 #         items[i].append(weightUnit[i])
+#         if "total" in items[i][0].lower():
+#             total = items[i][1]
+        
 
 #     items = list(filter(lambda item: not ("tax" in item[0].lower() or "total" in item[0].lower()), items))
-#     return items
+#     return (items,total)
 
 # def lambda_handler(event, context):
 
@@ -204,9 +208,10 @@
 #         logging.info(raw_text)
 #         metaData = parse_receipt_data(raw_text)
 #         if True:#"costco" in event["filename"]:
-#             itemList = parse_receipt_items(raw_text)
+#             itemList,total = parse_receipt_items(raw_text)
 #         else:
 #             itemList = raw_text
+#         metaData["Total"] = total
 #         logging.info(metaData)
 #         logging.info(itemList)
 
@@ -231,7 +236,7 @@
 
 # Testcase:
 # {
-#   "filename": "receiptcostco3.jpg"
+#   "filename": "receiptcostco2.jpg"
 # }
 
 # Response:
@@ -240,146 +245,168 @@
 #   "body": "\"Receipt/Document processed successfully!\"",
 #   "storeAndTimeStamp": {
 #     "Store": "COSTCO",
-#     "Date": null,
-#     "Time": null
+#     "Date": "2021/08/27",
+#     "Time": "17:36:19",
+#     "Total": "201.33"
 #   },
 #   "data": [
 #     [
 #       "580517 **KS TOWEL**",
-#       "23.49",
+#       "19.99",
 #       1,
 #       0,
 #       "na"
 #     ],
 #     [
-#       "893269 NYQUIL 2X354",
-#       "22.99",
-#       1,
-#       0,
-#       "na"
-#     ],
-#     [
-#       "40791 RIB STK BNLS",
-#       "54.22",
-#       1,
-#       0,
-#       "na"
-#     ],
-#     [
-#       "1707492 PRIME HYDRTN",
-#       "27.99",
-#       1,
-#       0,
-#       "na"
-#     ],
-#     [
-#       "1218130 PAYSAN BACON",
-#       "13.99",
-#       1,
-#       0,
-#       "na"
-#     ],
-#     [
-#       "190316 KS BACON",
-#       "9.99",
-#       1,
-#       0,
-#       "na"
-#     ],
-#     [
-#       "1780548 CRISPY ONION",
-#       "14.99",
-#       1,
-#       0,
-#       "na"
-#     ],
-#     [
-#       "1687657 SRIRACHA",
-#       "9.99",
-#       1,
-#       0,
-#       "na"
-#     ],
-#     [
-#       "1633066 AIOLI SAUCE",
-#       "7.79",
-#       1,
-#       0,
-#       "na"
-#     ],
-#     [
-#       "1392843 AVOCA SPRAY",
+#       "1446056 SCOTTIES",
 #       "16.99",
 #       1,
 #       0,
 #       "na"
 #     ],
 #     [
-#       "1279452 KS COLDSINUS",
-#       "10.99",
+#       "1281 1% MILK",
+#       "4.75",
 #       1,
 #       0,
 #       "na"
 #     ],
 #     [
-#       "1682107 CASA PIRI 1L",
-#       "11.49",
+#       "ENVIRO FEE C",
+#       "0.11",
+#       2,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "0.11",
+#       "0.25",
+#       2,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "DEPOSIT CL",
+#       "4.75",
 #       1,
 #       0,
 #       "na"
 #     ],
 #     [
-#       "5696621 VITAFUSION",
-#       "14.99",
+#       "DEPOSIT CL",
+#       "3.79",
 #       1,
 #       0,
 #       "na"
 #     ],
 #     [
-#       "1080377 TURMERIC",
-#       "38.99",
+#       "ENVIRO FEE C",
+#       "1.20",
+#       2,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "DEPOSIT CL",
+#       "4.00",
+#       2,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "500666 KS WATR500**",
+#       "3.79",
 #       1,
 #       0,
 #       "na"
 #     ],
 #     [
-#       "1446552 JALAPENO",
-#       "14.99",
+#       "4458722 PUREX BT 250",
+#       "22.99",
 #       1,
 #       0,
 #       "na"
 #     ],
 #     [
-#       "1742666 ORGANIKA",
-#       "54.99",
-#       1,
-#       0,
-#       "na"
-#     ],
-#     [
-#       "2333708 BAGEL SEASON",
+#       "245554 GREEK YOGURT",
 #       "9.49",
 #       1,
 #       0,
 #       "na"
 #     ],
 #     [
-#       "1638299 CASCADE PLAT",
-#       "24.99",
+#       "320116 TACO SEASNG",
+#       "4.99",
 #       1,
 #       0,
 #       "na"
 #     ],
 #     [
-#       "1677465 TRUFFLE PARM",
+#       "724000 FROSTED FLKS",
+#       "6.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1704012 WELCH'S 60CT",
+#       "9.49",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1202501 POST-ITS",
+#       "8.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1202501 POST-ITS",
+#       "8.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "324143 PURE PROTEIN",
+#       "15.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "324143 PURE PROTEIN",
+#       "15.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "379252 GF CKN FLNGS",
 #       "9.99",
 #       1,
 #       0,
 #       "na"
 #     ],
 #     [
-#       "11515 CAESAR SALAD",
-#       "13.25",
+#       "379252 GF CKN FLNGS",
+#       "9.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "1465453 OLDDUTCH725G",
+#       "5.99",
+#       1,
+#       0,
+#       "na"
+#     ],
+#     [
+#       "00 APPROVED - THANK YOU 001",
+#       "201.33",
 #       1,
 #       0,
 #       "na"
