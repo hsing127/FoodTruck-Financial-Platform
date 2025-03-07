@@ -18,21 +18,34 @@ const insertIngredients = async (ingredientsData) => {
     try {
         for (const ingredient of ingredientsData) {
             const { Email, Name, Amount, AmountUnits } = ingredient;
-            await client.query(
-                `INSERT INTO "Ingredient" ("Email", "Name", "Amount", "AmountUnits") VALUES ($1, $2, $3, $4)`,
-                [Email, Name, Amount, AmountUnits]
+            const result = await client.query(
+                `SELECT "Amount" FROM "Ingredient" WHERE "Email" = $1 AND "Name" = $2`,
+                [Email, Name]
             );
+            
+            if (result.rows.length > 0) {
+                const newAmount = Number(result.rows[0].Amount) + Number(Amount);
+                await client.query(
+                    `UPDATE "Ingredient" SET "Amount" = $1 WHERE "Email" = $2 AND "Name" = $3`,
+                    [newAmount, Email, Name]
+                );
+            } else {
+                await client.query(
+                    `INSERT INTO "Ingredient" ("Email", "Name", "Amount", "AmountUnits") VALUES ($1, $2, $3, $4)`,
+                    [Email, Name, Amount, AmountUnits]
+                );
+            }
         }
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ message: "Ingredients inserted successfully" }),
+            body: JSON.stringify({ message: "Ingredients inserted/updated successfully" }),
         };
     } catch (error) {
-        console.error("Error inserting ingredients:", error);
+        console.error("Error inserting/updating ingredients:", error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: "Failed to insert ingredients" }),
+            body: JSON.stringify({ error: "Failed to insert/update ingredients" }),
         };
     } finally {
         await client.end();
