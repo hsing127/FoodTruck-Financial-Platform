@@ -121,6 +121,7 @@ const OverviewScreen = () => {
             chartConfig={chartConfig}
             accessor="population"
             backgroundColor="transparent"
+            paddingLeft="15"
           />
         </View>
 
