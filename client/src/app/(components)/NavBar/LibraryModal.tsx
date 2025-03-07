@@ -71,20 +71,19 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (fileName: string) => {
     try {
-      // TODO: Implement API call to delete the file from the backend
-      // const response = await fetch(apiDeleteUrl, {
-      //   method: "POST",
-      //   body: JSON.stringify({ fileId: id, username: email }),
-      //   headers: { "Content-Type": "application/json" },
-      // });
+      const response = await fetch("https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/deleteFile", {
+        method: "POST",
+        body: JSON.stringify({ username: email , filename: fileName}),
+        headers: { "Content-Type": "application/json" },
+      });
 
-      // if (!response.ok) throw new Error("Failed to delete file");
+      if (!response.ok) throw new Error("Failed to delete file");
 
       // Remove item from state after successful deletion
       setLibraryItems((prevItems) =>
-        prevItems.filter((item) => item.id !== id)
+        prevItems.filter((item) => item.fileName !== fileName)
       );
     } catch (error) {
       console.error("Error deleting file:", error);
@@ -133,7 +132,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
                         </span>
                       </div>
                       <button
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => handleDelete(item.fileName)}
                         className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
                       >
                         Delete
