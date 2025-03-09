@@ -1,4 +1,4 @@
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+// import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 
 // const s3 = new S3Client({ region: "ca-central-1" });
 // const bucketName = "foodtruck-userfiles";

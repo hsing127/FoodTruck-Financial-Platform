@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FiDownload, FiTrash } from "react-icons/fi";
 
 interface LibraryModalProps {
   isOpen: boolean;
@@ -25,8 +26,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const apiUrl =
-    "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/viewLibrary";
+  const apiUrl = "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/viewLibrary";
   const email = "ajwitt2@asu.edu";
 
   useEffect(() => {
@@ -37,26 +37,18 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
         try {
           const response = await fetch(apiUrl, {
             method: "POST",
-            body: JSON.stringify({
-              username: email,
-            }),
-            headers: {
-              "Content-Type": "application/json",
-            },
+            body: JSON.stringify({ username: email }),
+            headers: { "Content-Type": "application/json" },
           });
-          if (!response.ok) {
-            throw new Error("Network response failed");
-          }
+          if (!response.ok) throw new Error("Network response failed");
           const data = await response.json();
           const parsedBody = JSON.parse(data.body);
 
-          const formattedItems = (parsedBody.files || []).map(
-            (item: any, index: any) => ({
-              id: index, // Generating an ID
-              fileName: item.fileName,
-              expirationDate: item.expirationTime,
-            })
-          );
+          const formattedItems = (parsedBody.files || []).map((item: any, index: any) => ({
+            id: index,
+            fileName: item.fileName,
+            expirationDate: item.expirationTime,
+          }));
 
           setLibraryItems(formattedItems);
         } catch (error) {
@@ -66,7 +58,6 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
           setLoading(false);
         }
       };
-
       fetchData();
     }
   }, [isOpen]);
@@ -75,19 +66,59 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
     try {
       const response = await fetch("https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/deleteFile", {
         method: "POST",
-        body: JSON.stringify({ username: email , filename: fileName}),
+        body: JSON.stringify({ username: email, filename: fileName }),
         headers: { "Content-Type": "application/json" },
       });
-
       if (!response.ok) throw new Error("Failed to delete file");
-
-      // Remove item from state after successful deletion
-      setLibraryItems((prevItems) =>
-        prevItems.filter((item) => item.fileName !== fileName)
-      );
+      setLibraryItems((prevItems) => prevItems.filter((item) => item.fileName !== fileName));
     } catch (error) {
       console.error("Error deleting file:", error);
       setError("Failed to delete file");
+    }
+  };
+
+  const handleRedownload = async (fileName: string) => {
+    try {
+      const response = await fetch(
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/retreiveFile",
+        {
+          method: "POST",
+          body: JSON.stringify({ username: email, filename: fileName }),
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+  
+      if (!response.ok) throw new Error("Failed to retrieve file");
+  
+      const data = await response.json();
+      const parsedBody = JSON.parse(data.body);
+  
+      if (!parsedBody.fileData) {
+        throw new Error("Invalid response: Missing file data");
+      }
+  
+      // Decode Base64 file data
+      const byteCharacters = atob(parsedBody.fileData);
+      const byteNumbers = new Uint8Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const blob = new Blob([byteNumbers], { type: "application/octet-stream" });
+  
+      // Create a temporary download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName; // Set correct file name
+      document.body.appendChild(a);
+      a.click();
+  
+      // Cleanup
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error redownloading file:", error);
+      setError("Failed to redownload file");
     }
   };
 
@@ -101,15 +132,8 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
           exit="exit"
           transition={{ duration: 0.3 }}
         >
-          <motion.div
-            className="bg-white rounded-lg p-6 w-[500px] shadow-lg relative"
-            variants={modalVariants}
-          >
-            <button
-              onClick={onClose}
-              className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
-              aria-label="Close modal"
-            >
+          <motion.div className="bg-white rounded-lg p-6 w-[500px] shadow-lg relative" variants={modalVariants}>
+            <button onClick={onClose} className="absolute top-3 right-3 text-gray-600 hover:text-gray-800" aria-label="Close modal">
               ✖
             </button>
             <h2 className="text-lg font-semibold mb-4">Library</h2>
@@ -121,22 +145,19 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
               <div>
                 {libraryItems.length ? (
                   libraryItems.map((item) => (
-                    <div
-                      key={item.id}
-                      className="p-2 border-b border-gray-200 flex justify-between items-center"
-                    >
+                    <div key={item.id} className="p-2 border-b border-gray-200 flex justify-between items-center">
                       <div>
                         <span>{item.fileName}</span>
-                        <span className="text-gray-500 text-sm block">
-                          {item.expirationDate}
-                        </span>
+                        <span className="text-gray-500 text-sm block">{item.expirationDate}</span>
                       </div>
-                      <button
-                        onClick={() => handleDelete(item.fileName)}
-                        className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
+                      <div className="flex gap-2">
+                        <button onClick={() => handleRedownload(item.fileName)} className="text-blue-500 hover:text-blue-700">
+                          <FiDownload size={18} />
+                        </button>
+                        <button onClick={() => handleDelete(item.fileName)} className="text-red-500 hover:text-red-700">
+                          <FiTrash size={18} />
+                        </button>
+                      </div>
                     </div>
                   ))
                 ) : (
