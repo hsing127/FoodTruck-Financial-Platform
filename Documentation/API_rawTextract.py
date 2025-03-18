@@ -25,6 +25,18 @@
 # textract = boto3.client("textract")
 # s3 = boto3.client("s3")
 
+# def merge_duplicates(lst):
+#     unique_items = {}
+
+#     for item in lst:
+#         key = tuple(item[:2] + item[3:])  # Exclude the count at index 2
+#         if key in unique_items:
+#             unique_items[key][2] += item[2]  # Increment count
+#         else:
+#             unique_items[key] = item[:]  # Copy original item
+
+#     return list(unique_items.values())
+
 # def process_error() -> dict:
 #     ex_type, ex_value, ex_traceback = sys.exc_info()
 #     traceback_string = traceback.format_exception(ex_type, ex_value, ex_traceback)
@@ -154,7 +166,7 @@
 #             total = items[i][1]
         
 
-#     items = list(filter(lambda item: not ("tax" in item[0].lower() or "total" in item[0].lower()), items))
+#     items = list(filter(lambda item: not ("tax" in item[0].lower() or "total" in item[0].lower() or "deposit cl" in item[0].lower() or "enviro fee c" in item[0].lower()), items))
 #     return (items,total)
 
 # def lambda_handler(event, context):
@@ -211,6 +223,8 @@
 #             itemList,total = parse_receipt_items(raw_text)
 #         else:
 #             itemList = raw_text
+#             total = 0
+#         itemList = merge_duplicates(itemList)
 #         metaData["Total"] = total
 #         logging.info(metaData)
 #         logging.info(itemList)
