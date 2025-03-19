@@ -10,6 +10,11 @@ import {
   Sun,
   Moon,
   Info,
+  LogOut,
+  Trash2,
+  HelpCircle,
+  MessageSquare,
+  DollarSign,
 } from "lucide-react-native";
 
 const SettingsScreen: React.FC = () => {
@@ -19,8 +24,10 @@ const SettingsScreen: React.FC = () => {
   const backgroundColor = isDarkMode ? "bg-gray-900" : "bg-gray-50";
   const textColor = isDarkMode ? "text-white" : "text-gray-900";
   const cardBackground = isDarkMode ? "bg-gray-800" : "bg-white";
-  const buttonBackground = isDarkMode ? "bg-teal-500" : "bg-gray-900";
-  const buttonText = isDarkMode ? "text-gray-900" : "text-white";
+
+  // Example state for toggles (in a real app, you'd fetch/update these from a server or global store)
+  const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
+  const [twoFactorEnabled, setTwoFactorEnabled] = React.useState(false);
 
   return (
     <View className={`${backgroundColor} flex-1 px-5`}>
@@ -56,7 +63,8 @@ const SettingsScreen: React.FC = () => {
               Push Notifications
             </Text>
             <Switch
-              value={true}
+              value={notificationsEnabled}
+              onValueChange={setNotificationsEnabled}
               trackColor={{ false: "#767577", true: "#81b0ff" }}
               thumbColor={isDarkMode ? "#f5dd4b" : "#f4f3f4"}
               className="ml-auto"
@@ -96,7 +104,7 @@ const SettingsScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Privacy Section */}
+        {/* Privacy & Security Section */}
         <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
           <Text className={`${textColor} text-lg font-semibold`}>
             Privacy & Security
@@ -107,12 +115,31 @@ const SettingsScreen: React.FC = () => {
               Enable Two-Factor Authentication
             </Text>
             <Switch
-              value={false}
+              value={twoFactorEnabled}
+              onValueChange={setTwoFactorEnabled}
               trackColor={{ false: "#767577", true: "#81b0ff" }}
               thumbColor={isDarkMode ? "#f5dd4b" : "#f4f3f4"}
               className="ml-auto"
             />
           </View>
+        </View>
+
+        {/* Subscription Section */}
+        <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
+          <Text className={`${textColor} text-lg font-semibold`}>
+            Subscription
+          </Text>
+          <View className="flex-row items-center mt-3">
+            <DollarSign color={isDarkMode ? "white" : "black"} size={24} />
+            <Text className={`${textColor} text-base ml-3`}>
+              Current Plan: Premium
+            </Text>
+          </View>
+          <TouchableOpacity className="flex-row items-center mt-4">
+            <Text className="text-teal-500 text-base ml-3">
+              Manage Subscription
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Appearance Section */}
@@ -145,6 +172,51 @@ const SettingsScreen: React.FC = () => {
             </Text>
           </View>
         </View>
+
+        {/* Help & Support Section */}
+        <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
+          <Text className={`${textColor} text-lg font-semibold`}>
+            Help & Support
+          </Text>
+          <View className="flex-row items-center mt-3">
+            <HelpCircle color={isDarkMode ? "white" : "black"} size={24} />
+            <Text className={`${textColor} text-base ml-3`}>FAQ</Text>
+          </View>
+          <TouchableOpacity className="flex-row items-center mt-4">
+            <MessageSquare color={isDarkMode ? "white" : "black"} size={20} />
+            <Text className="text-teal-500 text-base ml-3">
+              Contact Support
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Danger Zone */}
+        <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
+          <Text className={`${textColor} text-lg font-semibold`}>
+            Danger Zone
+          </Text>
+          <TouchableOpacity className="flex-row items-center mt-4">
+            <Trash2 color="red" size={24} />
+            <Text className="text-red-500 text-base ml-3">Delete Account</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Logout Button */}
+        <TouchableOpacity
+          className="flex-row items-center justify-center mb-8 mt-3"
+          onPress={() => {
+            // Logout logic
+          }}
+        >
+          <LogOut color={isDarkMode ? "white" : "black"} size={24} />
+          <Text
+            className={`${
+              isDarkMode ? "text-white" : "text-gray-900"
+            } text-base ml-3`}
+          >
+            Sign Out
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
