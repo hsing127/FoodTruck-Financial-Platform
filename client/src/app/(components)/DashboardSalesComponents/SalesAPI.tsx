@@ -117,7 +117,7 @@ export const useSalesData = (email: string) => {
   const addSoldItemAPI = async (saleId: number, soldItem: any) => {
     try {
       const response = await fetch(
-        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/updateTables",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -145,59 +145,76 @@ export const useSalesData = (email: string) => {
 
   const updateSaleAPI = async (updatedSale: Sale) => {
     try {
-      const response = await fetch(
-        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/updateTables",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+        const payload = {
             tableName: "sale",
             data: {
-              Email: email,
-              StartDate: updatedSale.startDate,
-              EndDate: updatedSale.endDate,
-              NewRevenue: updatedSale.revenue,
+                Email: email,
+                StartDate: updatedSale.startDate,
+                EndDate: updatedSale.endDate,
+                NewRevenue: updatedSale.revenue,
             },
-          }),
+        };
+
+        console.log("Sending updateSaleAPI request:", JSON.stringify(payload, null, 2));
+
+        const response = await fetch(
+            "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            }
+        );
+
+        const responseData = await response.json();
+        console.log("updateSaleAPI response:", responseData);
+
+        if (!response.ok) {
+            throw new Error("Failed to update sale");
         }
-      );
-  
-      if (!response.ok) {
-        throw new Error("Failed to update sale");
-      }
-  
+
     } catch (error) {
-      console.error("Error updating sale:", error);
+        console.error("Error updating sale:", error);
     }
-  };
+};
+
   
-  const updateSoldItemAPI = async (updatedSoldItem: any) => {
-    try {
-      const response = await fetch(
-        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/updateTables",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            tableName: "Sold",
-            data: {
+const updateSoldItemAPI = async (updatedSoldItem: any) => {
+  try {
+      const payload = {
+          tableName: "Sold",
+          data: {
               Email: email,
               StartDate: updatedSoldItem.startDate,
               EndDate: updatedSoldItem.endDate,
               MenuName: updatedSoldItem.menuitemname,
               NewCount: updatedSoldItem.count,
-            },
-          }),
-        }
+          },
+      };
+
+      console.log("Sending updateSoldItemAPI request:", JSON.stringify(payload, null, 2));
+
+      const response = await fetch(
+          "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable",
+          {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+          }
       );
-  
+
+      const responseData = await response.json();
+      console.log("updateSoldItemAPI response:", responseData);
+
       if (!response.ok) {
-        throw new Error("Failed to update sold item");
+          throw new Error("Failed to update sold item");
       }
-    } catch (error) {
+
+  } catch (error) {
       console.error("Error updating sold item:", error);
-    }
-  };
+  }
+};
+
 
   return {
     sales,
