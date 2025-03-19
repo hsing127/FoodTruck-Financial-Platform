@@ -25,6 +25,12 @@
 # textract = boto3.client("textract")
 # s3 = boto3.client("s3")
 
+# def unit_conversion(lst):
+#     for i in range(len(lst)):
+#         if "lb" in lst[i][4]:
+#             lst[i][3] = lst[i][3] / 2.205
+#     return lst
+
 # def merge_duplicates(lst):
 #     unique_items = {}
 
@@ -225,6 +231,7 @@
 #             itemList = raw_text
 #             total = 0
 #         itemList = merge_duplicates(itemList)
+#         itemList = unit_conversion(itemList)
 #         metaData["Total"] = total
 #         logging.info(metaData)
 #         logging.info(itemList)
