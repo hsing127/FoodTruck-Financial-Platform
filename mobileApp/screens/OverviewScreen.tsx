@@ -1,16 +1,24 @@
 import React from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+  Platform,
+} from "react-native";
 import {
   BarChart,
   LineChart,
   PieChart,
   ProgressChart,
 } from "react-native-chart-kit";
-import { Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import "../global.css";
 
 const screenWidth = Dimensions.get("window").width;
+const currentMonth = new Date().toLocaleString("default", { month: "long" });
+const currentYear = new Date().getFullYear();
 
 const data = {
   labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -77,15 +85,22 @@ const OverviewScreen = () => {
         <Text className="text-3xl font-bold text-blue-600">
           Overview Dashboard
         </Text>
-        <Text className="text-lg text-gray-600 mt-2">
-          A detailed summary of your activities and performance
+        <Text className="text-base text-gray-600 mt-1">
+          Performance Summary - {currentMonth} {currentYear}
+        </Text>
+        <Text className="text-sm text-gray-500 mt-1">
+          Review your KPIs and quick actions
         </Text>
       </View>
 
       <View className="px-4">
+        {/* Monthly Performance */}
         <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
-          <Text className="text-xl font-semibold text-gray-800 mb-4">
+          <Text className="text-xl font-semibold text-gray-800 mb-2">
             Monthly Performance
+          </Text>
+          <Text className="text-sm text-gray-500 mb-4">
+            Track your income across the last 6 months
           </Text>
           <BarChart
             data={data}
@@ -95,24 +110,35 @@ const OverviewScreen = () => {
             yAxisSuffix="k"
             chartConfig={chartConfig}
             verticalLabelRotation={30}
+            fromZero
           />
         </View>
 
+        {/* Activity Trend */}
         <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
-          <Text className="text-xl font-semibold text-gray-800 mb-4">
+          <Text className="text-xl font-semibold text-gray-800 mb-2">
             Activity Trend
+          </Text>
+          <Text className="text-sm text-gray-500 mb-4">
+            Observe fluctuations and growth patterns
           </Text>
           <LineChart
             data={data}
             width={screenWidth - 32}
             height={220}
             chartConfig={chartConfig}
+            bezier
+            fromZero
           />
         </View>
 
+        {/* Task Distribution */}
         <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
-          <Text className="text-xl font-semibold text-gray-800 mb-4">
+          <Text className="text-xl font-semibold text-gray-800 mb-2">
             Task Distribution
+          </Text>
+          <Text className="text-sm text-gray-500 mb-4">
+            Breakdown of current task statuses
           </Text>
           <PieChart
             data={pieData}
@@ -122,12 +148,17 @@ const OverviewScreen = () => {
             accessor="population"
             backgroundColor="transparent"
             paddingLeft="15"
+            hasLegend={true}
           />
         </View>
 
+        {/* Progress Overview */}
         <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
-          <Text className="text-xl font-semibold text-gray-800 mb-4">
+          <Text className="text-xl font-semibold text-gray-800 mb-2">
             Progress Overview
+          </Text>
+          <Text className="text-sm text-gray-500 mb-4">
+            Visualize your progress across metrics
           </Text>
           <ProgressChart
             data={progressData}
@@ -137,41 +168,52 @@ const OverviewScreen = () => {
           />
         </View>
 
-        <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
+        {/* Quick Actions */}
+        <View className="bg-white rounded-2xl shadow-md p-4 mb-10">
           <Text className="text-xl font-semibold text-gray-800 mb-4">
             Quick Actions
           </Text>
-          <TouchableOpacity className="bg-blue-500 rounded-2xl p-3 mb-3 flex-row items-center justify-center">
-            <Ionicons
-              name="document-text-outline"
-              size={20}
-              color="white"
-              className="mr-2"
-            />
-            <Text className="text-white text-lg font-medium">View Details</Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="bg-green-500 rounded-2xl p-3 mb-3 flex-row items-center justify-center">
-            <Ionicons
-              name="analytics-outline"
-              size={20}
-              color="white"
-              className="mr-2"
-            />
-            <Text className="text-white text-lg font-medium">
-              Generate Report
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="bg-red-500 rounded-2xl p-3 flex-row items-center justify-center">
-            <Ionicons
-              name="warning-outline"
-              size={20}
-              color="white"
-              className="mr-2"
-            />
-            <Text className="text-white text-lg font-medium">
-              Resolve Issues
-            </Text>
-          </TouchableOpacity>
+
+          {[
+            {
+              label: "View Details",
+              icon: "document-text-outline",
+              color: "bg-blue-500",
+            },
+            {
+              label: "Generate Report",
+              icon: "analytics-outline",
+              color: "bg-green-500",
+            },
+            {
+              label: "Resolve Issues",
+              icon: "warning-outline",
+              color: "bg-red-500",
+            },
+          ].map((action, index) => (
+            <TouchableOpacity
+              key={index}
+              className={`${action.color} rounded-2xl p-3 mb-3 flex-row items-center justify-center`}
+              activeOpacity={0.8}
+            >
+              <Ionicons
+                name={action.icon}
+                size={20}
+                color="white"
+                className="mr-2"
+              />
+              <Text className="text-white text-lg font-medium">
+                {action.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Footer */}
+        <View className="items-center pb-6">
+          <Text className="text-xs text-gray-400">
+            © {currentYear} Dashboard Inc. All rights reserved.
+          </Text>
         </View>
       </View>
     </ScrollView>
