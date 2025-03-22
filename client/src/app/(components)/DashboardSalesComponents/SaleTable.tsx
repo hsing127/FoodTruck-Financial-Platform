@@ -338,7 +338,8 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
     >
       <div className="mb-4">
         <h2 className="text-xl font-semibold text-black mb-2">Sale List</h2>
-        <div className="w-full">
+        <div className="w-full flex justify-between items-center">
+        <div className="flex-1">
           <SearchInput
             searchInput={searchInput}
             handleSearch={handleSearch}
@@ -354,12 +355,6 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
                 ],
               },
               {
-                icon: <Plus size={20} />,
-                type: ActionType.ADD_ENTRY,
-                title: "Add Entry",
-                items: ["Add Sale Entry"],
-              },
-              {
                 icon: <Filter size={20} />,
                 type: ActionType.FILTER,
                 title: "Filter",
@@ -373,6 +368,14 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
             ]}
             onActionItemClick={handleActionItemClick}
           />
+        </div>
+        <button
+          onClick={openModal}
+          className="p-2 rounded-lg bg-gray-50 hover:bg-gray-200 hover:text-blue-400 focus:outline-none ml-2"
+          title="Add Sale Entry"
+        >
+          <Plus size={20} strokeWidth={2} />
+        </button>
 
           {/* UploadLogic handles all file uploads */}
           <UploadLogic ref={uploadLogicRef} onFileUpload={handleFileUpload} />
