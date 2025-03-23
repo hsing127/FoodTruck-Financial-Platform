@@ -85,6 +85,20 @@
     
 #     #Store name
 #     store_name = raw_data[0] 
+
+#     as_string = " ".join(raw_data)
+#     if "Sysco" in as_string:
+#         store_name = "Sysco"
+#     elif "Costco" in as_string:
+#         store_name = "Costco"
+#     elif "Walmart" in as_string:
+#         store_name = "Walmart"
+#     elif "GFS" in as_string:
+#         store_name = "GFS"
+#     elif "T&T" in as_string:
+#         store_name = "T&T"
+#     elif "GFS" in as_string:
+#         store_name = "GFS"
     
 #     #Regex created by ChatGPT
 #     date_time_patterns = [
@@ -105,12 +119,37 @@
 #                 break
 #         if date and time:
 #             break
-    
+
+#     if not (date and time):
+#         date_pattern = re.compile(r'(\d{1,2})/(\d{1,2})/(\d{2})')
+#         time_pattern = re.compile(r'(\d{1,2}):(\d{2})\s?(AM|PM)', re.IGNORECASE)
+#         for item in raw_data:
+#             if not date:
+#                 date = date_pattern.search(item)
+#             if not time:
+#                 time = time_pattern.search(item)
+#             if date and time:
+#                 date = date
+#                 time = time
+#                 break
+#         if date:
+#             date = date.group()
+#         if time:
+#             time = time.group()
+
 #     return {
 #         "Store": store_name,
 #         "Date": date,
 #         "Time": time
 #     }
+
+# def invocie_total(raw_data):
+#     i = len(raw_data) - 1
+#     while i >= 0:
+#         if "total" in raw_data[i].lower():
+#             return raw_data[i+1]
+#         i-=1
+#     return 0
 
 # def parse_receipt_items(raw_data):
 #     items=[]
@@ -225,11 +264,11 @@
 #         raw_text = extract_text(response, extract_by="LINE")
 #         logging.info(raw_text)
 #         metaData = parse_receipt_data(raw_text)
-#         if True:#"costco" in event["filename"]:
+#         if "invoice" not in event["filename"].lower():#"costco" in event["filename"]:
 #             itemList,total = parse_receipt_items(raw_text)
 #         else:
-#             itemList = raw_text
-#             total = 0
+#             itemList = []
+#             total = invocie_total(raw_text)
 #         itemList = merge_duplicates(itemList)
 #         itemList = unit_conversion(itemList)
 #         metaData["Total"] = total
