@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { Sale } from "@/app/types/types";
 import { useEditable } from "@/app/hooks/useEditable";
 import { useSalesData } from "./SalesAPI";
+import { SaleItem } from "@/app/types/types";
 import ActionButtons from "../Common/ActionButtons";
 import EditableCell from "../Common/EditableCell";
 import SaleDetails from "./SaleDetails";
@@ -15,6 +16,7 @@ import {
   rowVariants,
   tableRowTransition,
 } from "../Common/Animations";
+import AddSoldItemModal from "./AddSoldItemModal";
 
 interface SaleTableRowProps {
   sale: Sale;
@@ -25,6 +27,7 @@ interface SaleTableRowProps {
   setIsAnimating: (isAnimating: boolean) => void;
   onItemDelete: (saleId: number, itemIndex: number) => void;
   duplicateSale: (sale: Sale) => void;
+  onAddSoldItem: (saleId: number, newItem: SaleItem) => void;
 }
 
 const SaleTableRow: React.FC<SaleTableRowProps> = ({
@@ -36,6 +39,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
   setIsAnimating,
   onItemDelete,
   duplicateSale,
+  onAddSoldItem,
 }) => {
   const {
     isEditing,
@@ -44,6 +48,8 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
     handleCancelClick,
     handleInputChange,
   } = useEditable<Sale>(sale);
+
+  const [showSoldItemModal, setShowSoldItemModal] = useState(false);
 
   // Get update functions from useSalesData
   const { updateSaleAPI, updateSoldItemAPI } = useSalesData("ajwitt2@asu.edu"); // Replace with dynamic email if needed
@@ -184,7 +190,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
           }}
           onAdd={(e) => {
             e.stopPropagation();
-            console.log("Plus button clicked for sale", sale.localSaleId);
+            setShowSoldItemModal(true); 
           }}
         />
       </motion.tr>
@@ -215,6 +221,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
           }}
         />
       )}
+      
 
       {/* Expanded Row with Details */}
       {isRowExpanded(sale.localSaleId) && (
@@ -243,6 +250,14 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
         proTip="Pro Tip: Hold down Shift while clicking Delete to bypass this confirmation."
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
+      />
+      {/* AddSoldItemModal */}
+      <AddSoldItemModal
+        isOpen={showSoldItemModal}
+        onClose={() => setShowSoldItemModal(false)}
+        onSave={(data) => {
+          console.log("Saved sold items:", data);
+        }}
       />
     </>
   );

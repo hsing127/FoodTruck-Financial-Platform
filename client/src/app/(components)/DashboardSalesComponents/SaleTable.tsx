@@ -496,6 +496,18 @@ const SaleTable: React.FC<SaleTableProps> = ({ sales, setSales }) => {
               setIsAnimating={setIsAnimating}
               onItemDelete={handleItemDelete}
               duplicateSale={duplicateSale}
+              onAddSoldItem={(saleId, newItem) => {
+                setSales((prevSales) =>
+                  prevSales.map((s) =>
+                    s.localSaleId === saleId
+                      ? {
+                          ...s,
+                          details: [...s.details, { ...newItem, itemrevenue: 0 }],
+                        }
+                      : s
+                  )
+                );
+              }}              
             />
             ))}
             </motion.tbody>
