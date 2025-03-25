@@ -1,65 +1,44 @@
-// import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+//import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 
 // const s3 = new S3Client({ region: "ca-central-1" });
 // const bucketName = "foodtruck-userfiles";
 
 // const handler = async (event) => {
 //     try {
-//         const username = event.username;
-//         const fileName = event.fileName;
+//         const { username, fileName } = event;
 
 //         if (!username || !fileName) {
-//             return {
-//                 statusCode: 400,
-//                 body: JSON.stringify({ message: "Username and file name are required." }),
-//             };
+//             return createResponse(400, "Username and file name are required.");
 //         }
 
-//         // Construct the S3 key (path) for the file
 //         const fileKey = `${username}/${fileName}`;
+//         const data = await s3.send(new GetObjectCommand({ Bucket: bucketName, Key: fileKey }));
 
-//         // Retrieve the file from S3
-//         const data = await s3.send(
-//             new GetObjectCommand({
-//                 Bucket: bucketName,
-//                 Key: fileKey,
-//             })
-//         );
+//         if (!data.Body) {
+//             return createResponse(404, "File not found or empty.");
+//         }
 
-//         // Read the file content from the response body (assuming it's text or JSON)
 //         const fileContent = await streamToString(data.Body);
-
-//         return {
-//             statusCode: 200,
-//             body: JSON.stringify({
-//                 message: "File retrieved successfully.",
-//                 fileName: fileName,
-//                 fileContent: fileContent,
-//             }),
-//         };
+//         return createResponse(200, "File retrieved successfully.", { fileName, fileContent });
 //     } catch (error) {
 //         console.error("Error retrieving file:", error);
-//         return {
-//             statusCode: 500,
-//             body: JSON.stringify({ message: "Error retrieving file", error: error.message }),
-//         };
+//         return createResponse(500, "Error retrieving file", { error: error.message });
 //     }
 // };
 
-// // Helper function to convert the stream to string
-// const streamToString = (stream) => {
-//     return new Promise((resolve, reject) => {
-//         const chunks = [];
-//         stream.on("data", (chunk) => {
-//             chunks.push(chunk);
-//         });
-//         stream.on("end", () => {
-//             resolve(Buffer.concat(chunks).toString("utf-8"));
-//         });
-//         stream.on("error", (err) => {
-//             reject(err);
-//         });
-//     });
+// const streamToString = async (stream) => {
+//     const chunks = [];
+//     for await (const chunk of stream) {
+//         chunks.push(chunk);
+//     }
+//     return Buffer.concat(chunks).toString("utf-8");
+// };
+
+// const createResponse = (statusCode, message, data = {}) => {
+//     return {
+//         statusCode,
+//         body: JSON.stringify({ message, ...data }),
+//     };
 // };
 
 // export { handler };
