@@ -25,6 +25,41 @@
 # textract = boto3.client("textract")
 # s3 = boto3.client("s3")
 
+# def extract_tables_from_textract(textract_response):
+#     tables = []
+#     blocks = {block['Id']: block for block in textract_response['Blocks']}
+    
+#     for block in textract_response['Blocks']:
+#         if block['BlockType'] == 'TABLE':
+#             table = []
+#             cell_map = {}
+            
+#             for relationship in block.get('Relationships', []):
+#                 if relationship['Type'] == 'CHILD':
+#                     for child_id in relationship['Ids']:
+#                         cell = blocks[child_id]
+#                         if cell['BlockType'] == 'CELL':
+#                             row_index = cell['RowIndex']
+#                             col_index = cell['ColumnIndex']
+#                             text = ''
+                            
+#                             for cell_rel in cell.get('Relationships', []):
+#                                 if cell_rel['Type'] == 'CHILD':
+#                                     text = ' '.join(
+#                                         [blocks[text_id]['Text'] for text_id in cell_rel['Ids'] if blocks[text_id]['BlockType'] == 'WORD']
+#                                     )
+                            
+#                             if row_index not in cell_map:
+#                                 cell_map[row_index] = {}
+#                             cell_map[row_index][col_index] = text
+            
+#             for row in sorted(cell_map.keys()):
+#                 table.append([cell_map[row].get(col, '') for col in sorted(cell_map[row].keys())])
+            
+#             tables.append(table)
+    
+#     return tables
+
 # def unit_conversion(lst):
 #     for i in range(len(lst)):
 #         if "lb" in lst[i][4]:
@@ -119,7 +154,6 @@
 #                 break
 #         if date and time:
 #             break
-
 #     if not (date and time):
 #         date_pattern = re.compile(r'(\d{1,2})/(\d{1,2})/(\d{2})')
 #         time_pattern = re.compile(r'(\d{1,2}):(\d{2})\s?(AM|PM)', re.IGNORECASE)
@@ -136,7 +170,6 @@
 #             date = date.group()
 #         if time:
 #             time = time.group()
-
 #     return {
 #         "Store": store_name,
 #         "Date": date,
@@ -258,6 +291,32 @@
 #                     }
 #                 }
 #             )
+#             if "invoice" in event["filename"].lower():
+#                 response2 = textract.start_document_analysis(
+#                     DocumentLocation={
+#                         "S3Object": {
+#                             "Bucket": os.getenv("BUCKETNAME"),
+#                             "Name": event["filename"],
+#                         }
+#                     },
+#                     FeatureTypes=['TABLES']
+#                 )
+#                 job_id = response2['JobId']
+
+#                 # Wait and fetch results
+#                 import time
+#                 while True:
+#                     result = textract.get_document_analysis(JobId=job_id)
+#                     status = result['JobStatus']
+#                     if status in ['SUCCEEDED', 'FAILED']:
+#                         break
+#                     time.sleep(2)  # Polling interval
+
+#                 if status == 'SUCCEEDED':
+#                     tables = extract_tables_from_textract(result)
+#                 else:
+#                     tables = []
+#                 logging.info(tables)
 #         logging.info(json.dumps(response))
 
 #         # change LINE by WORD if you want word level extraction
@@ -266,11 +325,11 @@
 #         metaData = parse_receipt_data(raw_text)
 #         if "invoice" not in event["filename"].lower():#"costco" in event["filename"]:
 #             itemList,total = parse_receipt_items(raw_text)
+#             itemList = merge_duplicates(itemList)
+#             itemList = unit_conversion(itemList)
 #         else:
-#             itemList = []
+#             itemList = tables
 #             total = invocie_total(raw_text)
-#         itemList = merge_duplicates(itemList)
-#         itemList = unit_conversion(itemList)
 #         metaData["Total"] = total
 #         logging.info(metaData)
 #         logging.info(itemList)
@@ -473,3 +532,45 @@
 #     ]
 #   ]
 # }
+
+# Tabular format for invoice yielded something like this:
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    | QTY |    |    | PACK  |    |    |    | DRIVER:  | COVERT  |    |    |    |    |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       | SIZE | ITEM DESCRIPTION                                              | ITEM CODE | UNIT PRICE | - AMOUNT | EXTENDED PRICE |    | INVOICE CODE | ADJUSTMENTS QTY |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       |      | **DAIRY PRODUCTS**                                           |           |            |          |                |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# | C  |  1  |    | CS | 10    |      | O#AVGRBRLIMP CHEESE CHEDDAR SHARP PRIN SYS2822312 10.640 T/WT= 10.640 | 2822312 | 4.316      |          | 45.92          |    |               |                 |
+# | C  | 1S  |    |    | ONLY'S | LB   | BBRLCLS CHEESE SWISS/AMER 120 SLI 14716                      | 5148453   | 17.79      |          | 17.79          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       |      | **GROUP TOTAL**** POULTRY**                                  |           |            |          | 63.71          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# | C  |  1  |    | CS |       | 410 LB | SYS CLS CHICKEN CVP WING 142JT JMB RND 52890               | 6344790   | 87.62      |          | 87.62          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       |      | **GROUP TOTAL CANNED & DRY**                                |           |            |          | 87.62          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# | D  |     | 1SCS |  | 123   | LB   | MORTON SALT KOSHER 1702                                     | 1995125   | 33.33      |          | 33.33          |    |               |                 |
+# | D  | 1S  |    |    | ONLY1 | 8 oz | IMP/MCC SEASONING CAJUN 974235                             | 5228424   | 19.21      |          | 19.21          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       |      | **GROUP TOTAL PRODUCE**                                    |           |            |          | 52.54          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# | C  |  1  |    | CS | 11    | LB   | IMPFRSH DILL BABY FRESH HERB                               | 2005148   | 15.25      |          | 15.25          |    |               |                 |
+# | C  |  1  | CS |    | 120   | LB   | PACKER CUCUMBER PICKLING FRESH                            | 2034023   | 37.28      |          | 37.28          |    |               |                 |
+# |    |  2  | CS |    | 15    | LB   | PACKER CARROT BABY PLD TRI COLOR                          | 7680291   | 32.50      |          | 65.00          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       |      | **GROUP TOTAL**                                           |           |            |          | 117.53         |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    | MISC |    |    | CHARGES |    | CHGS FOR FUEL SURCHARGE                                   |           |            |          | 3.50           |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       |      |                                                           |           |            |          |                |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    | ORDER |    |    | SUMMARY |    | : 1277265                                               |           |            |          |                |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# | CASES | SPLIT | TOT PCS | CUBE | GROSS WT. |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |   7   |   2   |    g    | 4.9  |    132    |
+# |   7   |   2   |    9    | 4.9  |    132    |
+# ---------------------------------------------------------------------------------------------------------------------------------
