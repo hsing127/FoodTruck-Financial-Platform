@@ -25,6 +25,13 @@
 # textract = boto3.client("textract")
 # s3 = boto3.client("s3")
 
+# def filter_out_numbers(value):# GPT Generated
+#     return re.sub(r'\d+', '', value) 
+
+# def convert_to_numeric(value):# GPT Generated
+#     match = re.search(r'\d+(\.\d+)?', value)  
+#     return float(match.group()) if match else 0
+
 # def extract_tables_from_textract(textract_response):
 #     tables = []
 #     blocks = {block['Id']: block for block in textract_response['Blocks']}
@@ -64,11 +71,12 @@
 #     for i in range(len(lst)):
 #         if "lb" in lst[i][4]:
 #             lst[i][3] = lst[i][3] / 2.205
+#         elif "oz" in lst[i][4]:
+#             lst[i][3] = lst[i][3] * 28.34952
 #     return lst
 
 # def merge_duplicates(lst):
 #     unique_items = {}
-
 #     for item in lst:
 #         key = tuple(item[:2] + item[3:])  # Exclude the count at index 2
 #         if key in unique_items:
@@ -247,6 +255,28 @@
 #     items = list(filter(lambda item: not ("tax" in item[0].lower() or "total" in item[0].lower() or "deposit cl" in item[0].lower() or "enviro fee c" in item[0].lower()), items))
 #     return (items,total)
 
+# def parse_invoice_items(data, store):
+#     if store.lower() == "sysco":
+#         ret = []
+#         data=data[0]
+#         for row in data:
+#             if row[6] == "" or row[7] == "" or row[10]=="" or len(row)<11 or row[6].lower() == "item description":
+#                 continue
+#             logging.info(row)
+#             count = convert_to_numeric(row[1].strip())
+#             pack_weight = convert_to_numeric(row[4].strip())
+#             if pack_weight == 0:
+#                 pack_weight = convert_to_numeric(row[5].strip())
+#             weight_units = filter_out_numbers(row[5].strip())
+#             item = row[6].strip()
+#             price = convert_to_numeric(row[10].strip())
+#             if weight_units == "":
+#                 weight_units = "na"
+#             ret.append([item, price, count, pack_weight, weight_units.lower().strip()])
+#         return ret
+#     else:
+#         return [["No format for this Store", 0, 0, 0, "na"]]
+
 # def lambda_handler(event, context):
 
 #     try:
@@ -328,7 +358,9 @@
 #             itemList = merge_duplicates(itemList)
 #             itemList = unit_conversion(itemList)
 #         else:
-#             itemList = tables
+#             itemList = parse_invoice_items(tables, metaData["Store"])
+#             itemList = merge_duplicates(itemList)
+#             itemList = unit_conversion(itemList)
 #             total = invocie_total(raw_text)
 #         metaData["Total"] = total
 #         logging.info(metaData)
