@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiDownload, FiTrash } from "react-icons/fi";
+import { FiDownload, FiTrash, FiEdit, FiCheck } from "react-icons/fi";
 import { MdArchive } from "react-icons/md"; // Import archive icon
 
 interface LibraryModalProps {
@@ -26,6 +26,8 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
   const [libraryItems, setLibraryItems] = useState<LibraryItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editingItem, setEditingItem] = useState<number | null>(null);
+  const [newFileName, setNewFileName] = useState<string>("");
 
   const apiUrl =
     "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/viewLibrary";
@@ -70,18 +72,13 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
 
   const handleDelete = async (fileName: string) => {
     try {
-      const response = await fetch(
-        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/deleteFile",
-        {
-          method: "POST",
-          body: JSON.stringify({ username: email, filename: fileName }),
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      const response = await fetch("https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/deleteFile", {
+        method: "POST",
+        body: JSON.stringify({ username: email, filename: fileName }),
+        headers: { "Content-Type": "application/json" },
+      });
       if (!response.ok) throw new Error("Failed to delete file");
-      setLibraryItems((prevItems) =>
-        prevItems.filter((item) => item.fileName !== fileName)
-      );
+      setLibraryItems((prevItems) => prevItems.filter((item) => item.fileName !== fileName));
     } catch (error) {
       console.error("Error deleting file:", error);
       setError("Failed to delete file");
@@ -98,16 +95,16 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
           headers: { "Content-Type": "application/json" },
         }
       );
-
+  
       if (!response.ok) throw new Error("Failed to retrieve file");
-
+  
       const data = await response.json();
       const parsedBody = JSON.parse(data.body);
-
+  
       if (!parsedBody.fileData) {
         throw new Error("Invalid response: Missing file data");
       }
-
+  
       // Decode Base64 file data
       const byteCharacters = atob(parsedBody.fileData);
       const byteNumbers = new Uint8Array(byteCharacters.length);
@@ -115,7 +112,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
         byteNumbers[i] = byteCharacters.charCodeAt(i);
       }
       const blob = new Blob([byteNumbers], { type: "application/octet-stream" });
-
+  
       // Create a temporary download link
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -123,7 +120,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
       a.download = fileName; // Set correct file name
       document.body.appendChild(a);
       a.click();
-
+  
       // Cleanup
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
@@ -133,10 +130,34 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleArchive = async (fileName: string) => {
-    // TODO: Implement archiving logic
-    console.log(`Archiving file: ${fileName}`);
+  const handleRename = async (oldFileName: string) => {
+    try {
+      const response = await fetch(
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/renameFile",
+        {
+          method: "POST",
+          body: JSON.stringify({ username: email, oldFilename: oldFileName, newFilename: newFileName }),
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (!response.ok) throw new Error("Failed to rename file");
+      
+      setLibraryItems((prevItems) =>
+        prevItems.map((item) =>
+          item.fileName === oldFileName ? { ...item, fileName: newFileName } : item
+        )
+      );
+      setEditingItem(null);
+      setNewFileName("");
+    } catch (error) {
+      console.error("Error renaming file:", error);
+      setError("Failed to rename file");
+    }
   };
+
+  const handleArchive = async(fileName: string) => {
+
+  }
 
   return (
     <AnimatePresence>
@@ -173,7 +194,16 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
                       className="p-2 border-b border-gray-200 flex justify-between items-center"
                     >
                       <div>
-                        <span>{item.fileName}</span>
+                        {editingItem === item.id ? (
+                          <input
+                            type="text"
+                            value={newFileName}
+                            onChange={(e) => setNewFileName(e.target.value)}
+                            className="border px-2 py-1"
+                          />
+                        ) : (
+                          <span>{item.fileName}</span>
+                        )}
                         <span className="text-gray-500 text-sm block">
                           {item.expirationDate}
                         </span>
@@ -197,6 +227,21 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
                         >
                           <MdArchive size={18} />
                         </button>
+                        {editingItem === item.id ? (
+                          <button
+                            onClick={() => handleRename(item.fileName)}
+                            className="text-green-500 hover:text-green-700"
+                          >
+                            <FiCheck size={18} />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => { setEditingItem(item.id); setNewFileName(item.fileName); }}
+                            className="text-gray-500 hover:text-gray-700"
+                          >
+                            <FiEdit size={18} />
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))
