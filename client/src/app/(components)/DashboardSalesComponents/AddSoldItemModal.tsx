@@ -62,7 +62,26 @@ const AddSoldItemModal: React.FC<AddSoldItemModalProps> = ({
       alert("Please add at least one item.");
       return;
     }
-    onSave(details); // Send JSON to parent
+    const email = localStorage.getItem("userEmail"); // or wherever you store it
+    const date = new Date().toISOString().split("T")[0]; // or however you're picking the date
+  
+    const formatted = details.map((item) => ({
+      table: "sold",
+      body: {
+        Email: email,
+        StartDate: date,
+        EndDate: date,
+        MenuName: item.menuitemname,
+        NewStartDate: date,
+        NewEndDate: date,
+        NewMenuName: item.menuitemname,
+        NewCount: item.count.toString()
+      }
+    }));
+  
+    // Pass formatted data to parent component
+    onSave(formatted);
+  
     handleReset();
     onClose();
   };

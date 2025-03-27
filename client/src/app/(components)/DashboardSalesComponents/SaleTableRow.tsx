@@ -52,7 +52,7 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
   const [showSoldItemModal, setShowSoldItemModal] = useState(false);
 
   // Get update functions from useSalesData
-  const { updateSaleAPI, updateSoldItemAPI } = useSalesData("ajwitt2@asu.edu"); // Replace with dynamic email if needed
+  const { updateSaleAPI, updateSoldItemAPI } = useSalesData("ajwitt2@asu.edu"); // Replace with dynamic email when coded
 
   // State for confirmation modal
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -255,9 +255,34 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
       <AddSoldItemModal
         isOpen={showSoldItemModal}
         onClose={() => setShowSoldItemModal(false)}
-        onSave={(data) => {
-          console.log("Saved sold items:", data);
-        }}
+        onSave={async (formattedRequests) => {
+          for (const payload of formattedRequests) {
+            try {
+              const response = await fetch("https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editTable", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+              });
+        
+              const data = await response.json();
+              if (!response.ok) {
+                console.error("API Error:", data.error);
+                alert("Error saving sold item: " + data.error);
+              } else {
+                console.log("Success:", data.message);
+                // Optional: You could also call onAddSoldItem or refresh state
+              }
+            } catch (err) {
+              console.error("Network error:", err);
+              alert("Network error submitting sold items.");
+            }
+          }
+        
+          setShowSoldItemModal(false);
+
+        }}        
       />
     </>
   );
