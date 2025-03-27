@@ -37,10 +37,14 @@ const SaleDetails: React.FC<SaleDetailsProps> = ({
   };
 
   // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setEditedItem((prev) => (prev ? { ...prev, [name]: value } : null));
-  };
+  const handleInputChange = (index: number, field: string, value: any) => {
+  console.log(`Updating field: ${field}, New value: ${value}, at index ${index}`);
+
+  setEditedItem((prev) => 
+    prev ? { ...prev, [field]: field === "count" || field === "itemrevenue" ? Number(value) : value } : null
+  );
+};
+
 
   return (
     <div>
