@@ -1,0 +1,63 @@
+// const updateSold = async (soldData) => {
+//     const client = new Client({
+//         host: process.env.DB_HOST,
+//         user: process.env.DB_USER,
+//         password: process.env.DB_PASSWORD,
+//         database: process.env.DB_DATABASE,
+//         ssl: {
+//             rejectUnauthorized: false,
+//         },
+//     });
+
+//     await client.connect();
+
+//     try {
+//         const { NewStartDate, NewEndDate, NewCount, NewMenuName, Email, StartDate, EndDate, MenuName } = soldData;
+
+//         // Ensure Count is a number
+//         const countValue = parseInt(NewCount, 10);
+//         if (isNaN(countValue)) {
+//             throw new Error("Invalid count value, must be a number");
+//         }
+
+//         // Check if the record exists
+//         const existingRecord = await client.query(
+//             `SELECT * FROM "Sold" WHERE "Email" = $1 AND "StartDate" = $2 AND "EndDate" = $3 AND "MenuName" = $4`,
+//             [Email, StartDate, EndDate, MenuName]
+//         );
+
+//         if (existingRecord.rows.length > 0) {
+//             // If record exists, update it
+//             await client.query(
+//                 `UPDATE "Sold" SET "StartDate" = $1, "EndDate" = $2, "Count" = $3, "MenuName" = $4 
+//                  WHERE "Email" = $5 AND "StartDate" = $6 AND "EndDate" = $7 AND "MenuName" = $8`,
+//                 [NewStartDate, NewEndDate, countValue, NewMenuName, Email, StartDate, EndDate, MenuName]
+//             );
+
+//             return {
+//                 statusCode: 200,
+//                 body: JSON.stringify({ message: "Sold record updated successfully" }),
+//             };
+//         } else {
+//             // If no record exists, insert a new one
+//             await client.query(
+//                 `INSERT INTO "Sold" ("Email", "StartDate", "EndDate", "Count", "MenuName") 
+//                  VALUES ($1, $2, $3, $4, $5)`,
+//                 [Email, NewStartDate, NewEndDate, countValue, NewMenuName]
+//             );
+
+//             return {
+//                 statusCode: 200,
+//                 body: JSON.stringify({ message: "Sold record added successfully" }),
+//             };
+//         }
+//     } catch (error) {
+//         console.error("Error updating/inserting sold record:", error);
+//         return {
+//             statusCode: 500,
+//             body: JSON.stringify({ error: "Failed to update/insert sold record" }),
+//         };
+//     } finally {
+//         await client.end();
+//     }
+// };
