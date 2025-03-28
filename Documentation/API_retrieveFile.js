@@ -34,7 +34,7 @@
 //             body: JSON.stringify({
 //                 message: "File retrieved successfully.",
 //                 fileName: fileName,
-//                 fileContent: fileContent,
+//                 fileData: fileContent,
 //             }),
 //         };
 //     } catch (error) {

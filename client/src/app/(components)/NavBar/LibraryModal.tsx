@@ -29,8 +29,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
   const [editingItem, setEditingItem] = useState<number | null>(null);
   const [newFileName, setNewFileName] = useState<string>("");
 
-  const apiUrl =
-    "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/viewLibrary";
+  const apiUrl = "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/viewLibrary";
   const email = "ajwitt2@asu.edu";
 
   useEffect(() => {
@@ -47,7 +46,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
           if (!response.ok) throw new Error("Network response failed");
           const data = await response.json();
           const parsedBody = JSON.parse(data.body);
-
+          
           const formattedItems = (parsedBody.files || []).map(
             (item: any, index: any) => ({
               id: index,
@@ -91,16 +90,15 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
         "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/retreiveFile",
         {
           method: "POST",
-          body: JSON.stringify({ username: email, filename: fileName }),
+          body: JSON.stringify({ username: email, fileName: fileName }),
           headers: { "Content-Type": "application/json" },
         }
       );
   
-      if (!response.ok) throw new Error("Failed to retrieve file");
+      if (!response.ok) throw new Error(`Failed to retrieve file `);
   
       const data = await response.json();
       const parsedBody = JSON.parse(data.body);
-  
       if (!parsedBody.fileData) {
         throw new Error("Invalid response: Missing file data");
       }
@@ -205,7 +203,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
                           <span>{item.fileName}</span>
                         )}
                         <span className="text-gray-500 text-sm block">
-                          {item.expirationDate}
+                          {`Expires: ${item.expirationDate}`}
                         </span>
                       </div>
                       <div className="flex gap-2">
