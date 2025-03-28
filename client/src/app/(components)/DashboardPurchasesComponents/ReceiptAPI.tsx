@@ -162,8 +162,9 @@ export const useReceiptsData = (email: string) => {
     newIngredient: Ingredient
   ) => {
       try {
-          console.log("Location: ",newReceipt.location);
-          console.log("DateTime: ",newReceipt.date + " " + newReceipt.time);
+          //console.log("Location: ",newReceipt.location);
+          //console.log("DateTime: ",newReceipt.date + " " + newReceipt.time);
+          //console.log("Ingredient: ", newIngredient.ingredient)
           // Prepare the API payload
           const responseING = await fetch(
             "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/addData",
@@ -205,7 +206,7 @@ export const useReceiptsData = (email: string) => {
 
       // Handle the API response
       if (!response.ok) {
-        throw new Error("Failed to add ingredient to API");
+        console.log("Failed to add ingredient to API", newIngredient.ingredient);
       }
 
       const data = await response.json();

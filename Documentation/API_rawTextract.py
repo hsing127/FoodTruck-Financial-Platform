@@ -25,6 +25,67 @@
 # textract = boto3.client("textract")
 # s3 = boto3.client("s3")
 
+# def filter_out_numbers(value):# GPT Generated
+#     return re.sub(r'\d+', '', value) 
+
+# def convert_to_numeric(value):# GPT Generated
+#     match = re.search(r'\d+(\.\d+)?', value)  
+#     return float(match.group()) if match else 0
+
+# def extract_tables_from_textract(textract_response):
+#     tables = []
+#     blocks = {block['Id']: block for block in textract_response['Blocks']}
+    
+#     for block in textract_response['Blocks']:
+#         if block['BlockType'] == 'TABLE':
+#             table = []
+#             cell_map = {}
+            
+#             for relationship in block.get('Relationships', []):
+#                 if relationship['Type'] == 'CHILD':
+#                     for child_id in relationship['Ids']:
+#                         cell = blocks[child_id]
+#                         if cell['BlockType'] == 'CELL':
+#                             row_index = cell['RowIndex']
+#                             col_index = cell['ColumnIndex']
+#                             text = ''
+                            
+#                             for cell_rel in cell.get('Relationships', []):
+#                                 if cell_rel['Type'] == 'CHILD':
+#                                     text = ' '.join(
+#                                         [blocks[text_id]['Text'] for text_id in cell_rel['Ids'] if blocks[text_id]['BlockType'] == 'WORD']
+#                                     )
+                            
+#                             if row_index not in cell_map:
+#                                 cell_map[row_index] = {}
+#                             cell_map[row_index][col_index] = text
+            
+#             for row in sorted(cell_map.keys()):
+#                 table.append([cell_map[row].get(col, '') for col in sorted(cell_map[row].keys())])
+            
+#             tables.append(table)
+    
+#     return tables
+
+# def unit_conversion(lst):
+#     for i in range(len(lst)):
+#         if "lb" in lst[i][4]:
+#             lst[i][3] = lst[i][3] / 2.205
+#         elif "oz" in lst[i][4]:
+#             lst[i][3] = lst[i][3] * 28.34952
+#     return lst
+
+# def merge_duplicates(lst):
+#     unique_items = {}
+#     for item in lst:
+#         key = tuple(item[:2] + item[3:])  # Exclude the count at index 2
+#         if key in unique_items:
+#             unique_items[key][2] += item[2]  # Increment count
+#         else:
+#             unique_items[key] = item[:]  # Copy original item
+
+#     return list(unique_items.values())
+
 # def process_error() -> dict:
 #     ex_type, ex_value, ex_traceback = sys.exc_info()
 #     traceback_string = traceback.format_exception(ex_type, ex_value, ex_traceback)
@@ -67,6 +128,20 @@
     
 #     #Store name
 #     store_name = raw_data[0] 
+
+#     as_string = " ".join(raw_data)
+#     if "Sysco" in as_string:
+#         store_name = "Sysco"
+#     elif "Costco" in as_string:
+#         store_name = "Costco"
+#     elif "Walmart" in as_string:
+#         store_name = "Walmart"
+#     elif "GFS" in as_string:
+#         store_name = "GFS"
+#     elif "T&T" in as_string:
+#         store_name = "T&T"
+#     elif "GFS" in as_string:
+#         store_name = "GFS"
     
 #     #Regex created by ChatGPT
 #     date_time_patterns = [
@@ -87,12 +162,35 @@
 #                 break
 #         if date and time:
 #             break
-    
+#     if not (date and time):
+#         date_pattern = re.compile(r'(\d{1,2})/(\d{1,2})/(\d{2})')
+#         time_pattern = re.compile(r'(\d{1,2}):(\d{2})\s?(AM|PM)', re.IGNORECASE)
+#         for item in raw_data:
+#             if not date:
+#                 date = date_pattern.search(item)
+#             if not time:
+#                 time = time_pattern.search(item)
+#             if date and time:
+#                 date = date
+#                 time = time
+#                 break
+#         if date:
+#             date = date.group()
+#         if time:
+#             time = time.group()
 #     return {
 #         "Store": store_name,
 #         "Date": date,
 #         "Time": time
 #     }
+
+# def invocie_total(raw_data):
+#     i = len(raw_data) - 1
+#     while i >= 0:
+#         if "total" in raw_data[i].lower():
+#             return raw_data[i+1]
+#         i-=1
+#     return 0
 
 # def parse_receipt_items(raw_data):
 #     items=[]
@@ -154,8 +252,30 @@
 #             total = items[i][1]
         
 
-#     items = list(filter(lambda item: not ("tax" in item[0].lower() or "total" in item[0].lower()), items))
+#     items = list(filter(lambda item: not ("tax" in item[0].lower() or "total" in item[0].lower() or "deposit cl" in item[0].lower() or "enviro fee c" in item[0].lower()), items))
 #     return (items,total)
+
+# def parse_invoice_items(data, store):
+#     if store.lower() == "sysco":
+#         ret = []
+#         data=data[0]
+#         for row in data:
+#             if row[6] == "" or row[7] == "" or row[10]=="" or len(row)<11 or row[6].lower() == "item description":
+#                 continue
+#             logging.info(row)
+#             count = convert_to_numeric(row[1].strip())
+#             pack_weight = convert_to_numeric(row[4].strip())
+#             if pack_weight == 0:
+#                 pack_weight = convert_to_numeric(row[5].strip())
+#             weight_units = filter_out_numbers(row[5].strip())
+#             item = row[6].strip()
+#             price = convert_to_numeric(row[10].strip())
+#             if weight_units == "":
+#                 weight_units = "na"
+#             ret.append([item, price, count, pack_weight, weight_units.lower().strip()])
+#         return ret
+#     else:
+#         return [["No format for this Store", 0, 0, 0, "na"]]
 
 # def lambda_handler(event, context):
 
@@ -201,16 +321,47 @@
 #                     }
 #                 }
 #             )
+#             if "invoice" in event["filename"].lower():
+#                 response2 = textract.start_document_analysis(
+#                     DocumentLocation={
+#                         "S3Object": {
+#                             "Bucket": os.getenv("BUCKETNAME"),
+#                             "Name": event["filename"],
+#                         }
+#                     },
+#                     FeatureTypes=['TABLES']
+#                 )
+#                 job_id = response2['JobId']
+
+#                 # Wait and fetch results
+#                 import time
+#                 while True:
+#                     result = textract.get_document_analysis(JobId=job_id)
+#                     status = result['JobStatus']
+#                     if status in ['SUCCEEDED', 'FAILED']:
+#                         break
+#                     time.sleep(2)  # Polling interval
+
+#                 if status == 'SUCCEEDED':
+#                     tables = extract_tables_from_textract(result)
+#                 else:
+#                     tables = []
+#                 logging.info(tables)
 #         logging.info(json.dumps(response))
 
 #         # change LINE by WORD if you want word level extraction
 #         raw_text = extract_text(response, extract_by="LINE")
 #         logging.info(raw_text)
 #         metaData = parse_receipt_data(raw_text)
-#         if True:#"costco" in event["filename"]:
+#         if "invoice" not in event["filename"].lower():#"costco" in event["filename"]:
 #             itemList,total = parse_receipt_items(raw_text)
+#             itemList = merge_duplicates(itemList)
+#             itemList = unit_conversion(itemList)
 #         else:
-#             itemList = raw_text
+#             itemList = parse_invoice_items(tables, metaData["Store"])
+#             itemList = merge_duplicates(itemList)
+#             itemList = unit_conversion(itemList)
+#             total = invocie_total(raw_text)
 #         metaData["Total"] = total
 #         logging.info(metaData)
 #         logging.info(itemList)
@@ -413,3 +564,45 @@
 #     ]
 #   ]
 # }
+
+# Tabular format for invoice yielded something like this:
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    | QTY |    |    | PACK  |    |    |    | DRIVER:  | COVERT  |    |    |    |    |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       | SIZE | ITEM DESCRIPTION                                              | ITEM CODE | UNIT PRICE | - AMOUNT | EXTENDED PRICE |    | INVOICE CODE | ADJUSTMENTS QTY |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       |      | **DAIRY PRODUCTS**                                           |           |            |          |                |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# | C  |  1  |    | CS | 10    |      | O#AVGRBRLIMP CHEESE CHEDDAR SHARP PRIN SYS2822312 10.640 T/WT= 10.640 | 2822312 | 4.316      |          | 45.92          |    |               |                 |
+# | C  | 1S  |    |    | ONLY'S | LB   | BBRLCLS CHEESE SWISS/AMER 120 SLI 14716                      | 5148453   | 17.79      |          | 17.79          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       |      | **GROUP TOTAL**** POULTRY**                                  |           |            |          | 63.71          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# | C  |  1  |    | CS |       | 410 LB | SYS CLS CHICKEN CVP WING 142JT JMB RND 52890               | 6344790   | 87.62      |          | 87.62          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       |      | **GROUP TOTAL CANNED & DRY**                                |           |            |          | 87.62          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# | D  |     | 1SCS |  | 123   | LB   | MORTON SALT KOSHER 1702                                     | 1995125   | 33.33      |          | 33.33          |    |               |                 |
+# | D  | 1S  |    |    | ONLY1 | 8 oz | IMP/MCC SEASONING CAJUN 974235                             | 5228424   | 19.21      |          | 19.21          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       |      | **GROUP TOTAL PRODUCE**                                    |           |            |          | 52.54          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# | C  |  1  |    | CS | 11    | LB   | IMPFRSH DILL BABY FRESH HERB                               | 2005148   | 15.25      |          | 15.25          |    |               |                 |
+# | C  |  1  | CS |    | 120   | LB   | PACKER CUCUMBER PICKLING FRESH                            | 2034023   | 37.28      |          | 37.28          |    |               |                 |
+# |    |  2  | CS |    | 15    | LB   | PACKER CARROT BABY PLD TRI COLOR                          | 7680291   | 32.50      |          | 65.00          |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       |      | **GROUP TOTAL**                                           |           |            |          | 117.53         |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    | MISC |    |    | CHARGES |    | CHGS FOR FUEL SURCHARGE                                   |           |            |          | 3.50           |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    |     |    |    |       |      |                                                           |           |            |          |                |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |    | ORDER |    |    | SUMMARY |    | : 1277265                                               |           |            |          |                |    |               |                 |
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+# | CASES | SPLIT | TOT PCS | CUBE | GROSS WT. |
+# ---------------------------------------------------------------------------------------------------------------------------------
+# |   7   |   2   |    g    | 4.9  |    132    |
+# |   7   |   2   |    9    | 4.9  |    132    |
+# ---------------------------------------------------------------------------------------------------------------------------------

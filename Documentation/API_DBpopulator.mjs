@@ -105,10 +105,24 @@ const insertIncludes = async (includesData) => {
     try {
         for (const includes of includesData) {
             const { Email, DateTime, Location, IngredientName, Price, Amount, AmountUnits } = includes;
-            await client.query(
-                `INSERT INTO "Includes" ("Email", "DateTime", "Location", "IngredientName", "Price", "Amount", "AmountUnits") VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-                [Email, DateTime, Location, IngredientName, Price, Amount, AmountUnits]
+            const result = await client.query(
+                `SELECT "Amount", "Price" FROM "Includes" WHERE "Email" = $1 AND "DateTime" = $2 AND "Location" = $3 AND "IngredientName" = $4`,
+                [Email, DateTime, Location, IngredientName]
             );
+            console.log(result);
+            if (result.rows.length > 0) {
+                const newAmount = Number(result.rows[0].Amount) + Number(Amount);
+                const newPrice = Number(result.rows[0].Price) + Number(Price);
+                await client.query(
+                    'UPDATE "Includes" SET "Price" = $1, "Amount" = $2 WHERE "Email" = $3 AND "DateTime" = $4 AND "Location" = $5 AND "IngredientName" = $6',
+                    [newPrice, newAmount, Email, DateTime, Location, IngredientName]
+                );
+            } else {
+                await client.query(
+                    `INSERT INTO "Includes" ("Email", "DateTime", "Location", "IngredientName", "Price", "Amount", "AmountUnits") VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                    [Email, DateTime, Location, IngredientName, Price, Amount, AmountUnits]
+                );
+            }
         }
 
         return {
@@ -291,7 +305,7 @@ const insertOtherCost = async (otherCostData) => {
         for (const otherCost of otherCostData) {
             const { Email, CostDate, CostName, CostCategory, Cost } = otherCost;
             await client.query(
-                `INSERT INTO "OtherCost" ("Email", "CostDate", "CostName", "CostCategory", "Cost") VALUES ($1, $2, $3, $4, $5)`,
+                `INSERT INTO OtherCost (Email, CostDate, CostName, CostCategory, Cost) VALUES ($1, $2, $3, $4, $5)`,
                 [Email, CostDate, CostName, CostCategory, Cost]
             );
         }
@@ -361,6 +375,7 @@ const handler = async (event) => {
 
 // Use export for ES module syntax
 export { handler };
+
 
 
 Test Cases using the data:
