@@ -58,7 +58,7 @@
 
 //                     return {
 //                         fileName: obj.Key.replace(prefix, ""), // Remove the prefix to get just the filename
-//                         expirationTime: minutesLeft > 0 ? `${minutesLeft} minutes` : "Expired",
+//                         expirationTime: minutesLeft > 0 ? minutesLeft : "Expired",
 //                     };
 //                 } catch (error) {
 //                     console.error(`Error retrieving metadata for file: ${obj.Key}`, error);

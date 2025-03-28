@@ -17,9 +17,14 @@
 //         if (!data.Body) {
 //             return createResponse(404, "File not found or empty.");
 //         }
-
-//         const fileContent = await streamToString(data.Body);
-//         return createResponse(200, "File retrieved successfully.", { fileName, fileContent });
+//         return {
+//             statusCode: 200,
+//             body: JSON.stringify({
+//                 message: "File retrieved successfully.",
+//                 fileName: fileName,
+//                 fileData: fileContent,
+//             }),
+//         };
 //     } catch (error) {
 //         console.error("Error retrieving file:", error);
 //         return createResponse(500, "Error retrieving file", { error: error.message });

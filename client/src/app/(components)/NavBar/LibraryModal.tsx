@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiDownload, FiTrash } from "react-icons/fi";
+import { FiDownload, FiTrash, FiEdit, FiCheck } from "react-icons/fi";
+import { MdArchive } from "react-icons/md"; // Import archive icon
 
 interface LibraryModalProps {
   isOpen: boolean;
@@ -25,6 +26,8 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
   const [libraryItems, setLibraryItems] = useState<LibraryItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [editingItem, setEditingItem] = useState<number | null>(null);
+  const [newFileName, setNewFileName] = useState<string>("");
 
   const apiUrl = "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/viewLibrary";
   const email = "ajwitt2@asu.edu";
@@ -43,12 +46,16 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
           if (!response.ok) throw new Error("Network response failed");
           const data = await response.json();
           const parsedBody = JSON.parse(data.body);
-
-          const formattedItems = (parsedBody.files || []).map((item: any, index: any) => ({
-            id: index,
-            fileName: item.fileName,
-            expirationDate: item.expirationTime,
-          }));
+          
+          const formattedItems = (parsedBody.files || []).map(
+            (item: any, index: any) => ({
+              id: index,
+              fileName: item.fileName,
+              expirationDate: new Date(
+                Date.now() + item.expirationTime * 60000
+              ).toLocaleDateString(),
+            })
+          );
 
           setLibraryItems(formattedItems);
         } catch (error) {
@@ -83,16 +90,15 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
         "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/retreiveFile",
         {
           method: "POST",
-          body: JSON.stringify({ username: email, filename: fileName }),
+          body: JSON.stringify({ username: email, fileName: fileName }),
           headers: { "Content-Type": "application/json" },
         }
       );
   
-      if (!response.ok) throw new Error("Failed to retrieve file");
+      if (!response.ok) throw new Error(`Failed to retrieve file `);
   
       const data = await response.json();
       const parsedBody = JSON.parse(data.body);
-  
       if (!parsedBody.fileData) {
         throw new Error("Invalid response: Missing file data");
       }
@@ -122,6 +128,35 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleRename = async (oldFileName: string) => {
+    try {
+      const response = await fetch(
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/renameFile",
+        {
+          method: "POST",
+          body: JSON.stringify({ username: email, oldFilename: oldFileName, newFilename: newFileName }),
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (!response.ok) throw new Error("Failed to rename file");
+      
+      setLibraryItems((prevItems) =>
+        prevItems.map((item) =>
+          item.fileName === oldFileName ? { ...item, fileName: newFileName } : item
+        )
+      );
+      setEditingItem(null);
+      setNewFileName("");
+    } catch (error) {
+      console.error("Error renaming file:", error);
+      setError("Failed to rename file");
+    }
+  };
+
+  const handleArchive = async(fileName: string) => {
+
+  }
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -132,8 +167,15 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
           exit="exit"
           transition={{ duration: 0.3 }}
         >
-          <motion.div className="bg-white rounded-lg p-6 w-[500px] shadow-lg relative" variants={modalVariants}>
-            <button onClick={onClose} className="absolute top-3 right-3 text-gray-600 hover:text-gray-800" aria-label="Close modal">
+          <motion.div
+            className="bg-white rounded-lg p-6 w-[500px] shadow-lg relative"
+            variants={modalVariants}
+          >
+            <button
+              onClick={onClose}
+              className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+              aria-label="Close modal"
+            >
               ✖
             </button>
             <h2 className="text-lg font-semibold mb-4">Library</h2>
@@ -145,18 +187,59 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
               <div>
                 {libraryItems.length ? (
                   libraryItems.map((item) => (
-                    <div key={item.id} className="p-2 border-b border-gray-200 flex justify-between items-center">
+                    <div
+                      key={item.id}
+                      className="p-2 border-b border-gray-200 flex justify-between items-center"
+                    >
                       <div>
-                        <span>{item.fileName}</span>
-                        <span className="text-gray-500 text-sm block">{item.expirationDate}</span>
+                        {editingItem === item.id ? (
+                          <input
+                            type="text"
+                            value={newFileName}
+                            onChange={(e) => setNewFileName(e.target.value)}
+                            className="border px-2 py-1"
+                          />
+                        ) : (
+                          <span>{item.fileName}</span>
+                        )}
+                        <span className="text-gray-500 text-sm block">
+                          {`Expires: ${item.expirationDate}`}
+                        </span>
                       </div>
                       <div className="flex gap-2">
-                        <button onClick={() => handleRedownload(item.fileName)} className="text-blue-500 hover:text-blue-700">
+                        <button
+                          onClick={() => handleRedownload(item.fileName)}
+                          className="text-blue-500 hover:text-blue-700"
+                        >
                           <FiDownload size={18} />
                         </button>
-                        <button onClick={() => handleDelete(item.fileName)} className="text-red-500 hover:text-red-700">
+                        <button
+                          onClick={() => handleDelete(item.fileName)}
+                          className="text-red-500 hover:text-red-700"
+                        >
                           <FiTrash size={18} />
                         </button>
+                        <button
+                          onClick={() => handleArchive(item.fileName)}
+                          className="text-yellow-500 hover:text-yellow-700"
+                        >
+                          <MdArchive size={18} />
+                        </button>
+                        {editingItem === item.id ? (
+                          <button
+                            onClick={() => handleRename(item.fileName)}
+                            className="text-green-500 hover:text-green-700"
+                          >
+                            <FiCheck size={18} />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => { setEditingItem(item.id); setNewFileName(item.fileName); }}
+                            className="text-gray-500 hover:text-gray-700"
+                          >
+                            <FiEdit size={18} />
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))
