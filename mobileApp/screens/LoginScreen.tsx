@@ -15,7 +15,7 @@ const LoginScreen: React.FC = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm();
 
   const onSubmit = (data: { email: string; password: string }) => {
@@ -25,15 +25,22 @@ const LoginScreen: React.FC = () => {
   return (
     <View className={`flex-1 ${backgroundColor} justify-center p-5`}>
       <View className={`${cardBackground} p-5 rounded-2xl shadow-lg`}>
-        <Text className={`${textColor} text-2xl font-bold text-center mb-6`}>
+        <Text className={`${textColor} text-2xl font-bold text-center mb-6`} accessibilityRole="header">
           Login
         </Text>
 
+        {/* Email Input */}
         <Text className={`${textColor} text-base mb-2`}>Email</Text>
         <Controller
           control={control}
           name="email"
-          rules={{ required: "Email is required" }}
+          rules={{ 
+            required: "Email is required",
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Invalid email format"
+            }
+          }}
           render={({ field: { onChange, value } }) => (
             <TextInput
               className={`${inputBackground} p-3 rounded-lg ${textColor} text-base mb-3`}
@@ -43,15 +50,17 @@ const LoginScreen: React.FC = () => {
               value={value}
               keyboardType="email-address"
               autoCapitalize="none"
+              accessibilityLabel="Email input"
             />
           )}
         />
         {errors.email?.message && (
-          <Text className="text-red-500 text-sm mb-3">
+          <Text className="text-red-500 text-sm mb-3" accessibilityLiveRegion="polite">
             {String(errors.email.message)}
           </Text>
         )}
 
+        {/* Password Input */}
         <Text className={`${textColor} text-base mb-2`}>Password</Text>
         <Controller
           control={control}
@@ -65,20 +74,24 @@ const LoginScreen: React.FC = () => {
               secureTextEntry
               onChangeText={onChange}
               value={value}
+              accessibilityLabel="Password input"
             />
           )}
         />
         {errors.password?.message && (
-          <Text className="text-red-500 text-sm mb-3">
+          <Text className="text-red-500 text-sm mb-3" accessibilityLiveRegion="polite">
             {String(errors.password.message)}
           </Text>
         )}
 
+        {/* Login Button */}
         <TouchableOpacity
           onPress={handleSubmit(onSubmit)}
-          className="bg-teal-500 py-4 rounded-lg mt-5 items-center"
+          className={`bg-teal-500 py-4 rounded-lg mt-5 items-center ${isSubmitting ? 'opacity-50' : ''}`}
+          disabled={isSubmitting}
+          accessibilityRole="button"
         >
-          <Text className="text-white text-lg font-bold">Login</Text>
+          <Text className="text-white text-lg font-bold">{isSubmitting ? "Logging in..." : "Login"}</Text>
         </TouchableOpacity>
       </View>
     </View>
