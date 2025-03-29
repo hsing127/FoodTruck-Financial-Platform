@@ -272,7 +272,6 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
                 alert("Error saving sold item: " + data.error);
               } else {
                 console.log("Success:", data.message);
-                // Optional: You could also call onAddSoldItem or refresh state
               }
             } catch (err) {
               console.error("Network error:", err);
@@ -282,6 +281,11 @@ const SaleTableRow: React.FC<SaleTableRowProps> = ({
         
           setShowSoldItemModal(false);
 
+        }}
+        sale={{
+          startDate: sale.startDate,
+          endDate: sale.endDate,
+          email: "ajwitt2@asu.edu" //needs dynamic replacement
         }}        
       />
     </>

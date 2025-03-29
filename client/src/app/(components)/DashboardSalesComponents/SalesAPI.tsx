@@ -124,7 +124,7 @@ export const useSalesData = (email: string) => {
           body: JSON.stringify({
             tableName: "Sold",
             data: {
-              Email: email,
+              Email: soldItem.email,
               NewStartDate: soldItem.startDate,
               NewEndDate: soldItem.endDate,
               NewMenuName: soldItem.menuitemname,

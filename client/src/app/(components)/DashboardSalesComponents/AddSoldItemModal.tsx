@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, RefreshCcw, X } from "lucide-react";
 import EditableCell from "../Common/EditableCell";
+import { useSalesData } from "./SalesAPI";
 import {
   backdropVariants,
   modalVariants,
@@ -11,13 +12,19 @@ import {
 interface AddSoldItemModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: any) => void; 
+  onSave: (data: any) => void;
+  sale: {
+    startDate: string;
+    endDate: string;
+    email: string;
+  };
 }
 
 const AddSoldItemModal: React.FC<AddSoldItemModalProps> = ({
   isOpen,
   onClose,
   onSave,
+  sale
 }) => {
   const initialSoldItem = {
     menuitemname: "",
@@ -57,34 +64,39 @@ const AddSoldItemModal: React.FC<AddSoldItemModalProps> = ({
     setDetails([initialSoldItem]);
   };
 
-  const handleSave = () => {
+  const { addSoldItemAPI } = useSalesData("ajwitt2@asu.edu");
+
+  const handleSave = async () => {
     if (details.length === 0) {
-      alert("Please add at least one item.");
+      console.warn("No items to save.");
       return;
     }
-    const email = localStorage.getItem("userEmail"); // or wherever you store it
-    const date = new Date().toISOString().split("T")[0]; // or however you're picking the date
   
-    const formatted = details.map((item) => ({
-      table: "sold",
-      body: {
+    const { email, startDate, endDate } = sale;
+  
+    // Ensure date is in YYYY-MM-DD format
+    const formattedStartDate = new Date(startDate).toISOString().split("T")[0];
+    const formattedEndDate = new Date(endDate).toISOString().split("T")[0];
+  
+    const payloads = details.map((item) => ({
+      tableName: "Sold",
+      data: {
         Email: email,
-        StartDate: date,
-        EndDate: date,
-        MenuName: item.menuitemname,
-        NewStartDate: date,
-        NewEndDate: date,
+        NewStartDate: formattedStartDate,
+        NewEndDate: formattedEndDate,
         NewMenuName: item.menuitemname,
-        NewCount: item.count.toString()
+        NewCount: item.count.toString(),
       }
     }));
   
-    // Pass formatted data to parent component
-    onSave(formatted);
+    // Debugging
+    // console.log("Formatted Sold Items JSON for AWS API:", JSON.stringify(payloads, null, 2));
+
   
     handleReset();
     onClose();
-  };
+
+  };  
 
   return (
     <AnimatePresence>
