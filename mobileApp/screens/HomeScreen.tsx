@@ -17,22 +17,25 @@ const HomeScreen: React.FC = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
-  const backgroundColor = isDarkMode ? "#1A2C3A" : "#F5F5F5";
-  const cardBackground = isDarkMode ? "#0E1B27" : "#FFFFFF";
-  const textColor = isDarkMode ? "#FFFFFF" : "#1A2C3A";
-  const subTextColor = isDarkMode ? "#8899A6" : "#555";
+  const backgroundColor = isDarkMode ? "#111827" : "#F9FAFB";
+  const cardBackground = isDarkMode ? "#1F2937" : "#FFFFFF";
+  const textColor = isDarkMode ? "#E5E7EB" : "#111827";
+  const subTextColor = isDarkMode ? "#9CA3AF" : "#6B7280";
 
   const chartConfig = {
     backgroundColor,
     backgroundGradientFrom: backgroundColor,
     backgroundGradientTo: backgroundColor,
     decimalPlaces: 0,
-    color: (opacity = 1) => `rgba(0, 209, 209, ${opacity})`,
+    color: (opacity = 1) =>
+      isDarkMode
+        ? `rgba(34, 211, 238, ${opacity})`
+        : `rgba(0, 123, 255, ${opacity})`,
     labelColor: () => textColor,
     propsForDots: {
       r: "4",
       strokeWidth: "2",
-      stroke: "#00D1D1",
+      stroke: isDarkMode ? "#22D3EE" : "#007BFF",
     },
   };
 
@@ -71,7 +74,10 @@ const HomeScreen: React.FC = () => {
           style={{ backgroundColor: cardBackground }}
           className="mx-5 rounded-xl p-5 mb-4"
         >
-          <Text className="text-3xl font-bold" style={{ color: "#00D1D1" }}>
+          <Text
+            className="text-3xl font-bold"
+            style={{ color: isDarkMode ? "#22D3EE" : "#007BFF" }}
+          >
             $267,345
           </Text>
           <View className="flex-row mt-3">
@@ -105,26 +111,28 @@ const HomeScreen: React.FC = () => {
           style={{ backgroundColor: cardBackground }}
           className="items-center mx-5 rounded-xl py-5 mb-4"
         >
-          <LineChart
-            data={{
-              labels: ["Apr", "Jun", "Aug", "Oct", "Dec", "Feb"],
-              datasets: [
-                {
-                  data: [2700, 3450, 2100, 3850, 3150, 3306],
-                  color: () => "#00D1D1",
-                },
-              ],
-            }}
-            width={width * 0.9}
-            height={200}
-            chartConfig={chartConfig}
-            bezier
-            style={{ borderRadius: 10 }}
-          />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <LineChart
+              data={{
+                labels: ["Apr", "Jun", "Aug", "Oct", "Dec", "Feb"],
+                datasets: [
+                  {
+                    data: [2700, 3450, 2100, 3850, 3150, 3306],
+                    color: () => (isDarkMode ? "#22D3EE" : "#007BFF"),
+                  },
+                ],
+              }}
+              width={width * 1.5}
+              height={200}
+              chartConfig={chartConfig}
+              bezier
+              style={{ borderRadius: 10 }}
+            />
+          </ScrollView>
           <View className="mt-2">
             <Text
               className="text-base font-semibold"
-              style={{ color: "#00D1D1" }}
+              style={{ color: isDarkMode ? "#22D3EE" : "#007BFF" }}
             >
               Last Transaction: $3,306
             </Text>
