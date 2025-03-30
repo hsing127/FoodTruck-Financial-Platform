@@ -1,7 +1,13 @@
 import React from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { PieChart, LineChart } from "react-native-chart-kit";
-import { Dimensions } from "react-native";
+import { useTheme } from "../ThemeContext";
 import "../global.css";
 
 const screenWidth = Dimensions.get("window").width;
@@ -33,27 +39,47 @@ const performanceData = {
   ],
 };
 
-const chartConfig = {
-  backgroundGradientFrom: "#ffffff",
-  backgroundGradientTo: "#ffffff",
-  decimalPlaces: 0,
-  color: (opacity = 1) => `rgba(33, 37, 41, ${opacity})`,
-  labelColor: (opacity = 1) => `rgba(108, 117, 125, ${opacity})`,
-  style: { borderRadius: 16 },
-  propsForDots: { r: "6", strokeWidth: "2", stroke: "#007bff" },
-};
-
 const PortfolioScreen = () => {
+  const { theme } = useTheme();
+  const isDarkMode = theme === "dark";
+
+  const backgroundColor = isDarkMode ? "bg-gray-900" : "bg-gray-100";
+  const textColor = isDarkMode ? "text-white" : "text-gray-900";
+  const cardBackground = isDarkMode ? "bg-gray-800" : "bg-white";
+
+  const chartConfig = {
+    backgroundGradientFrom: isDarkMode ? "#1F2937" : "#ffffff",
+    backgroundGradientTo: isDarkMode ? "#1F2937" : "#ffffff",
+    decimalPlaces: 0,
+    color: (opacity = 1) =>
+      isDarkMode
+        ? `rgba(255, 255, 255, ${opacity})`
+        : `rgba(33, 37, 41, ${opacity})`,
+    labelColor: (opacity = 1) =>
+      isDarkMode
+        ? `rgba(255, 255, 255, ${opacity})`
+        : `rgba(108, 117, 125, ${opacity})`,
+    style: { borderRadius: 16 },
+    propsForDots: { r: "6", strokeWidth: "2", stroke: "#007bff" },
+  };
+
   return (
-    <ScrollView className="flex-1 bg-gray-100">
+    <ScrollView className={`flex-1 ${backgroundColor}`}>
       <View className="items-center py-6">
-        <Text className="text-3xl font-bold text-blue-600">Portfolio Overview</Text>
-        <Text className="text-lg text-gray-600 mt-2">Your asset allocation & performance</Text>
+        <Text className="text-3xl font-bold text-blue-600">
+          Portfolio Overview
+        </Text>
+        <Text className={`${textColor} text-lg mt-2`}>
+          Your asset allocation & performance
+        </Text>
       </View>
 
       <View className="px-4">
-        <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
-          <Text className="text-xl font-semibold text-gray-800 mb-4">Asset Distribution</Text>
+        {/* Asset Distribution */}
+        <View className={`${cardBackground} rounded-2xl shadow-md p-4 mb-6`}>
+          <Text className={`${textColor} text-xl font-semibold mb-4`}>
+            Asset Distribution
+          </Text>
           <PieChart
             data={pieChartData}
             width={screenWidth - 32}
@@ -66,33 +92,48 @@ const PortfolioScreen = () => {
           />
         </View>
 
-        <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
-          <Text className="text-xl font-semibold text-gray-800 mb-4">Performance Trend</Text>
-          <LineChart
-            data={performanceData}
-            width={screenWidth - 32}
-            height={220}
-            chartConfig={chartConfig}
-          />
+        {/* Performance Trend */}
+        <View className={`${cardBackground} rounded-2xl shadow-md p-4 mb-6`}>
+          <Text className={`${textColor} text-xl font-semibold mb-4`}>
+            Performance Trend
+          </Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <LineChart
+              data={performanceData}
+              width={screenWidth * 1.5}
+              height={220}
+              chartConfig={chartConfig}
+            />
+          </ScrollView>
         </View>
 
-        <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
-          <Text className="text-xl font-semibold text-gray-800 mb-4">Recent Transactions</Text>
+        {/* Recent Transactions */}
+        <View className={`${cardBackground} rounded-2xl shadow-md p-4 mb-6`}>
+          <Text className={`${textColor} text-xl font-semibold mb-4`}>
+            Recent Transactions
+          </Text>
           {[
             { type: "Deposit", amount: "$1,000", date: "Feb 20, 2025" },
             { type: "Stock Purchase", amount: "$500", date: "Feb 18, 2025" },
             { type: "Crypto Investment", amount: "$300", date: "Feb 15, 2025" },
           ].map((transaction, index) => (
             <View key={index} className="flex-row justify-between mb-2">
-              <Text className="text-gray-700 font-medium">{transaction.type}</Text>
-              <Text className="text-gray-900 font-semibold">{transaction.amount}</Text>
+              <Text className={`${textColor} font-medium`}>
+                {transaction.type}
+              </Text>
+              <Text className={`${textColor} font-semibold`}>
+                {transaction.amount}
+              </Text>
               <Text className="text-gray-500">{transaction.date}</Text>
             </View>
           ))}
         </View>
 
-        <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
-          <Text className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</Text>
+        {/* Quick Actions */}
+        <View className={`${cardBackground} rounded-2xl shadow-md p-4 mb-6`}>
+          <Text className={`${textColor} text-xl font-semibold mb-4`}>
+            Quick Actions
+          </Text>
           <TouchableOpacity className="bg-blue-500 rounded-2xl p-3 mb-3 items-center">
             <Text className="text-white text-lg font-medium">Add Funds</Text>
           </TouchableOpacity>

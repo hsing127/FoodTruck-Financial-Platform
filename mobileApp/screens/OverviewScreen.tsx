@@ -14,6 +14,7 @@ import {
   ProgressChart,
 } from "react-native-chart-kit";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../ThemeContext";
 import "../global.css";
 
 const screenWidth = Dimensions.get("window").width;
@@ -67,25 +68,38 @@ const progressData = {
   data: [0.7, 0.8, 0.6],
 };
 
-const chartConfig = {
-  backgroundGradientFrom: "#ffffff",
-  backgroundGradientTo: "#ffffff",
-  decimalPlaces: 0,
-  color: (opacity = 1) => `rgba(33, 37, 41, ${opacity})`,
-  labelColor: (opacity = 1) => `rgba(108, 117, 125, ${opacity})`,
-  style: {
-    borderRadius: 16,
-  },
-};
-
 const OverviewScreen = () => {
+  const { theme } = useTheme();
+  const isDarkMode = theme === "dark";
+
+  const backgroundColor = isDarkMode ? "bg-gray-900" : "bg-gray-100";
+  const textColor = isDarkMode ? "text-white" : "text-gray-900";
+  const cardBackground = isDarkMode ? "bg-gray-800" : "bg-white";
+
+  const chartConfig = {
+    backgroundGradientFrom: isDarkMode ? "#1F2937" : "#ffffff",
+    backgroundGradientTo: isDarkMode ? "#1F2937" : "#ffffff",
+    decimalPlaces: 0,
+    color: (opacity = 1) =>
+      isDarkMode
+        ? `rgba(255, 255, 255, ${opacity})`
+        : `rgba(33, 37, 41, ${opacity})`,
+    labelColor: (opacity = 1) =>
+      isDarkMode
+        ? `rgba(255, 255, 255, ${opacity})`
+        : `rgba(108, 117, 125, ${opacity})`,
+    style: {
+      borderRadius: 16,
+    },
+  };
+
   return (
-    <ScrollView className="flex-1 bg-gray-100">
+    <ScrollView className={`flex-1 ${backgroundColor}`}>
       <View className="items-center py-6">
         <Text className="text-3xl font-bold text-blue-600">
           Overview Dashboard
         </Text>
-        <Text className="text-base text-gray-600 mt-1">
+        <Text className={`${textColor} text-base mt-1`}>
           Performance Summary - {currentMonth} {currentYear}
         </Text>
         <Text className="text-sm text-gray-500 mt-1">
@@ -95,50 +109,44 @@ const OverviewScreen = () => {
 
       <View className="px-4">
         {/* Monthly Performance */}
-        <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
-          <Text className="text-xl font-semibold text-gray-800 mb-2">
+        <View className={`${cardBackground} rounded-2xl shadow-md p-4 mb-6`}>
+          <Text className={`${textColor} text-xl font-semibold mb-2`}>
             Monthly Performance
           </Text>
-          <Text className="text-sm text-gray-500 mb-4">
-            Track your income across the last 6 months
-          </Text>
-          <BarChart
-            data={data}
-            width={screenWidth - 32}
-            height={220}
-            yAxisLabel="$"
-            yAxisSuffix="k"
-            chartConfig={chartConfig}
-            verticalLabelRotation={30}
-            fromZero
-          />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <BarChart
+              data={data}
+              width={screenWidth * 1.5}
+              height={220}
+              yAxisLabel="$"
+              yAxisSuffix="k"
+              chartConfig={chartConfig}
+              fromZero
+            />
+          </ScrollView>
         </View>
 
         {/* Activity Trend */}
-        <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
-          <Text className="text-xl font-semibold text-gray-800 mb-2">
+        <View className={`${cardBackground} rounded-2xl shadow-md p-4 mb-6`}>
+          <Text className={`${textColor} text-xl font-semibold mb-2`}>
             Activity Trend
           </Text>
-          <Text className="text-sm text-gray-500 mb-4">
-            Observe fluctuations and growth patterns
-          </Text>
-          <LineChart
-            data={data}
-            width={screenWidth - 32}
-            height={220}
-            chartConfig={chartConfig}
-            bezier
-            fromZero
-          />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <LineChart
+              data={data}
+              width={screenWidth * 1.5}
+              height={220}
+              chartConfig={chartConfig}
+              bezier
+              fromZero
+            />
+          </ScrollView>
         </View>
 
         {/* Task Distribution */}
-        <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
-          <Text className="text-xl font-semibold text-gray-800 mb-2">
+        <View className={`${cardBackground} rounded-2xl shadow-md p-4 mb-6`}>
+          <Text className={`${textColor} text-xl font-semibold mb-2`}>
             Task Distribution
-          </Text>
-          <Text className="text-sm text-gray-500 mb-4">
-            Breakdown of current task statuses
           </Text>
           <PieChart
             data={pieData}
@@ -147,33 +155,29 @@ const OverviewScreen = () => {
             chartConfig={chartConfig}
             accessor="population"
             backgroundColor="transparent"
-            paddingLeft="15"
+            paddingLeft="0"
             hasLegend={true}
           />
         </View>
 
         {/* Progress Overview */}
-        <View className="bg-white rounded-2xl shadow-md p-4 mb-6">
-          <Text className="text-xl font-semibold text-gray-800 mb-2">
+        <View className={`${cardBackground} rounded-2xl shadow-md p-4 mb-6`}>
+          <Text className={`${textColor} text-xl font-semibold mb-2`}>
             Progress Overview
-          </Text>
-          <Text className="text-sm text-gray-500 mb-4">
-            Visualize your progress across metrics
           </Text>
           <ProgressChart
             data={progressData}
-            width={screenWidth - 32}
+            width={screenWidth - 70}
             height={200}
             chartConfig={chartConfig}
           />
         </View>
 
         {/* Quick Actions */}
-        <View className="bg-white rounded-2xl shadow-md p-4 mb-10">
-          <Text className="text-xl font-semibold text-gray-800 mb-4">
+        <View className={`${cardBackground} rounded-2xl shadow-md p-4 mb-10`}>
+          <Text className={`${textColor} text-xl font-semibold mb-4`}>
             Quick Actions
           </Text>
-
           {[
             {
               label: "View Details",
@@ -197,7 +201,7 @@ const OverviewScreen = () => {
               activeOpacity={0.8}
             >
               <Ionicons
-                name={action.icon}
+                name={action.icon as keyof typeof Ionicons.glyphMap}
                 size={20}
                 color="white"
                 className="mr-2"
@@ -207,13 +211,6 @@ const OverviewScreen = () => {
               </Text>
             </TouchableOpacity>
           ))}
-        </View>
-
-        {/* Footer */}
-        <View className="items-center pb-6">
-          <Text className="text-xs text-gray-400">
-            © {currentYear} Dashboard Inc. All rights reserved.
-          </Text>
         </View>
       </View>
     </ScrollView>
