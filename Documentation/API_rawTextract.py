@@ -10,6 +10,7 @@
 # #TODO: Modify workflow and trigger.
 # import sys
 # import traceback
+# from datetime import datetime
 # import logging
 # import json
 # import uuid
@@ -24,6 +25,37 @@
 # logger.setLevel(logging.INFO)
 # textract = boto3.client("textract")
 # s3 = boto3.client("s3")
+
+# def convert_to_standard_date(date_str):
+#     date_patterns = [ #chat GPT generated regex
+#         (re.compile(r"(\d{1,2}/\d{1,2}/\d{2})"), "%m/%d/%y"),  # M/D/YY or MM/DD/YY
+#         (re.compile(r"(\d{4}/\d{1,2}/\d{1,2})"), "%Y/%m/%d"),  # YYYY/M/D or YYYY/MM/DD
+#         (re.compile(r"(\d{1,2}-\d{1,2}-\d{4})"), "%d-%m-%Y"),  # D-M-YYYY or DD-MM-YYYY
+#         (re.compile(r"(\d{1,2}\.\d{1,2}\.\d{4})"), "%d.%m.%Y"),  # D.M.YYYY or DD.MM.YYYY
+#         (re.compile(r"(\d{1,2}/\d{1,2}/\d{4})"), "%m/%d/%Y"),  # M/D/YYYY or MM/DD/YYYY
+#         (re.compile(r"(\d{4}-\d{1,2}-\d{1,2})"), "%Y-%m-%d")   # YYYY-M-D or YYYY-MM-DD
+#     ]
+
+#     for pattern, date_format in date_patterns:
+#         match = pattern.search(date_str)
+#         if match:
+#             return datetime.strptime(match.group(), date_format).strftime("%Y-%m-%d")
+
+#     raise ValueError(f"Unsupported date format: {date_str}")
+
+# def convert_to_standard_time(time_str):
+#     time_patterns = [ #chat GPT generated regex
+#         (re.compile(r"(\d{1,2}:\d{2}\s?[APap][Mm])"), "%I:%M %p"),  # HH:MM AM/PM (Handles "10:30 AM", "7:45PM")
+#         (re.compile(r"(\d{2}:\d{2}:\d{2})"), "%H:%M:%S"),  # HH:MM:SS (24-hour format)
+#         (re.compile(r"(\d{1,2}:\d{2})"), "%H:%M"),  # H:MM or HH:MM (24-hour format)
+#     ]
+
+#     for pattern, time_format in time_patterns:
+#         match = pattern.search(time_str)
+#         if match:
+#             return datetime.strptime(match.group(), time_format).strftime("%H:%M:%S")
+
+#     raise ValueError(f"Unsupported time format: {time_str}")
 
 # def filter_out_numbers(value):# GPT Generated
 #     return re.sub(r'\d+', '', value) 
@@ -178,6 +210,9 @@
 #             date = date.group()
 #         if time:
 #             time = time.group()
+#     date = convert_to_standard_date(date)
+#     time = convert_to_standard_time(time)
+
 #     return {
 #         "Store": store_name,
 #         "Date": date,
