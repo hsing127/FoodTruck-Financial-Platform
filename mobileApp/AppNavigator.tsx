@@ -4,6 +4,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "./ThemeContext";
+import { TouchableOpacity } from "react-native";
 
 import SignInScreen from "./screens/SignInScreen";
 import SignUpScreen from "./screens/SignupScreen";
@@ -17,13 +18,28 @@ import HomeScreen from "./screens/HomeScreen";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const ThemeToggle = () => {
+  const { theme, toggleTheme } = useTheme();
+  const isDarkMode = theme === "dark";
+
+  return (
+    <TouchableOpacity onPress={toggleTheme} style={{ marginRight: 20 }}> 
+      {isDarkMode ? (
+        <Ionicons name="sunny-outline" size={24} color="#FFD700" />
+      ) : (
+        <Ionicons name="moon-outline" size={24} color="#1A2C3A" />
+      )}
+    </TouchableOpacity>
+  );
+};
+
 const MainTabNavigator = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
 
   return (
     <Tab.Navigator
-      id={undefined}
+    id={undefined}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           const icons = {
@@ -43,6 +59,7 @@ const MainTabNavigator = () => {
         tabBarInactiveTintColor: isDarkMode ? "#8899A6" : "#555",
         headerStyle: { backgroundColor: isDarkMode ? "#1A2C3A" : "#FFFFFF" },
         headerTitleStyle: { color: isDarkMode ? "#FFFFFF" : "#1A2C3A" },
+        headerRight: () => <ThemeToggle />, // Add the toggle to the header
       })}
     >
       <Tab.Screen name="Overview" component={OverviewScreen} />
@@ -61,7 +78,6 @@ const AppNavigator = () => {
   return (
     <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
       <Stack.Navigator initialRouteName="SignIn" id={undefined} screenOptions={{ headerShown: false }}>
-        
         <Stack.Screen name="SignIn" component={SignInScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
