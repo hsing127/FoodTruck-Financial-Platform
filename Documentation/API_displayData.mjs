@@ -21,6 +21,20 @@
 //     await client.connect();
 
 // try {
+//     const createMappingTableQuery = `
+//     CREATE TABLE IF NOT EXISTS Mapping (
+//         Email VARCHAR(50) NOT NULL,
+//         ReceiptItem VARCHAR(50) NOT NULL,
+//         IngredientName VARCHAR(50) NOT NULL,
+//         PRIMARY KEY (Email, ReceiptItem),
+//         CONSTRAINT fk_user FOREIGN KEY (Email) 
+//             REFERENCES "User" ("Email") 
+//             ON DELETE CASCADE 
+//             ON UPDATE CASCADE
+//     );
+// `;
+// await client.query(createMappingTableQuery);
+
 //     // Fetch data from each table
 //     const users = await client.query('SELECT * FROM "User"');
 //     const purchases = await client.query('SELECT * FROM "Purchase"');

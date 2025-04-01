@@ -325,6 +325,43 @@ const insertOtherCost = async (otherCostData) => {
     }
 };
 
+const insertMapping = async (mappingData) => {
+    const client = new Client({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        ssl: {
+            rejectUnauthorized: false,
+        },
+    });
+
+    await client.connect();
+
+    try {
+        for (const mapping of mappingData) {
+            const { Email, ReceiptItem, IngredientName } = mapping;
+            await client.query(
+                `INSERT INTO Mapping (Email, ReceiptItem, IngredientName) VALUES ($1, $2, $3)`,
+                [Email, ReceiptItem, IngredientName]
+            );
+        }
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: "Mapping inserted successfully" }),
+        };
+    } catch (error) {
+        console.error("Error inserting Mapping:", error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "Failed to insert Mapping" }),
+        };
+    } finally {
+        await client.end();
+    }
+};
+
 const handler = async (event) => {
     try { //For information regarding how the input data should be formatted, refer to the test cases.
         const table = event.table;
@@ -361,6 +398,9 @@ const handler = async (event) => {
               break;
             case "otherCost":
                 return await insertOtherCost(data);
+              break;
+            case "mapping":
+                return await insertMapping(data);
               break;
         }
         
