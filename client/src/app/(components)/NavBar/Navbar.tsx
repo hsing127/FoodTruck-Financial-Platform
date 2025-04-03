@@ -196,7 +196,7 @@ const NavBar = () => {
           <UnderConstructionModal
             open={isSettingsModalOpen}
             onClose={() => setIsSettingsModalOpen(false)}
-            scenario="partial" // options: "notImplemented", "inProgress", "partial"
+            scenario="partial"
           />
         </div>
       </div>
