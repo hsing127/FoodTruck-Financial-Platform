@@ -17,203 +17,185 @@ import {
   DollarSign,
 } from "lucide-react-native";
 
+// Reusable setting row with optional toggle or right-action
+const SettingRow = ({
+  icon: Icon,
+  label,
+  value,
+  onPress,
+  toggle,
+  isEnabled,
+  onToggle,
+  isDark,
+}: any) => {
+  return (
+    <TouchableOpacity
+      className="flex-row items-center justify-between py-4"
+      onPress={onPress}
+      disabled={!onPress}
+    >
+      <View className="flex-row items-center">
+        <Icon color={isDark ? "white" : "black"} size={22} />
+        <Text className={`ml-3 text-base ${isDark ? "text-white" : "text-gray-900"}`}>
+          {label}
+        </Text>
+      </View>
+      {toggle ? (
+        <Switch
+          value={isEnabled}
+          onValueChange={onToggle}
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={isDark ? "#f5dd4b" : "#f4f3f4"}
+        />
+      ) : (
+        value && <Text className="text-sm text-gray-400">{value}</Text>
+      )}
+    </TouchableOpacity>
+  );
+};
+
 const SettingsScreen: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const isDarkMode = theme === "dark";
 
   const backgroundColor = isDarkMode ? "bg-gray-900" : "bg-gray-50";
-  const textColor = isDarkMode ? "text-white" : "text-gray-900";
   const cardBackground = isDarkMode ? "bg-gray-800" : "bg-white";
 
-  // Example state for toggles (in a real app, you'd fetch/update these from a server or global store)
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const [twoFactorEnabled, setTwoFactorEnabled] = React.useState(false);
 
   return (
-    <View className={`${backgroundColor} flex-1 px-5`}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <Text className={`${textColor} text-2xl font-bold pt-10`}>
+    <View className={`${backgroundColor} flex-1`}>
+      <ScrollView showsVerticalScrollIndicator={false} className="px-5 pt-10">
+        <Text className={`text-3xl font-bold mb-2 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
           Settings
         </Text>
-        <Text className={`${textColor} text-lg mt-2`}>
-          Manage your preferences
+        <Text className={`text-base mb-6 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
+          Customize your experience
         </Text>
 
-        {/* Profile Section */}
-        <View className={`${cardBackground} p-5 mt-8 mb-5 rounded-xl`}>
-          <Text className={`${textColor} text-lg font-semibold`}>Profile</Text>
-          <View className="flex-row items-center mt-3">
-            <User color={isDarkMode ? "white" : "black"} size={24} />
-            <Text className={`${textColor} text-base ml-3`}>John Morgan</Text>
-          </View>
-          <TouchableOpacity className="flex-row items-center mt-4">
-            <Text className="text-teal-500 text-base ml-3">Edit Profile</Text>
+        {/* === Profile === */}
+        <View className={`${cardBackground} rounded-xl p-5 mb-5`}>
+          <Text className={`text-lg font-semibold mb-2 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+            Profile
+          </Text>
+          <SettingRow
+            icon={User}
+            label="John Morgan"
+            isDark={isDarkMode}
+            onPress={() => {}}
+          />
+          <TouchableOpacity className="mt-3">
+            <Text className="text-teal-500 text-sm">Edit Profile</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Notifications Section */}
-        <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
-          <Text className={`${textColor} text-lg font-semibold`}>
-            Notifications
+        {/* === Preferences === */}
+        <View className={`${cardBackground} rounded-xl p-5 mb-5`}>
+          <Text className={`text-lg font-semibold mb-2 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+            Preferences
           </Text>
-          <View className="flex-row items-center mt-3">
-            <Bell color={isDarkMode ? "white" : "black"} size={24} />
-            <Text className={`${textColor} text-base ml-3`}>
-              Push Notifications
-            </Text>
-            <Switch
-              value={notificationsEnabled}
-              onValueChange={setNotificationsEnabled}
-              trackColor={{ false: "#767577", true: "#81b0ff" }}
-              thumbColor={isDarkMode ? "#f5dd4b" : "#f4f3f4"}
-              className="ml-auto"
-            />
-          </View>
-        </View>
-
-        {/* Language Section */}
-        <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
-          <Text className={`${textColor} text-lg font-semibold`}>
-            Language Preferences
-          </Text>
-          <View className="flex-row items-center mt-3">
-            <Globe color={isDarkMode ? "white" : "black"} size={24} />
-            <Text className={`${textColor} text-base ml-3`}>English</Text>
-          </View>
-          <TouchableOpacity className="flex-row items-center mt-4">
-            <Text className="text-teal-500 text-base ml-3">
-              Change Language
-            </Text>
+          <SettingRow
+            icon={Bell}
+            label="Push Notifications"
+            toggle
+            isEnabled={notificationsEnabled}
+            onToggle={setNotificationsEnabled}
+            isDark={isDarkMode}
+          />
+          <SettingRow
+            icon={Globe}
+            label="Language"
+            value="English"
+            onPress={() => {}}
+            isDark={isDarkMode}
+          />
+          <TouchableOpacity className="mt-3">
+            <Text className="text-teal-500 text-sm">Change Language</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Security Section */}
-        <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
-          <Text className={`${textColor} text-lg font-semibold`}>Security</Text>
-          <View className="flex-row items-center mt-3">
-            <Lock color={isDarkMode ? "white" : "black"} size={24} />
-            <Text className={`${textColor} text-base ml-3`}>
-              Change Password
-            </Text>
-          </View>
-          <TouchableOpacity className="flex-row items-center mt-4">
-            <Text className="text-teal-500 text-base ml-3">
-              Update Password
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Privacy & Security Section */}
-        <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
-          <Text className={`${textColor} text-lg font-semibold`}>
-            Privacy & Security
+        {/* === Security === */}
+        <View className={`${cardBackground} rounded-xl p-5 mb-5`}>
+          <Text className={`text-lg font-semibold mb-2 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+            Security
           </Text>
-          <View className="flex-row items-center mt-3">
-            <ShieldCheck color={isDarkMode ? "white" : "black"} size={24} />
-            <Text className={`${textColor} text-base ml-3`}>
-              Enable Two-Factor Authentication
-            </Text>
-            <Switch
-              value={twoFactorEnabled}
-              onValueChange={setTwoFactorEnabled}
-              trackColor={{ false: "#767577", true: "#81b0ff" }}
-              thumbColor={isDarkMode ? "#f5dd4b" : "#f4f3f4"}
-              className="ml-auto"
-            />
-          </View>
+          <SettingRow
+            icon={Lock}
+            label="Change Password"
+            onPress={() => {}}
+            isDark={isDarkMode}
+          />
+          <SettingRow
+            icon={ShieldCheck}
+            label="Two-Factor Authentication"
+            toggle
+            isEnabled={twoFactorEnabled}
+            onToggle={setTwoFactorEnabled}
+            isDark={isDarkMode}
+          />
         </View>
 
-        {/* Subscription Section */}
-        <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
-          <Text className={`${textColor} text-lg font-semibold`}>
-            Subscription
-          </Text>
-          <View className="flex-row items-center mt-3">
-            <DollarSign color={isDarkMode ? "white" : "black"} size={24} />
-            <Text className={`${textColor} text-base ml-3`}>
-              Current Plan: Premium
-            </Text>
-          </View>
-          <TouchableOpacity className="flex-row items-center mt-4">
-            <Text className="text-teal-500 text-base ml-3">
-              Manage Subscription
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Appearance Section */}
-        <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
-          <Text className={`${textColor} text-lg font-semibold`}>
+        {/* === Appearance === */}
+        <View className={`${cardBackground} rounded-xl p-5 mb-5`}>
+          <Text className={`text-lg font-semibold mb-2 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
             Appearance
           </Text>
-          <TouchableOpacity
-            className="flex-row items-center mt-3"
-            onPress={toggleTheme}
-          >
-            {isDarkMode ? (
-              <Sun color="yellow" size={24} />
-            ) : (
-              <Moon color="black" size={24} />
-            )}
-            <Text className={`${textColor} text-base ml-3`}>
+          <TouchableOpacity onPress={toggleTheme} className="flex-row items-center py-2">
+            {isDarkMode ? <Sun color="yellow" size={22} /> : <Moon color="black" size={22} />}
+            <Text className={`ml-3 text-base ${isDarkMode ? "text-white" : "text-gray-900"}`}>
               {isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* About Section */}
-        <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
-          <Text className={`${textColor} text-lg font-semibold`}>About</Text>
-          <View className="flex-row items-center mt-3">
-            <Info color={isDarkMode ? "white" : "black"} size={24} />
-            <Text className={`${textColor} text-base ml-3`}>
-              App Version: 1.0.0
-            </Text>
-          </View>
+        {/* === Subscription === */}
+        <View className={`${cardBackground} rounded-xl p-5 mb-5`}>
+          <Text className={`text-lg font-semibold mb-2 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+            Subscription
+          </Text>
+          <SettingRow
+            icon={DollarSign}
+            label="Current Plan"
+            value="Premium"
+            isDark={isDarkMode}
+          />
+          <TouchableOpacity className="mt-3">
+            <Text className="text-teal-500 text-sm">Manage Subscription</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Help & Support Section */}
-        <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
-          <Text className={`${textColor} text-lg font-semibold`}>
-            Help & Support
+        {/* === About & Support === */}
+        <View className={`${cardBackground} rounded-xl p-5 mb-5`}>
+          <Text className={`text-lg font-semibold mb-2 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+            Help & About
           </Text>
-          <View className="flex-row items-center mt-3">
-            <HelpCircle color={isDarkMode ? "white" : "black"} size={24} />
-            <Text className={`${textColor} text-base ml-3`}>FAQ</Text>
-          </View>
-          <TouchableOpacity className="flex-row items-center mt-4">
+          <SettingRow icon={Info} label="App Version" value="1.0.0" isDark={isDarkMode} />
+          <SettingRow icon={HelpCircle} label="FAQ" onPress={() => {}} isDark={isDarkMode} />
+          <TouchableOpacity className="flex-row items-center mt-3">
             <MessageSquare color={isDarkMode ? "white" : "black"} size={20} />
-            <Text className="text-teal-500 text-base ml-3">
-              Contact Support
-            </Text>
+            <Text className="ml-3 text-teal-500 text-sm">Contact Support</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Danger Zone */}
-        <View className={`${cardBackground} p-5 mb-5 rounded-xl`}>
-          <Text className={`${textColor} text-lg font-semibold`}>
-            Danger Zone
-          </Text>
+        {/* === Danger Zone === */}
+        <View className={`${cardBackground} rounded-xl p-5 mb-5`}>
+          <Text className={`text-lg font-semibold text-red-500`}>Danger Zone</Text>
           <TouchableOpacity className="flex-row items-center mt-4">
-            <Trash2 color="red" size={24} />
-            <Text className="text-red-500 text-base ml-3">Delete Account</Text>
+            <Trash2 color="red" size={22} />
+            <Text className="ml-3 text-red-500 text-base">Delete Account</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Logout Button */}
+        {/* === Logout === */}
         <TouchableOpacity
-          className="flex-row items-center justify-center mb-8 mt-3"
+          className="flex-row items-center justify-center my-6"
           onPress={() => {
-            // Logout logic
+            // Logout logic here
           }}
         >
-          <LogOut color={isDarkMode ? "white" : "black"} size={24} />
-          <Text
-            className={`${
-              isDarkMode ? "text-white" : "text-gray-900"
-            } text-base ml-3`}
-          >
+          <LogOut color={isDarkMode ? "white" : "black"} size={22} />
+          <Text className={`ml-2 text-base ${isDarkMode ? "text-white" : "text-gray-900"}`}>
             Sign Out
           </Text>
         </TouchableOpacity>
