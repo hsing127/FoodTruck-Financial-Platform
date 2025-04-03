@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import NotificationsModal from "./NotificationsModal";
 import { notifications } from "@/app/(components)/NavBar/NotificationData";
 import UploadLogic, { UploadLogicHandle } from "../Common/UploadLogic";
+import { UnderConstructionModal } from "../Common/UnderConstructionModal";
 import {
   dropdownVariants,
   fadeInUpVariants,
@@ -23,6 +24,7 @@ const NavBar = () => {
   const { setTheme } = useTheme();
 
   // State for handling upload dropdown visibility
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isUploadDropdownOpen, setIsUploadDropdownOpen] = useState(false);
   const uploadDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -182,6 +184,7 @@ const NavBar = () => {
             className="bg-transparent outline-none ml-2 text-sm text-gray-600 placeholder-gray-400 placeholder-opacity-75 w-full"
           />
           <motion.button
+            onClick={() => setIsSettingsModalOpen(true)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             className="absolute right-2 text-[#8B5CF6]"
@@ -189,6 +192,12 @@ const NavBar = () => {
           >
             <Settings size={20} />
           </motion.button>
+
+          <UnderConstructionModal
+            open={isSettingsModalOpen}
+            onClose={() => setIsSettingsModalOpen(false)}
+            scenario="partial" // options: "notImplemented", "inProgress", "partial"
+          />
         </div>
       </div>
 
