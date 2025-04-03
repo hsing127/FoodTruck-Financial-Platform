@@ -14,6 +14,7 @@
 # import logging
 # import json
 # import uuid
+# import csv
 # import time
 # import boto3
 # import os
@@ -27,13 +28,14 @@
 # s3 = boto3.client("s3")
 
 # def convert_to_standard_date(date_str):
-#     date_patterns = [ #chat GPT generated regex
-#         (re.compile(r"(\d{1,2}/\d{1,2}/\d{2})"), "%m/%d/%y"),  # M/D/YY or MM/DD/YY
-#         (re.compile(r"(\d{4}/\d{1,2}/\d{1,2})"), "%Y/%m/%d"),  # YYYY/M/D or YYYY/MM/DD
-#         (re.compile(r"(\d{1,2}-\d{1,2}-\d{4})"), "%d-%m-%Y"),  # D-M-YYYY or DD-MM-YYYY
-#         (re.compile(r"(\d{1,2}\.\d{1,2}\.\d{4})"), "%d.%m.%Y"),  # D.M.YYYY or DD.MM.YYYY
-#         (re.compile(r"(\d{1,2}/\d{1,2}/\d{4})"), "%m/%d/%Y"),  # M/D/YYYY or MM/DD/YYYY
-#         (re.compile(r"(\d{4}-\d{1,2}-\d{1,2})"), "%Y-%m-%d")   # YYYY-M-D or YYYY-MM-DD
+#     date_patterns = [ #chatGPT Generated
+#         (re.compile(r"(\d{2}/\d{2}/\d{2})"), "%y/%m/%d"),  # YY/MM/DD 
+#         (re.compile(r"(\d{1,2}/\d{1,2}/\d{2})"), "%m/%d/%y"),  # MM/DD/YY or M/D/YY
+#         (re.compile(r"(\d{4}/\d{1,2}/\d{1,2})"), "%Y/%m/%d"),  # YYYY/MM/DD or YYYY/M/D
+#         (re.compile(r"(\d{1,2}-\d{1,2}-\d{4})"), "%d-%m-%Y"),  # DD-MM-YYYY or D-M-YYYY
+#         (re.compile(r"(\d{1,2}\.\d{1,2}\.\d{4})"), "%d.%m.%Y"),  # DD.MM.YYYY or D.M.YYYY
+#         (re.compile(r"(\d{1,2}/\d{1,2}/\d{4})"), "%m/%d/%Y"),  # MM/DD/YYYY or M/D/YYYY
+#         (re.compile(r"(\d{4}-\d{1,2}-\d{1,2})"), "%Y-%m-%d")  # YYYY-MM-DD
 #     ]
 
 #     for pattern, date_format in date_patterns:
@@ -312,8 +314,28 @@
 #     else:
 #         return [["No format for this Store", 0, 0, 0, "na"]]
 
-# def lambda_handler(event, context):
+# def mapping(data):
+    
+#     map= {}
+#     try:
+#         # Open and read the CSV file
+#         with open("map.csv", mode='r') as file:
+#             csv_reader = csv.DictReader(file)  # This reads each row as a dictionary
+#             for row in csv_reader:
+#                 # Map the 'key' column to the 'val' column
+#                 map[row['key']] = row['val']
+#     except Exception as e:
+#         print(f"Error reading CSV file: {e}")
+#         raise  # Re-raise the exception if you want to handle it in the lambda_handler
+#     for i in range(len(data)):
+#         try:
+#             data[i][0] = map[data[i][0]]
+#         except KeyError:
+#             logging.info("No key: " + data[i][0])
+#     return data
 
+# def lambda_handler(event, context):
+#     #email = (event["filename"].split('/'))[0]
 #     try:
 
 #         logging.info(f"Bucket: {os.getenv("BUCKETNAME")} ::: Key: {event["filename"]}")
@@ -400,6 +422,9 @@
 #         metaData["Total"] = total
 #         logging.info(metaData)
 #         logging.info(itemList)
+#         itemList = mapping(itemList)
+
+
 
 #         # s3.put_object(
 #         #     Bucket=bucketname,
