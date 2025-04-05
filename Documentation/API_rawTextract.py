@@ -18,6 +18,7 @@
 # import time
 # import boto3
 # import os
+# import io
 # import re
 # from urllib.parse import unquote_plus
 # from collections import defaultdict
@@ -319,11 +320,12 @@
 #     map= {}
 #     try:
 #         # Open and read the CSV file
-#         with open("map.csv", mode='r') as file:
-#             csv_reader = csv.DictReader(file)  # This reads each row as a dictionary
-#             for row in csv_reader:
-#                 # Map the 'key' column to the 'val' column
-#                 map[row['key']] = row['val']
+#         response = s3.get_object(Bucket=os.getenv("BUCKETNAME2"), Key="map.csv")
+#         content = response['Body'].read().decode('utf-8')
+#         csv_reader = csv.DictReader(io.StringIO(content))  # This reads each row as a dictionary
+#         for row in csv_reader:
+#             # Map the 'key' column to the 'val' column
+#             map[row['key']] = row['val']
 #     except Exception as e:
 #         print(f"Error reading CSV file: {e}")
 #         raise  # Re-raise the exception if you want to handle it in the lambda_handler
@@ -335,6 +337,24 @@
 #     return data
 
 # def lambda_handler(event, context):
+#     if event["filename"] == "none":
+#         try:
+#             response = s3.get_object(Bucket=os.getenv("BUCKETNAME2"), Key="map.csv")
+#             file_content = response['Body'].read().decode('utf-8')
+#             csv_reader = list(csv.reader(io.StringIO(file_content)))
+#             new_row = [event["receiptItem"],event["ingredientName"]]
+#             csv_reader.append(new_row)
+#             output = io.StringIO()
+#             csv_writer = csv.writer(output)
+#             csv_writer.writerows(csv_reader)
+#             output.seek(0)
+#             s3.put_object(Bucket=os.getenv("BUCKETNAME2"), Key="map.csv", Body=output.getvalue())
+#             return {
+#                 "statusCode": 200,
+#                 "body": json.dumps("Receipt Mapping Added Successfully!")                
+#             }
+#         except:
+#             return {"statusCode": 500, "body": json.dumps("Error updating mapping!")}
 #     #email = (event["filename"].split('/'))[0]
 #     try:
 
