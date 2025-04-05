@@ -13,6 +13,7 @@ import { Upload, Plus, Filter, ArrowUp, ArrowDown } from "lucide-react";
 import { Receipt } from "@/app/types/types";
 import AddReceiptEntryModal from "./AddReceiptEntryModal";
 import ScanReceiptModal from "./ScanReceiptModal";
+import MapReceiptModal from "./MapReceiptModal";
 import UploadLogic, { UploadLogicHandle } from "../Common/UploadLogic";
 import useSortLogic from "../Common/SortingLogic";
 import { tableVariants } from "../Common/Animations";
@@ -48,6 +49,7 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
   const [isAnimating, setIsAnimating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   interface StoreAndTimestamp {
       Store: null | string;
       Date: null | string;
@@ -86,6 +88,9 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
     
   const openScanModal = () => setIsScanModalOpen(true);
   const closeScanModal = () => setIsScanModalOpen(false);
+    
+  const openMapModal = () => setIsMapModalOpen(true);
+  const closeMapModal = () => setIsMapModalOpen(false);
 
   const calculateItemsPerPage = useCallback(() => {
     const viewportHeight = window.innerHeight;
@@ -257,6 +262,11 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
         item === "Scan Receipt"
       ) {
         openScanModal();
+      } else if (
+        enumActionType === ActionType.ADD_ENTRY &&
+        item === "Add Mapping"
+      ) {
+        openMapModal();
       }else if (enumActionType === ActionType.UPLOAD) {
         switch (item) {
           case "Upload Image":
@@ -294,7 +304,7 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
         console.warn(`Unhandled action: ${enumActionType}, Item: ${item}`);
       }
     },
-    [openModal, openScanModal, setSortFieldAndOrder]
+    [openModal, openScanModal, openMapModal, setSortFieldAndOrder]
   );
 
   // Handle file uploads from UploadLogic
@@ -385,7 +395,7 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
                 icon: <Plus size={20} />,
                 type: ActionType.ADD_ENTRY,
                 title: "Add Entry",
-                items: ["Add Receipt Entry", "Scan Receipt"],
+                items: ["Add Receipt Entry", "Scan Receipt","Add Mapping"],
               },
               {
                 icon: <Filter size={20} />,
@@ -406,7 +416,8 @@ const ReceiptTable: React.FC<ReceiptTableProps> = ({
 
           {/* Use isModalOpen to conditionally render the modal */}
           <AddReceiptEntryModal isOpen={isModalOpen} onClose={closeModal} receiptData={scannedReceiptData}/>
-          <ScanReceiptModal isOpen={isScanModalOpen} onClose={closeScanModal} onScanComplete={handleScanReceiptData}/>
+          <ScanReceiptModal isOpen={isScanModalOpen} onClose={closeScanModal} onScanComplete={handleScanReceiptData} />
+          <MapReceiptModal isOpen={isMapModalOpen} onClose={closeMapModal} onMapComplete={closeMapModal}/>
         </div>
       </div>
 
