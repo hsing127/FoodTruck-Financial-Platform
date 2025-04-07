@@ -19,13 +19,13 @@ import {
   calculateDailyInventoryTurnover,
   calculateYoYGrowth,
   calculateLocationPerformanceTrend,
-} from "../(components)/DashboardReports/Calculations";
-import MetricsCard from "../(components)/DashboardReports/MetricsCard";
-import MetricsChart from "../(components)/DashboardReports/MetricsChart";
-import PerformanceTable from "../(components)/DashboardReports/PerformanceTable";
-import { useReportData } from "../(components)/DashboardReports/ReportAPI";
+} from "../(components)/DashboardMetrics/Calculations";
+import MetricsCard from "../(components)/DashboardMetrics/MetricsCard";
+import MetricsChart from "../(components)/DashboardMetrics/MetricsChart";
+import PerformanceTable from "../(components)/DashboardMetrics/PerformanceTable";
+import { useReportData } from "../(components)/DashboardMetrics/ReportAPI";
 
-export const DashboardReports: React.FC = () => {
+export const DashboardMetrics: React.FC = () => {
   const reportData: ReportData[] = useReportData(); // get report data
 
   // Mock financial data
@@ -238,4 +238,4 @@ export const DashboardReports: React.FC = () => {
   );
 };
 
-export default DashboardReports;
+export default DashboardMetrics;

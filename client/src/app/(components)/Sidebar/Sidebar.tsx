@@ -116,7 +116,7 @@ const Sidebar = React.memo(() => {
         icon: PackageSearch,
         label: "Inventory",
       },
-      { href: "/dashboard/reports", icon: ClipboardList, label: "Reports" },
+      { href: "/dashboard/metrics", icon: ClipboardList, label: "Metrics" },
       { href: "/dashboard/budget", icon: HandCoins, label: "Budget" },
     ],
     []
