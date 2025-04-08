@@ -344,6 +344,9 @@
 #             csv_reader = list(csv.reader(io.StringIO(file_content)))
 #             new_row = [event["receiptItem"],event["ingredientName"]]
 #             csv_reader.append(new_row)
+#             header, *rows = csv_reader
+#             unique_rows = [list(row) for row in {tuple(r) for r in rows}]
+#             csv_reader = [header] + unique_rows
 #             output = io.StringIO()
 #             csv_writer = csv.writer(output)
 #             csv_writer.writerows(csv_reader)
