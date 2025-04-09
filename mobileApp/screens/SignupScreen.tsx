@@ -13,20 +13,19 @@ import {
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { useTheme } from "../ThemeContext";
+import { useNavigation } from "@react-navigation/native";
+import { ArrowLeft } from "lucide-react-native";
 
 interface FormData {
+  name: string;
   email: string;
   password: string;
 }
 
-const SignInScreen: React.FC = () => {
+const SignUpScreen: React.FC = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === "dark";
-
-  const backgroundColor = isDarkMode ? "bg-[#1A2C3A]" : "bg-gray-100";
-  const cardBackground = isDarkMode ? "bg-[#0E1B27]" : "bg-white";
-  const textColor = isDarkMode ? "text-white" : "text-[#1A2C3A]";
-  const inputBackground = isDarkMode ? "bg-[#1F3545]" : "bg-white";
+  const navigation = useNavigation<any>();
 
   const {
     control,
@@ -36,11 +35,17 @@ const SignInScreen: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const backgroundColor = isDarkMode ? "bg-[#1A2C3A]" : "bg-gray-100";
+  const cardBackground = isDarkMode ? "bg-[#0E1B27]" : "bg-white";
+  const textColor = isDarkMode ? "text-white" : "text-[#1A2C3A]";
+  const inputBackground = isDarkMode ? "bg-[#1F3545]" : "bg-white";
+
   const onSubmit = (data: FormData) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      Alert.alert("Sign In Successful", `Welcome back, ${data.email}!`);
+      Alert.alert("Account Created", `Welcome, ${data.name}!`);
+      navigation.replace("Main");
     }, 1500);
   };
 
@@ -52,11 +57,37 @@ const SignInScreen: React.FC = () => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View className="flex-1 justify-center p-5">
           <View className={`${cardBackground} p-6 rounded-2xl shadow-lg`}>
+            {/* Back Arrow */}
+            <TouchableOpacity onPress={() => navigation.goBack()} className="mb-4">
+              <ArrowLeft color={isDarkMode ? "white" : "#1A2C3A"} size={24} />
+            </TouchableOpacity>
+
             <Text className={`${textColor} text-3xl font-bold text-center mb-6`}>
-              Sign In
+              Sign Up
             </Text>
 
-            {/* Email Input */}
+            {/* Name */}
+            <Text className={`${textColor} text-base mb-2`}>Full Name</Text>
+            <Controller
+              control={control}
+              name="name"
+              rules={{ required: "Name is required" }}
+              render={({ field: { onChange, value } }) => (
+                <TextInput
+                  className={`${inputBackground} p-3 rounded-lg ${textColor} text-base mb-2`}
+                  placeholder="Enter your name"
+                  placeholderTextColor="#888"
+                  onChangeText={onChange}
+                  value={value}
+                  autoCapitalize="words"
+                />
+              )}
+            />
+            {errors.name && (
+              <Text className="text-red-500 text-sm mb-3">{errors.name.message}</Text>
+            )}
+
+            {/* Email */}
             <Text className={`${textColor} text-base mb-2`}>Email</Text>
             <Controller
               control={control}
@@ -64,8 +95,8 @@ const SignInScreen: React.FC = () => {
               rules={{
                 required: "Email is required",
                 pattern: {
-                  value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                  message: "Invalid email format",
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Please enter a valid email",
                 },
               }}
               render={({ field: { onChange, value } }) => (
@@ -73,23 +104,18 @@ const SignInScreen: React.FC = () => {
                   className={`${inputBackground} p-3 rounded-lg ${textColor} text-base mb-2`}
                   placeholder="Enter your email"
                   placeholderTextColor="#888"
-                  onChangeText={onChange}
-                  value={value}
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  autoFocus
-                  accessibilityLabel="Email input"
-                  returnKeyType="next"
+                  onChangeText={onChange}
+                  value={value}
                 />
               )}
             />
             {errors.email && (
-              <Text className="text-red-500 text-sm mb-3">
-                {errors.email.message}
-              </Text>
+              <Text className="text-red-500 text-sm mb-3">{errors.email.message}</Text>
             )}
 
-            {/* Password Input */}
+            {/* Password */}
             <Text className={`${textColor} text-base mb-2`}>Password</Text>
             <Controller
               control={control}
@@ -104,13 +130,11 @@ const SignInScreen: React.FC = () => {
               render={({ field: { onChange, value } }) => (
                 <TextInput
                   className={`${inputBackground} p-3 rounded-lg ${textColor} text-base mb-2`}
-                  placeholder="Enter your password"
+                  placeholder="Create a password"
                   placeholderTextColor="#888"
                   secureTextEntry
                   onChangeText={onChange}
                   value={value}
-                  accessibilityLabel="Password input"
-                  returnKeyType="done"
                 />
               )}
             />
@@ -120,31 +144,20 @@ const SignInScreen: React.FC = () => {
               </Text>
             )}
 
-            {/* Sign In Button */}
+            {/* Sign Up Button */}
             <TouchableOpacity
               onPress={handleSubmit(onSubmit)}
               disabled={loading}
               className={`bg-teal-500 py-4 rounded-lg mt-5 items-center ${
                 loading ? "opacity-70" : ""
               }`}
-              accessibilityLabel="Sign In button"
             >
               {loading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text className="text-white text-lg font-bold">Sign In</Text>
+                <Text className="text-white text-lg font-bold">Create Account</Text>
               )}
             </TouchableOpacity>
-
-            {/* Footer Links */}
-            <View className="flex-row justify-between mt-5">
-              <TouchableOpacity>
-                <Text className="text-teal-500 text-sm">Forgot Password?</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text className="text-teal-500 text-sm">Sign Up</Text>
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -152,4 +165,4 @@ const SignInScreen: React.FC = () => {
   );
 };
 
-export default SignInScreen;
+export default SignUpScreen;
