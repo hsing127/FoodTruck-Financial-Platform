@@ -1,3 +1,17 @@
+// /*
+// For setup, checkout this video:
+// https://www.youtube.com/watch?v=ZKahHfAeYCg&t=44s
+// However, there are some changes to make.
+// 1. Do not use the same address for user and from. Check the Brevo:
+//     Make sure the sender (under Senders, Domains & Dedicated IPs) is the address used in from:
+//     for user, check the Login under the SMTP
+// 2. Make sure to use smtp-relay.brevo.com instead of the older host.
+// 3. logger and debugger is useful for figuring out the issue. Simply add:
+//     logger: true,
+//     debug: true,
+//    to the transporter to see the logger and debugger.
+// 4. Keep the login and password in environmental variables to keep it safe.
+// */
 // import pkg from 'pg';
 // import nodemailer from 'nodemailer';
 
@@ -5,12 +19,12 @@
 
 // // Configure nodemailer transporter
 // const transporter = nodemailer.createTransport({
-//     host: 'smtp.gmail.com',
+//     host: 'smtp-relay.brevo.com',
 //     port: 587,
 //     secure: false,
 //     auth: {
-//         user: process.env.EMAIL_USER,
-//         pass: process.env.EMAIL_PASS,
+//         user: process.env.SMTP_LOGIN,
+//         pass: process.env.SMTP_PASS,
 //     },
 // });
 
@@ -53,7 +67,6 @@
 //         // Generate a random 6-digit code
 //         const code = Math.floor(100000 + Math.random() * 900000).toString();
 //         const expirationDate = new Date(Date.now() + 5 * 60 * 1000); // Expires in 5 minutes
-
 //         // Save the reset code in the database
 //         const insertCodeQuery = `
 //             INSERT INTO "Code" ("Email", "Code", "ExpireAt", "Used")
@@ -65,7 +78,7 @@
 
 //         // Send the code via email
 //         const mailOptions = {
-//             from: process.env.EMAIL_USER,
+//             from: "jana@foodtrucksofcanada.org",
 //             to: email,
 //             subject: 'Password Reset Code - FoodTruck',
 //             text: `Your password reset code is: ${code}. It expires in 5 minutes.`,
