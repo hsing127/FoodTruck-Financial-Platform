@@ -27,19 +27,24 @@ const HomeScreen: React.FC = () => {
 
   // Chart configuration
   const chartConfig = {
-    backgroundColor,
-    backgroundGradientFrom: backgroundColor,
-    backgroundGradientTo: backgroundColor,
+    backgroundGradientFrom: isDarkMode ? "#1F2937" : "#ffffff",
+    backgroundGradientTo: isDarkMode ? "#1F2937" : "#ffffff",
     decimalPlaces: 0,
     color: (opacity = 1) =>
       isDarkMode
         ? `rgba(34, 211, 238, ${opacity})`
         : `rgba(0, 123, 255, ${opacity})`,
-    labelColor: () => textColor,
+    labelColor: (opacity = 1) =>
+      isDarkMode
+        ? `rgba(255, 255, 255, ${opacity})`
+        : `rgba(108, 117, 125, ${opacity})`,
     propsForDots: {
       r: "4",
       strokeWidth: "2",
-      stroke: isDarkMode ? "#22D3EE" : "#007BFF",
+      stroke: isDarkMode ? "#ffffff" : "#212529",
+    },
+    style: {
+      borderRadius: 16,
     },
   };
 
