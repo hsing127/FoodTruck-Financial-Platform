@@ -15,7 +15,14 @@
 //   await client.connect();
 
 //   try {
-//     const data = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
+//     // Flexible parsing for both test console & API Gateway
+//     let data;
+//     if (event.body) {
+//       data = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
+//     } else {
+//       data = event;
+//     }
+
 //     const email = data?.Email;
 
 //     if (!email) {
@@ -25,21 +32,21 @@
 //       };
 //     }
 
-//     // Total Revenue for the user
+//     // Total Revenue for user
 //     const revenueRes = await client.query(
 //       'SELECT SUM("Revenue") AS total FROM "Sale" WHERE "Email" = $1',
 //       [email]
 //     );
 //     const totalRevenue = parseFloat(revenueRes.rows[0].total || 0);
 
-//     // Average Sale Value for the user
+//     // Average Sale Value
 //     const avgSaleRes = await client.query(
 //       'SELECT AVG("Revenue") AS average FROM "Sale" WHERE "Email" = $1',
 //       [email]
 //     );
 //     const avgSaleValue = parseFloat(avgSaleRes.rows[0].average || 0);
 
-//     // Average Receipt Cost for the user
+//     // Average Receipt Cost
 //     const purchaseSumRes = await client.query(
 //       'SELECT SUM("Cost") AS total FROM "Purchase" WHERE "Email" = $1',
 //       [email]
