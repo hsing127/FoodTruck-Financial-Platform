@@ -15,27 +15,52 @@
 //   await client.connect();
 
 //   try {
-//     // 1. Total Revenue (from Sale table)
-//     const revenueRes = await client.query('SELECT SUM("Revenue") AS total FROM "Sale"');
+//     const data = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
+//     const email = data?.Email;
+
+//     if (!email) {
+//       return {
+//         statusCode: 400,
+//         body: JSON.stringify({ error: 'Email is required in body' }),
+//       };
+//     }
+
+//     // Total Revenue for the user
+//     const revenueRes = await client.query(
+//       'SELECT SUM("Revenue") AS total FROM "Sale" WHERE "Email" = $1',
+//       [email]
+//     );
 //     const totalRevenue = parseFloat(revenueRes.rows[0].total || 0);
 
-//     // 2. Average Sale Value
-//     const avgSaleRes = await client.query('SELECT AVG("Revenue") AS average FROM "Sale"');
+//     // Average Sale Value for the user
+//     const avgSaleRes = await client.query(
+//       'SELECT AVG("Revenue") AS average FROM "Sale" WHERE "Email" = $1',
+//       [email]
+//     );
 //     const avgSaleValue = parseFloat(avgSaleRes.rows[0].average || 0);
 
-//     // 3. Average Receipt Cost (total of all Purchase costs ÷ number of purchases)
-//     const purchaseSumRes = await client.query('SELECT SUM("Cost") AS total FROM "Purchase"');
+//     // Average Receipt Cost for the user
+//     const purchaseSumRes = await client.query(
+//       'SELECT SUM("Cost") AS total FROM "Purchase" WHERE "Email" = $1',
+//       [email]
+//     );
 //     const totalPurchaseCost = parseFloat(purchaseSumRes.rows[0].total || 0);
 
-//     const purchaseCountRes = await client.query('SELECT COUNT(*) AS count FROM "Purchase"');
+//     const purchaseCountRes = await client.query(
+//       'SELECT COUNT(*) AS count FROM "Purchase" WHERE "Email" = $1',
+//       [email]
+//     );
 //     const purchaseCount = parseInt(purchaseCountRes.rows[0].count, 10) || 0;
 
 //     const avgReceiptCost = purchaseCount > 0
 //       ? totalPurchaseCost / purchaseCount
 //       : 0;
 
-//     // 4. Revenue per Customer = total revenue ÷ total sales
-//     const saleCountRes = await client.query('SELECT COUNT(*) AS count FROM "Sale"');
+//     // Revenue per Customer
+//     const saleCountRes = await client.query(
+//       'SELECT COUNT(*) AS count FROM "Sale" WHERE "Email" = $1',
+//       [email]
+//     );
 //     const saleCount = parseInt(saleCountRes.rows[0].count, 10) || 0;
 
 //     const revenuePerCustomer = saleCount > 0
