@@ -1,6 +1,14 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Switch, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Switch,
+  ScrollView,
+  Image,
+} from "react-native";
 import { useTheme } from "../ThemeContext";
+import * as ImagePicker from "expo-image-picker";
 import {
   User,
   Bell,
@@ -18,7 +26,6 @@ import {
 } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 
-// Reusable setting row with optional toggle or right-action
 const SettingRow = ({
   icon: Icon,
   label,
@@ -64,12 +71,32 @@ const SettingsScreen: React.FC = () => {
   const navigation = useNavigation<any>();
 
   const isDarkMode = theme === "dark";
-
   const backgroundColor = isDarkMode ? "bg-gray-900" : "bg-gray-50";
   const cardBackground = isDarkMode ? "bg-gray-800" : "bg-white";
 
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const [twoFactorEnabled, setTwoFactorEnabled] = React.useState(false);
+  const [profileImage, setProfileImage] = React.useState<string | null>(null);
+
+  const pickImage = async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("Permission to access camera roll is required!");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setProfileImage(result.assets[0].uri);
+    }
+  };
 
   return (
     <View className={`${backgroundColor} flex-1`}>
@@ -106,6 +133,30 @@ const SettingsScreen: React.FC = () => {
           />
           <TouchableOpacity className="mt-3">
             <Text className="text-teal-500 text-sm">Edit Profile</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* === Profile Photo Upload === */}
+        <View className={`${cardBackground} rounded-xl p-5 mb-5`}>
+          <Text
+            className={`text-lg font-semibold mb-2 ${
+              isDarkMode ? "text-white" : "text-gray-900"
+            }`}
+          >
+            Profile Photo
+          </Text>
+          {profileImage ? (
+            <Image
+              source={{ uri: profileImage }}
+              className="w-24 h-24 rounded-full mb-3"
+            />
+          ) : (
+            <View className="w-24 h-24 rounded-full mb-3 bg-gray-300 items-center justify-center">
+              <Text className="text-gray-600 text-sm">No Image</Text>
+            </View>
+          )}
+          <TouchableOpacity onPress={pickImage}>
+            <Text className="text-teal-500 text-sm">Upload Photo</Text>
           </TouchableOpacity>
         </View>
 
