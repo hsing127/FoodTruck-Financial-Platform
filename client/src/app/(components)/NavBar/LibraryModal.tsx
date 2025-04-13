@@ -131,10 +131,10 @@ const LibraryModal: React.FC<LibraryModalProps> = ({ isOpen, onClose }) => {
   const handleRename = async (oldFileName: string) => {
     try {
       const response = await fetch(
-        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/renameFile",
+        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/data/editFileName",
         {
           method: "POST",
-          body: JSON.stringify({ username: email, oldFilename: oldFileName, newFilename: newFileName }),
+          body: JSON.stringify({ username: email, oldFileName: oldFileName, newFileName: newFileName }),
           headers: { "Content-Type": "application/json" },
         }
       );

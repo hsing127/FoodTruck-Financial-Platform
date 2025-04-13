@@ -5,10 +5,12 @@
 
 // const handler = async (event) => {
 //     try {
-//         const { username, oldFileName, newFileName } = event;
+//         const username = event.username;
+//         const oldFileName = event.oldFileName;
+//         const newFileName = event.newFileName;
 
 //         if (!username || !oldFileName || !newFileName) {
-//             return response(400, "Username, oldFileName, and newFileName are required.");
+//             return response(400, "username, oldFileName, and newFileName are required.");
 //         }
 
 //         const oldKey = `${username}/${oldFileName}`;
