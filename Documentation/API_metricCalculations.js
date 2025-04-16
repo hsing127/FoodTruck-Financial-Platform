@@ -7,87 +7,91 @@
 //     user: process.env.DB_USER,
 //     password: process.env.DB_PASSWORD,
 //     database: process.env.DB_DATABASE,
-//     ssl: {
-//       rejectUnauthorized: false,
-//     },
+//     ssl: { rejectUnauthorized: false },
 //   });
 
 //   await client.connect();
 
 //   try {
-//     // Flexible parsing for both test console & API Gateway
-//     let data;
+//     // Unified input parsing (handles both AWS console + API Gateway)
+//     let data = {};
 //     if (event.body) {
 //       data = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
 //     } else {
 //       data = event;
 //     }
 
-//     const email = data?.Email;
+//     const rawEmail = data.Email;
+//     const email = typeof rawEmail === 'string' && rawEmail.trim().length > 0 ? rawEmail.trim() : null;
 
 //     if (!email) {
 //       return {
 //         statusCode: 400,
-//         body: JSON.stringify({ error: 'Email is required in body' }),
+//         body: JSON.stringify({ error: 'A valid Email is required in the request body.' }, null, 2),
 //       };
 //     }
 
-//     // Total Revenue for user
+//     // === Total Revenue ===
 //     const revenueRes = await client.query(
 //       'SELECT SUM("Revenue") AS total FROM "Sale" WHERE "Email" = $1',
 //       [email]
 //     );
 //     const totalRevenue = parseFloat(revenueRes.rows[0].total || 0);
 
-//     // Average Sale Value
-//     const avgSaleRes = await client.query(
-//       'SELECT AVG("Revenue") AS average FROM "Sale" WHERE "Email" = $1',
-//       [email]
-//     );
-//     const avgSaleValue = parseFloat(avgSaleRes.rows[0].average || 0);
-
-//     // Average Receipt Cost
+//     // === Total Receipt Cost (from Purchases) ===
 //     const purchaseSumRes = await client.query(
 //       'SELECT SUM("Cost") AS total FROM "Purchase" WHERE "Email" = $1',
 //       [email]
 //     );
-//     const totalPurchaseCost = parseFloat(purchaseSumRes.rows[0].total || 0);
+//     const totalReceiptCost = parseFloat(purchaseSumRes.rows[0].total || 0);
 
-//     const purchaseCountRes = await client.query(
-//       'SELECT COUNT(*) AS count FROM "Purchase" WHERE "Email" = $1',
+//     // === COGS ===
+//     // COGS: Cost Of Goods Sold = Beginning Inventory + Purchased Inventory - Final Inventory
+//     // Currently implemented as Total Revenue - Receipt Costs
+//     // Future implementation will track inventory levels and adjust this
+//     // const beginningInventory = 0;
+//     // const finalInventory = await calculateInventory(email); // Not implemented yet
+//     const cogsEstimate = totalRevenue - totalReceiptCost;
+
+//     // === Cash Flow ===
+//     // Cash Flow = Cash Input - Cash Output
+//     // Implemented as: total receipts cost - profit from all sales
+//     const cashFlow = totalReceiptCost - cogsEstimate;
+
+//     // === Profit Margin ===
+//     // Gross Profit Margin = (Revenue - COGS) / Revenue
+//     // Currently implemented as Total Revenue only until more expense types are tracked
+//     const profitMargin = totalRevenue;
+
+//     // === Spend Per Head ===
+//     // Spend per head = Total Revenue / Number of Customers
+//     // Each sold item = 1 customer approximation
+//     const customerCountRes = await client.query(
+//       'SELECT SUM("Count") AS total FROM "Sold" WHERE "Email" = $1',
 //       [email]
 //     );
-//     const purchaseCount = parseInt(purchaseCountRes.rows[0].count, 10) || 0;
+//     const customerCount = parseInt(customerCountRes.rows[0].total, 10) || 0;
+//     const spendPerHead = customerCount > 0 ? totalRevenue / customerCount : 0;
 
-//     const avgReceiptCost = purchaseCount > 0
-//       ? totalPurchaseCost / purchaseCount
-//       : 0;
-
-//     // Revenue per Customer
-//     const saleCountRes = await client.query(
-//       'SELECT COUNT(*) AS count FROM "Sale" WHERE "Email" = $1',
-//       [email]
-//     );
-//     const saleCount = parseInt(saleCountRes.rows[0].count, 10) || 0;
-
-//     const revenuePerCustomer = saleCount > 0
-//       ? totalRevenue / saleCount
-//       : 0;
-
+//     // === Final Response ===
 //     return {
 //       statusCode: 200,
 //       body: JSON.stringify({
-//         totalRevenue: totalRevenue.toFixed(2),
-//         avgSaleValue: avgSaleValue.toFixed(2),
-//         avgReceiptCost: avgReceiptCost.toFixed(2),
-//         revenuePerCustomer: revenuePerCustomer.toFixed(2),
-//       }),
+//         TotalRevenue: `$${totalRevenue.toFixed(2)}`,
+//         TotalReceiptCost: `$${totalReceiptCost.toFixed(2)}`,
+//         CashFlow: `$${cashFlow.toFixed(2)}`,
+//         COGSEstimate: `$${cogsEstimate.toFixed(2)}`,
+//         ProfitMargin: `$${profitMargin.toFixed(2)}`,
+//         SpendPerHead: `$${spendPerHead.toFixed(2)}`,
+//         // beginningInventory,
+//         // finalInventory,
+//       }, null, 2),
 //     };
 //   } catch (error) {
 //     console.error('Error calculating metrics:', error);
 //     return {
-//       statusCode: 400,
-//       body: JSON.stringify({ error: 'Failed to calculate metrics' }),
+//       statusCode: 500,
+//       body: JSON.stringify({ error: 'Failed to calculate metrics' }, null, 2),
 //     };
 //   } finally {
 //     await client.end();
