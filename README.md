@@ -6,6 +6,15 @@ The **Food Truck Financial Analysis Platform** is designed to help food truck op
 
 ---
 
+## Built With
+
+- [Node.js](https://nodejs.org/en)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Next.js](https://nextjs.org/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [GitHub](https://github.com/)
+- [AWS](https://aws.amazon.com/)
+
 ## Features
 
 - **Receipt Scanning and Digitization**: Users can scan and digitize physical receipts and invoices for easier record-keeping.

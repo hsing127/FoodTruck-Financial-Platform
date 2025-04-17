@@ -1,4 +1,13 @@
-# Dark SaaS Landing Page Starter Template
+# Food Truck Financial Analysis Project (FTFA)
+The Food Truck Financial Analysis Project is an internal tool for the Food Trucks Association of Canada (FTAC). 
+
+This project will enable food truck companies to:
+- Scan receipts and upload ingredients into the system
+- Track their sales, profitability, and inventory
+- Monitor trendlines of sales and expenses
+- Store important documents into file management
+
+## Dark SaaS Landing Page Starter Template
 
 This project is a starter template for the dark theme SaaS landing page project created by Frontend Tribe.
 
