@@ -77,6 +77,7 @@ const SettingsScreen: React.FC = () => {
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const [twoFactorEnabled, setTwoFactorEnabled] = React.useState(false);
   const [profileImage, setProfileImage] = React.useState<string | null>(null);
+  const [receiptImage, setReceiptImage] = React.useState<string | null>(null);
 
   const pickImage = async () => {
     const permissionResult =
@@ -157,6 +158,50 @@ const SettingsScreen: React.FC = () => {
           )}
           <TouchableOpacity onPress={pickImage}>
             <Text className="text-teal-500 text-sm">Upload Photo</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* === Receipt Upload === */}
+        <View className={`${cardBackground} rounded-xl p-5 mb-5`}>
+          <Text
+            className={`text-lg font-semibold mb-2 ${
+              isDarkMode ? "text-white" : "text-gray-900"
+            }`}
+          >
+            Photo of Receipt
+          </Text>
+          {receiptImage ? (
+            <Image
+              source={{ uri: receiptImage }}
+              className="w-24 h-24 rounded-lg mb-3"
+            />
+          ) : (
+            <View className="w-24 h-24 rounded-lg mb-3 bg-gray-300 items-center justify-center">
+              <Text className="text-gray-600 text-sm">No Receipt Uploaded</Text>
+            </View>
+          )}
+          <TouchableOpacity
+            onPress={async () => {
+              const permissionResult =
+                await ImagePicker.requestMediaLibraryPermissionsAsync();
+              if (!permissionResult.granted) {
+                alert("Permission to access media library is required!");
+                return;
+              }
+
+              const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 4],
+                quality: 1,
+              });
+
+              if (!result.canceled) {
+                setReceiptImage(result.assets[0].uri);
+              }
+            }}
+          >
+            <Text className="text-teal-500 text-sm">Upload Receipt</Text>
           </TouchableOpacity>
         </View>
 
