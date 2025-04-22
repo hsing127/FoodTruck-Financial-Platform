@@ -1,13 +1,3 @@
-# """
-# -*- coding: utf-8 -*-
-# ========================
-# AWS Lambda
-# ========================
-# Contributor: Chirag Rathod (Srce Cde), 
-# Modified by: Wenjie Xu
-# ========================
-# """
-# #TODO: Modify workflow and trigger.
 # import sys
 # import traceback
 # from datetime import datetime
@@ -326,6 +316,7 @@
 #         for row in csv_reader:
 #             # Map the 'key' column to the 'val' column
 #             map[row['key']] = row['val']
+#             logging.info(row['key'])
 #     except Exception as e:
 #         print(f"Error reading CSV file: {e}")
 #         raise  # Re-raise the exception if you want to handle it in the lambda_handler

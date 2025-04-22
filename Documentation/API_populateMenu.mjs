@@ -3,6 +3,7 @@
 // const { Client } = pkg;
 
 // const handler = async (event) => {
+//     // Database connection parameters
 //     const dbConfig = {
 //         host: process.env.DB_HOST,
 //         database: process.env.DB_DATABASE,
