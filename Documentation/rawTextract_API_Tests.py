@@ -62,3 +62,5 @@ for x in r1_data:
 print("errors: ", num_errors, "/", count, " = ", num_errors/count)
 print("Accuracy: ", (1.0-num_errors/count)*100, "%" )
 #print("Response Body:", response)
+
+#73.9%

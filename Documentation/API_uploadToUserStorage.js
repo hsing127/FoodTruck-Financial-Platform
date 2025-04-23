@@ -16,7 +16,7 @@
 //         console.log("File Data:", fileData);
 //         console.log("Overwrite:", overwrite);
 
-//         if (!fileName.endsWith('.pdf') && !fileName.endsWith('.txt') && !fileName.endsWith('.png') && !fileName.endsWith('.jpg') && !fileName.endsWith('.jpeg')) {
+//         if (!fileName.endsWith('.pdf') && !fileName.endsWith('.txt') && !fileName.endsWith('.PNG') && !fileName.endsWith('.jpg') && !fileName.endsWith('.jpeg')) {
 //             return {
 //                 statusCode: 400,
 //                 body: JSON.stringify({ message: 'Only PDF, TXT, PNG, JPG, and JPEG files are allowed' }),

@@ -4,9 +4,7 @@
 // const { Client } = pkg;
 
 // const handler = async (event) => {
-//     // const { email, newPassword } = JSON.parse(event.body);
-//     const email = event.email;
-//     const password = event.password;
+//     const { email, newPassword } = JSON.parse(event.body);
 
 //     // Input validation
 //     if (!email || !newPassword) {
