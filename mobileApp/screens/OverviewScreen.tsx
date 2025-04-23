@@ -32,37 +32,6 @@ const data = {
   ],
 };
 
-const pieData = [
-  {
-    name: "Completed",
-    population: 40,
-    color: "#28a745",
-    legendFontColor: "#000",
-    legendFontSize: 14,
-  },
-  {
-    name: "Pending",
-    population: 30,
-    color: "#ffc107",
-    legendFontColor: "#000",
-    legendFontSize: 14,
-  },
-  {
-    name: "Overdue",
-    population: 15,
-    color: "#dc3545",
-    legendFontColor: "#000",
-    legendFontSize: 14,
-  },
-  {
-    name: "In Progress",
-    population: 15,
-    color: "#007bff",
-    legendFontColor: "#000",
-    legendFontSize: 14,
-  },
-];
-
 const progressData = {
   labels: ["Sales", "Growth", "Revenue"],
   data: [0.7, 0.8, 0.6],
@@ -92,6 +61,42 @@ const OverviewScreen = () => {
       borderRadius: 16,
     },
   };
+
+  const legendFontColor = (opacity = 1) =>
+    isDarkMode
+      ? `rgba(255, 255, 255, ${opacity})`
+      : `rgba(108, 117, 125, ${opacity})`;
+
+  const pieData = [
+    {
+      name: "Completed",
+      population: 40,
+      color: "#28a745",
+      legendFontColor: legendFontColor(1),
+      legendFontSize: 14,
+    },
+    {
+      name: "Pending",
+      population: 30,
+      color: "#ffc107",
+      legendFontColor: legendFontColor(1),
+      legendFontSize: 14,
+    },
+    {
+      name: "Overdue",
+      population: 15,
+      color: "#dc3545",
+      legendFontColor: legendFontColor(1),
+      legendFontSize: 14,
+    },
+    {
+      name: "In Progress",
+      population: 15,
+      color: "#007bff",
+      legendFontColor: legendFontColor(1),
+      legendFontSize: 14,
+    },
+  ];
 
   return (
     <ScrollView className={`flex-1 ${backgroundColor}`}>
@@ -167,7 +172,7 @@ const OverviewScreen = () => {
           </Text>
           <ProgressChart
             data={progressData}
-            width={screenWidth - 70}
+            width={screenWidth - 64}
             height={200}
             chartConfig={chartConfig}
           />

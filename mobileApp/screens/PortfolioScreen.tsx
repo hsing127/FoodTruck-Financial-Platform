@@ -20,14 +20,6 @@ const assetData = [
   { name: "Cash", value: 5, color: "#6c757d" },
 ];
 
-const pieChartData = assetData.map((item) => ({
-  name: item.name,
-  population: item.value,
-  color: item.color,
-  legendFontColor: "#333",
-  legendFontSize: 14,
-}));
-
 const performanceData = {
   labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
   datasets: [
@@ -62,6 +54,14 @@ const PortfolioScreen = () => {
     style: { borderRadius: 16 },
     propsForDots: { r: "6", strokeWidth: "2", stroke: "#007bff" },
   };
+
+  const pieChartData = assetData.map((item) => ({
+    name: item.name,
+    population: item.value,
+    color: item.color,
+    legendFontColor: isDarkMode ? "#ffffff" : "#111827",
+    legendFontSize: 14,
+  }));
 
   return (
     <ScrollView className={`flex-1 ${backgroundColor}`}>
