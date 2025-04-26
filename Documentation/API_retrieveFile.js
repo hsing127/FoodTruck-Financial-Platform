@@ -1,65 +1,82 @@
-// import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+// import { S3Client, ListObjectsV2Command, HeadObjectCommand } from "@aws-sdk/client-s3";
 
 // const s3 = new S3Client({ region: "ca-central-1" });
 // const bucketName = "foodtruck-userfiles";
+// const EXPIRATION_DAYS = 10; // <-- easy to change later
 
 // const handler = async (event) => {
 //     try {
 //         const username = event.username;
-//         const fileName = event.fileName;
 
-//         if (!username || !fileName) {
+//         if (!username) {
 //             return {
 //                 statusCode: 400,
-//                 body: JSON.stringify({ message: "Username and file name are required." }),
+//                 body: JSON.stringify({ message: "Username is required." }),
 //             };
 //         }
 
-//         // Construct the S3 key (path) for the file
-//         const fileKey = `${username}/${fileName}`;
+//         const prefix = `${username}/`;
 
-//         // Retrieve the file from S3
-//         const data = await s3.send(
-//             new GetObjectCommand({
+//         const listedObjects = await s3.send(
+//             new ListObjectsV2Command({
 //                 Bucket: bucketName,
-//                 Key: fileKey,
+//                 Prefix: prefix,
 //             })
 //         );
 
-//         // Read the file content from the response body (assuming it's text or JSON)
-//         const fileContent = await streamToString(data.Body);
+//         if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
+//             return {
+//                 statusCode: 404,
+//                 body: JSON.stringify({ message: "No files found for the specified user" }),
+//             };
+//         }
+
+//         const now = new Date();
+//         const filesWithExpiration = await Promise.all(
+//             listedObjects.Contents
+//                 .filter(obj => obj.Key && obj.Key !== prefix)
+//                 .map(async (obj) => {
+//                     try {
+//                         const metadata = await s3.send(
+//                             new HeadObjectCommand({
+//                                 Bucket: bucketName,
+//                                 Key: obj.Key,
+//                             })
+//                         );
+
+//                         const lastModified = metadata.LastModified;
+//                         const expirationTime = new Date(lastModified);
+//                         expirationTime.setDate(expirationTime.getDate() + EXPIRATION_DAYS); // <-- uses the constant
+
+//                         const timeLeft = expirationTime.getTime() - now.getTime();
+//                         const minutesLeft = timeLeft > 0 ? Math.floor(timeLeft / 1000 / 60) : 0;
+
+//                         return {
+//                             fileName: obj.Key.replace(prefix, ""),
+//                             expirationTime: minutesLeft > 0 ? minutesLeft : "Expired",
+//                         };
+//                     } catch (error) {
+//                         console.error(`Error retrieving metadata for file: ${obj.Key}`, error);
+//                         return { fileName: obj.Key.replace(prefix, ""), expirationTime: "Unknown (Error)" };
+//                     }
+//                 })
+//         );
 
 //         return {
 //             statusCode: 200,
 //             body: JSON.stringify({
-//                 message: "File retrieved successfully.",
-//                 fileName: fileName,
-//                 fileData: fileContent,
+//                 message: "Files retrieved successfully.",
+//                 files: filesWithExpiration,
 //             }),
 //         };
+
 //     } catch (error) {
-//         console.error("Error retrieving file:", error);
+//         console.error('Error checking time left:', error);
 //         return {
 //             statusCode: 500,
-//             body: JSON.stringify({ message: "Error retrieving file", error: error.message }),
+//             body: JSON.stringify({ message: 'Error checking time left', error: error.message }),
 //         };
 //     }
-// };
-
-// // Helper function to convert the stream to string
-// const streamToString = (stream) => {
-//     return new Promise((resolve, reject) => {
-//         const chunks = [];
-//         stream.on("data", (chunk) => {
-//             chunks.push(chunk);
-//         });
-//         stream.on("end", () => {
-//             resolve(Buffer.concat(chunks).toString("utf-8"));
-//         });
-//         stream.on("error", (err) => {
-//             reject(err);
-//         });
-//     });
 // };
 
 // export { handler };
