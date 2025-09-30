@@ -7,6 +7,7 @@ import morgan from "morgan";
 
 /* ROUTE IMPORTS */
 import dashboardRoutes from "./routes/dashboardRoutes" // Pulls imports from Routes folder
+import authRoutes from "./routes/authRoutes"; // Auth routes for login
 
 /* CONFIGURATIONS */
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 /* ROUTES */
+app.use("/auth", authRoutes); // Authentication routes
 app.use("/dashboard/home", dashboardRoutes) // Points back up to Route imports above
 
 // Commented out until links are finalized and ready for creation here

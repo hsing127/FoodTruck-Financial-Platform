@@ -1,3 +1,12 @@
-{
-"Query": "UPDATE User SET Province = 'Ontario' WHERE Email = 'ajwitt2@asu.edu';"
-}
+[
+    {
+        "Email": "ajwitt2@asu.edu",
+        "Password": "$2a$10$n3UNMWbTszIDajes7BosW.3Oz9PvlnVMCNesnoZv8Ft7RObBm1bNK",
+        "BusinessName": "Witty's"
+    },
+    {
+        "Email": "test@foodtruck.com",
+        "Password": "$2b$10$j2fat.Ppx2nm.gGOYFO0i.8Ti5gJ8SixBJfP8LRpcr63KBFg9wCpy",
+        "BusinessName": "Test Food Truck"
+    }
+]

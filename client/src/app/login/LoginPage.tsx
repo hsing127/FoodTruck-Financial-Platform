@@ -23,7 +23,7 @@ const LoginPage: React.FC = () => {
 
     try {
       const response = await fetch(
-        "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/auth/login",
+        "http://localhost:3001/auth/login",
         {
           method: "POST",
           headers: {
@@ -34,12 +34,26 @@ const LoginPage: React.FC = () => {
       );
 
       const data = await response.json();
-      const statusCode = data.statusCode || response.status;
+      const statusCode = response.status;
+
+      // Original AWS API code (commented out)
+      // const response = await fetch(
+      //   "https://10yo5nu3x1.execute-api.ca-central-1.amazonaws.com/dev/auth/login",
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({ email, password }),
+      //   }
+      // );
+      // const data = await response.json();
+      // const statusCode = data.statusCode || response.status;
 
       if (statusCode === 200) {
         setErrorMessage("");
 
-        // Retrieve the token from the response
+        // Get token from response
         const { token } = data;
 
         // Check "Remember Me" and store the token with expanded time constraints
@@ -56,11 +70,11 @@ const LoginPage: React.FC = () => {
         // Redirect to dashboard
         router.push("/dashboard/home");
       } else {
-        setErrorMessage("Invalid username or password.");
+        setErrorMessage(data.message || "Invalid username or password.");
       }
     } catch (error) {
       console.error("Login error:", error);
-      setErrorMessage("An error occurred. Please try again.");
+      setErrorMessage("Unable to connect to server. Please try again.");
     }
   };
 

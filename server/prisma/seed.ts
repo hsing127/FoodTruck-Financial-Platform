@@ -23,7 +23,12 @@ const prisma = new PrismaClient();
 // }
 
 async function main() {
-  const dataDirectory = path.join(__dirname, "seedData");
+  const dataDirectories = [
+    path.join(__dirname, "seedData"),
+    path.join(__dirname, "additionalData"),
+    path.join(__dirname, "additionalData2"),
+    path.join(__dirname, "additionalData3")
+  ];
 
   const orderedFileNames = [
     "user.json",
@@ -34,28 +39,42 @@ async function main() {
     "uses.json",
     "sale.json",
     "sold.json",
+    "otherCost.json",
   ];
 
   //await deleteAllData(orderedFileNames);
 
-  for (const fileName of orderedFileNames) {
-    const filePath = path.join(dataDirectory, fileName);
-    const jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-    const modelName = path.basename(fileName, path.extname(fileName));
-    const model: any = prisma[modelName as keyof typeof prisma];
+  for (const dataDirectory of dataDirectories) {
+    console.log(`Processing directory: ${path.basename(dataDirectory)}`);
+    
+    for (const fileName of orderedFileNames) {
+      const filePath = path.join(dataDirectory, fileName);
+      
+      if (!fs.existsSync(filePath)) {
+        continue;
+      }
+      
+      const jsonData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+      const modelName = path.basename(fileName, path.extname(fileName));
+      const model: any = prisma[modelName as keyof typeof prisma];
 
-    if (!model) {
-      console.error(`No Prisma model matches the file name: ${fileName}`);
-      continue;
+      if (!model) {
+        console.error(`No Prisma model matches the file name: ${fileName}`);
+        continue;
+      }
+
+      for (const data of jsonData) {
+        try {
+          await model.create({
+            data,
+          });
+        } catch (error) {
+          continue;
+        }
+      }
+
+      console.log(`Seeded ${modelName} with data from ${fileName}`);
     }
-
-    for (const data of jsonData) {
-      await model.create({
-        data,
-      });
-    }
-
-    console.log(`Seeded ${modelName} with data from ${fileName}`);
   }
 }
 
